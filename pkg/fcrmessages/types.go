@@ -23,48 +23,55 @@ import (
 // Message types
 // The enum should remain the same for client, admin clients,provider and gateway.
 const (
-	ClientEstablishmentRequestType              = 0
-	ClientEstablishmentResponseType             = 1
-	ClientStandardDiscoverRequestType           = 2
-	ClientStandardDiscoverResponseType          = 3
-	ClientDHTDiscoverRequestType                = 4
-	ClientDHTDiscoverResponseType               = 5
-	ClientCIDGroupPublishDHTAckRequestType      = 6
-	ClientCIDGroupPublishDHTAckResponseType     = 7
-	ProviderPublishGroupCIDRequestType          = 8
-	ProviderPublishGroupCIDResponseType         = 302
-	ProviderDHTPublishGroupCIDRequestType       = 9
-	ProviderDHTPublishGroupCIDAckType           = 10
-	GatewaySingleCIDOfferPublishRequestType     = 11
-	GatewaySingleCIDOfferPublishResponseType    = 12
-	GatewaySingleCIDOfferPublishResponseAckType = 13
-	GatewayDHTDiscoverRequestType               = 14
-	GatewayDHTDiscoverResponseType              = 15
-	ProtocolChangeResponseType                  = 100
-	ProtocolMismatchResposneType                = 101
-	InvalidMessageResponseType                  = 102
-	InsufficientFundsResponseType               = 103
-	AdminGetReputationChallengeType             = 200
-	AdminGetReputationResponseType              = 201
-	AdminSetReputationChallengeType             = 202
-	AdminSetReputationResponseType              = 203
-	AdminAcceptKeyChallengeType                 = 204
-	AdminAcceptKeyResponseType                  = 205
-	ProviderAdminGetGroupCIDRequestType         = 300
-	ProviderAdminGetGroupCIDResponseType        = 301
-	ProviderAdminPublishGroupCIDRequestType     = 302
-	ProviderAdminDHTPublishGroupCIDRequestType  = 303
-	ProviderAdminPublishOfferAckType            = 304
+	// Client
+	ClientEstablishmentRequestType          = 100
+	ClientEstablishmentResponseType         = 101
+	ClientStandardDiscoverRequestType       = 102
+	ClientStandardDiscoverResponseType      = 103
+	ClientDHTDiscoverRequestType            = 104
+	ClientDHTDiscoverResponseType           = 105
+	ClientCIDGroupPublishDHTAckRequestType  = 106
+	ClientCIDGroupPublishDHTAckResponseType = 107
+	// Provider
+	ProviderPublishGroupCIDRequestType    = 200
+	ProviderPublishGroupCIDResponseType   = 201
+	ProviderDHTPublishGroupCIDRequestType = 202
+	ProviderDHTPublishGroupCIDAckType     = 203
+	// Gateway
+	GatewaySingleCIDOfferPublishRequestType     = 300
+	GatewaySingleCIDOfferPublishResponseType    = 301
+	GatewaySingleCIDOfferPublishResponseAckType = 302
+	GatewayDHTDiscoverRequestType               = 303
+	GatewayDHTDiscoverResponseType              = 304
+	// GatewayAdmin
+	GatewayAdminGetReputationChallengeType = 400
+	GatewayAdminGetReputationResponseType  = 401
+	GatewayAdminSetReputationChallengeType = 402
+	GatewayAdminSetReputationResponseType  = 403
+	GatewayAdminAcceptKeyChallengeType     = 404
+	GatewayAdminAcceptKeyResponseType      = 405
+	// ProviderAdmin
+	ProviderAdminGetGroupCIDRequestType        = 500
+	ProviderAdminGetGroupCIDResponseType       = 501
+	ProviderAdminPublishGroupCIDRequestType    = 502
+	ProviderAdminDHTPublishGroupCIDRequestType = 503
+	ProviderAdminPublishOfferAckType           = 504
+	ProviderAdminAcceptKeyChallengeType        = 505
+	// Errors
+	InvalidMessageResponseType    = 900
+	InsufficientFundsResponseType = 901
+	ProtocolChangeResponseType    = 902
+	ProtocolMismatchResponseType  = 903
 )
 
 // CIDGroupInformation represents a cid group information
 type CIDGroupInformation struct {
-	ProviderID           nodeid.NodeID 								`json:"provider_id"`
-	Price                uint64        								`json:"price_per_byte"`
-	Expiry               int64         								`json:"expiry_date"`
-	QoS                  uint64        								`json:"qos"`
-	Signature            string        								`json:"signature"`
-	MerkleRoot           string        								`json:"merkle_root"`
+	ProviderID           nodeid.NodeID                `json:"provider_id"`
+	Price                uint64                       `json:"price_per_byte"`
+	Expiry               int64                        `json:"expiry_date"`
+	QoS                  uint64                       `json:"qos"`
+	Signature            string                       `json:"signature"`
+	MerkleRoot           string                       `json:"merkle_root"`
 	MerkleProof          fcrmerkletree.FCRMerkleProof `json:"merkle_proof"`
-	FundedPaymentChannel bool          								`json:"funded_payment_channel"` // TODO: Is this boolean?
+	FundedPaymentChannel bool                         `json:"funded_payment_channel"` // TODO: Is this boolean?
 }

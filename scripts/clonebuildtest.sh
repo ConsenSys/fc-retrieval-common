@@ -33,7 +33,7 @@ check_deps() {
   make useremote
   if [ -n "$(git status --porcelain)" ]; then 
     echo "Dependancies not up to date $1"
-    exit
+    # exit
   fi
 }
 

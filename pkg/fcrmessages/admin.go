@@ -21,7 +21,7 @@ func EncodeAdminGetReputationChallenge(clientID *nodeid.NodeID) (*FCRMessage, er
 		return nil, err
 	}
 	return &FCRMessage{
-		MessageType:       AdminGetReputationChallengeType,
+		MessageType:       GatewayAdminGetReputationChallengeType,
 		ProtocolVersion:   protocolVersion,
 		ProtocolSupported: protocolSupported,
 		MessageBody:       body,
@@ -33,7 +33,7 @@ func DecodeAdminGetReputationChallenge(fcrMsg *FCRMessage) (
 	*nodeid.NodeID, // client id
 	error, // error
 ) {
-	if fcrMsg.MessageType != AdminGetReputationChallengeType {
+	if fcrMsg.MessageType != GatewayAdminGetReputationChallengeType {
 		return nil, fmt.Errorf("Message type mismatch")
 	}
 	msg := AdminGetReputationChallenge{}
@@ -66,7 +66,7 @@ func EncodeAdminGetReputationResponse(
 		return nil, err
 	}
 	return &FCRMessage{
-		MessageType:       AdminGetReputationResponseType,
+		MessageType:       GatewayAdminGetReputationResponseType,
 		ProtocolVersion:   protocolVersion,
 		ProtocolSupported: protocolSupported,
 		MessageBody:       body,
@@ -80,7 +80,7 @@ func DecodeAdminGetReputationResponse(fcrMsg *FCRMessage) (
 	bool, // exists
 	error, // error
 ) {
-	if fcrMsg.MessageType != AdminGetReputationResponseType {
+	if fcrMsg.MessageType != GatewayAdminGetReputationResponseType {
 		return nil, 0, false, fmt.Errorf("Message type mismatch")
 	}
 	msg := AdminGetReputationResponse{}
@@ -110,7 +110,7 @@ func EncodeAdminSetReputationChallenge(
 		return nil, err
 	}
 	return &FCRMessage{
-		MessageType:       AdminSetReputationChallengeType,
+		MessageType:       GatewayAdminSetReputationChallengeType,
 		ProtocolVersion:   protocolVersion,
 		ProtocolSupported: protocolSupported,
 		MessageBody:       body,
@@ -123,7 +123,7 @@ func DecodeAdminSetReputationChallenge(fcrMsg *FCRMessage) (
 	int64, // reputation
 	error, // error
 ) {
-	if fcrMsg.MessageType != AdminSetReputationChallengeType {
+	if fcrMsg.MessageType != GatewayAdminSetReputationChallengeType {
 		return nil, 0, fmt.Errorf("Message type mismatch")
 	}
 	msg := AdminSetReputationChallenge{}
@@ -156,7 +156,7 @@ func EncodeAdminSetReputationResponse(
 		return nil, err
 	}
 	return &FCRMessage{
-		MessageType:       AdminSetReputationResponseType,
+		MessageType:       GatewayAdminSetReputationResponseType,
 		ProtocolVersion:   protocolVersion,
 		ProtocolSupported: protocolSupported,
 		MessageBody:       body,
@@ -170,7 +170,7 @@ func DecodeAdminSetReputationResponse(fcrMsg *FCRMessage) (
 	bool, // exists
 	error, // error
 ) {
-	if fcrMsg.MessageType != AdminSetReputationResponseType {
+	if fcrMsg.MessageType != GatewayAdminSetReputationResponseType {
 		return nil, 0, false, fmt.Errorf("Message type mismatch")
 	}
 	msg := AdminSetReputationResponse{}
@@ -199,7 +199,7 @@ func EncodeAdminAcceptKeyChallenge(
 		return nil, err
 	}
 	return &FCRMessage{
-		MessageType:       AdminAcceptKeyChallengeType,
+		MessageType:       GatewayAdminAcceptKeyChallengeType,
 		ProtocolVersion:   protocolVersion,
 		ProtocolSupported: protocolSupported,
 		MessageBody:       body,
@@ -208,7 +208,7 @@ func EncodeAdminAcceptKeyChallenge(
 
 // DecodeAdminAcceptKeyChallenge is used to get the fields from FCRMessage of AdminAcceptKeysChallenge
 func DecodeAdminAcceptKeyChallenge(fcrMsg *FCRMessage) (*nodeid.NodeID, string, uint32, error) {
-	if fcrMsg.MessageType != AdminAcceptKeyChallengeType {
+	if fcrMsg.MessageType != GatewayAdminAcceptKeyChallengeType {
 		return nil, "", 0, fmt.Errorf("Message type mismatch")
 	}
 	msg := AdminAcceptKeyChallenge{}
@@ -243,7 +243,7 @@ func EncodeAdminAcceptKeyResponse(
 		return nil, err
 	}
 	return &FCRMessage{
-		MessageType:       AdminAcceptKeyResponseType,
+		MessageType:       GatewayAdminAcceptKeyResponseType,
 		ProtocolVersion:   protocolVersion,
 		ProtocolSupported: protocolSupported,
 		MessageBody:       body,
@@ -255,7 +255,7 @@ func DecodeAdminAcceptKeyResponse(fcrMsg *FCRMessage) (
 	bool, // exists
 	error, // error
 ) {
-	if fcrMsg.MessageType != AdminAcceptKeyResponseType {
+	if fcrMsg.MessageType != GatewayAdminAcceptKeyResponseType {
 		return false, fmt.Errorf("Message type mismatch")
 	}
 	msg := AdminAcceptKeyResponse{}

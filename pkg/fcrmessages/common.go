@@ -53,7 +53,7 @@ func EncodeProtocolMismatchResponse() (*FCRMessage, error) {
 		return nil, err
 	}
 	return &FCRMessage{
-		MessageType:       ProtocolMismatchResposneType,
+		MessageType:       ProtocolMismatchResponseType,
 		ProtocolVersion:   protocolVersion,
 		ProtocolSupported: protocolSupported,
 		MessageBody:       body,
@@ -62,7 +62,7 @@ func EncodeProtocolMismatchResponse() (*FCRMessage, error) {
 
 // DecodeProtocolMismatchResponse is used to get the fields from FCRMessage of ProtocolMismatchResponse
 func DecodeProtocolMismatchResponse(fcrMsg *FCRMessage) error {
-	if fcrMsg.MessageType != ProtocolMismatchResposneType {
+	if fcrMsg.MessageType != ProtocolMismatchResponseType {
 		return fmt.Errorf("Message type mismatch")
 	}
 	msg := ProtocolMismatchResponse{}

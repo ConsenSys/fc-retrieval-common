@@ -44,13 +44,13 @@ func EncodeClientDHTOfferAckRequest(
 	return CreateFCRMessage(ClientDHTOfferAckRequestType, body), nil
 }
 
-// DeodeClientDHTOfferAckRequest is used to get the fields from FCRMessage of clientDHTOfferAckRequest
-func DeodeClientDHTOfferAckRequest(fcrMsg *FCRMessage) (
+// DecodeClientDHTOfferAckRequest is used to get the fields from FCRMessage of clientDHTOfferAckRequest
+func DecodeClientDHTOfferAckRequest(fcrMsg *FCRMessage) (
 	*cid.ContentID, // piece cid
 	*nodeid.NodeID, // gateway id
 	error, // error
 ) {
-	if fcrMsg.GetMessageType() != ClientDHTDiscoverRequestType {
+	if fcrMsg.GetMessageType() != ClientDHTOfferAckRequestType {
 		return nil, nil, errors.New("Message type mismatch")
 	}
 	msg := clientDHTOfferAckRequest{}

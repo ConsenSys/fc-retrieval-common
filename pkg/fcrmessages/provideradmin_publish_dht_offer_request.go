@@ -53,7 +53,7 @@ func EncodeProviderAdminPublishDHTOfferRequest(
 func DecodeProviderAdminPublishDHTOfferRequest(fcrMsg *FCRMessage) (
 	[]cid.ContentID, // cids
 	[]uint64, // price
-	[]int64, // expity
+	[]int64, // expiry
 	[]uint64, // qos
 	error, // error
 ) {

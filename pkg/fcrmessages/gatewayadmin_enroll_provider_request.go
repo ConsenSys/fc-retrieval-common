@@ -16,71 +16,71 @@ package fcrmessages
  */
 
 import (
-  "encoding/json"
-  "errors"
+	"encoding/json"
+	"errors"
 
-  "github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 )
 
 // gatewayAdminEnrolProviderRequest is the request from an admin client to a gateway to enroll a retrieval provider
 type gatewayAdminEnrolProviderRequest struct {
-  NodeID             nodeid.NodeID `json:"nodeId"`
-  Address            string        `json:"address"`
-  RootSigningKey     string        `json:"rootSigningKey"`
-  SigningKey         string        `json:"signingKey"`
-  RegionCode         string        `json:"regionCode"`
-  NetworkInfoGateway string        `json:"networkInfoGateway"`
-  NetworkInfoClient  string        `json:"networkInfoClient"`
-  NetworkInfoAdmin   string        `json:"networkInfoAdmin"`
+	NodeID             nodeid.NodeID `json:"node_id"`
+	Address            string        `json:"address"`
+	RootSigningKey     string        `json:"root_signing_key"`
+	SigningKey         string        `json:"signing_key"`
+	RegionCode         string        `json:"region_code"`
+	NetworkInfoGateway string        `json:"network_info_gateway"`
+	NetworkInfoClient  string        `json:"network_info_client"`
+	NetworkInfoAdmin   string        `json:"network_info_admin"`
 }
 
 // EncodeGatewayAdminEnrollProviderRequest is used to get the FCRMessage of gatewayAdminEnrolProviderRequest
 func EncodeGatewayAdminEnrollProviderRequest(
-  nodeID *nodeid.NodeID,
-  address string,
-  rootSigningKey string,
-  signingKey string,
-  regionCode string,
-  networkInfoGateway string,
-  networkInfoClient string,
-  networkInfoAdmin string,
+	nodeID *nodeid.NodeID,
+	address string,
+	rootSigningKey string,
+	signingKey string,
+	regionCode string,
+	networkInfoGateway string,
+	networkInfoClient string,
+	networkInfoAdmin string,
 ) (*FCRMessage, error) {
-  body, err := json.Marshal(gatewayAdminEnrolProviderRequest{
-    NodeID:             *nodeID,
-    Address:            address,
-    RootSigningKey:     rootSigningKey,
-    SigningKey:         signingKey,
-    RegionCode:         regionCode,
-    NetworkInfoGateway: networkInfoGateway,
-    NetworkInfoClient:  networkInfoClient,
-    NetworkInfoAdmin:   networkInfoAdmin,
-  })
-  if err != nil {
-    return nil, err
-  }
-  return CreateFCRMessage(ProviderAdminEnrollProviderRequestType, body), nil
+	body, err := json.Marshal(gatewayAdminEnrolProviderRequest{
+		NodeID:             *nodeID,
+		Address:            address,
+		RootSigningKey:     rootSigningKey,
+		SigningKey:         signingKey,
+		RegionCode:         regionCode,
+		NetworkInfoGateway: networkInfoGateway,
+		NetworkInfoClient:  networkInfoClient,
+		NetworkInfoAdmin:   networkInfoAdmin,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return CreateFCRMessage(ProviderAdminEnrollProviderRequestType, body), nil
 }
 
 // DecodeGatewayAdminEnrollProviderRequest is used to get the fields from FCRMessage of gatewayAdminEnrolProviderRequest
 func DecodeGatewayAdminEnrollProviderRequest(fcrMsg *FCRMessage) (
-  *nodeid.NodeID, // node id
-  string,         // address
-  string,         // root signing key
-  string,         // signing key
-  string,         // region code
-  string,         // network info gateway
-  string,         // network info client
-  string,         // network info admin
-  error,          // error
+	*nodeid.NodeID, // node id
+	string, // address
+	string, // root signing key
+	string, // signing key
+	string, // region code
+	string, // network info gateway
+	string, // network info client
+	string, // network info admin
+	error, // error
 ) {
-  if fcrMsg.GetMessageType() != ProviderAdminEnrollProviderRequestType {
-    return nil, "", "", "", "", "", "", "", errors.New("message type mismatch")
-  }
-  msg := gatewayAdminEnrolProviderRequest{}
-  err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)
-  if err != nil {
-    return nil, "", "", "", "", "", "", "", err
-  }
-  return &msg.NodeID, msg.Address, msg.RootSigningKey, msg.SigningKey, msg.RegionCode,
-    msg.NetworkInfoGateway, msg.NetworkInfoClient, msg.NetworkInfoAdmin, nil
+	if fcrMsg.GetMessageType() != ProviderAdminEnrollProviderRequestType {
+		return nil, "", "", "", "", "", "", "", errors.New("message type mismatch")
+	}
+	msg := gatewayAdminEnrolProviderRequest{}
+	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)
+	if err != nil {
+		return nil, "", "", "", "", "", "", "", err
+	}
+	return &msg.NodeID, msg.Address, msg.RootSigningKey, msg.SigningKey, msg.RegionCode,
+		msg.NetworkInfoGateway, msg.NetworkInfoClient, msg.NetworkInfoAdmin, nil
 }

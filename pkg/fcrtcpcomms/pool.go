@@ -1,13 +1,12 @@
 package fcrtcpcomms
 
 import (
-	"errors"
-	"net"
-	"sync"
+  "errors"
+  "net"
+  "sync"
 
-	log "github.com/ConsenSys/fc-retrieval-common/pkg/logging"
-	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
-	"github.com/ConsenSys/fc-retrieval-register/pkg/register"
+  log "github.com/ConsenSys/fc-retrieval-common/pkg/logging"
+  "github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 )
 
 // Constants for identifying the correct access point
@@ -27,7 +26,7 @@ type CommunicationChannel struct {
 // CommunicationPool holds the node address map and active node connections.
 type CommunicationPool struct {
 	// AddressMap stores mapping from node id (big int in string repr) to its node info.
-	RegisteredNodeMap     *map[string]register.RegisteredNode
+	RegisteredNodeMap     *map[string]RegisteredNode
 	RegisteredNodeMapLock *sync.RWMutex
 
 	// ActiveNodes store connected active nodes for outgoing request:
@@ -37,7 +36,7 @@ type CommunicationPool struct {
 }
 
 // NewCommunicationPool creates a new communication commPool.
-func NewCommunicationPool(registeredNodeMap *map[string]register.RegisteredNode, registeredNodeMapLock *sync.RWMutex) *CommunicationPool {
+func NewCommunicationPool(registeredNodeMap *map[string]RegisteredNode, registeredNodeMapLock *sync.RWMutex) *CommunicationPool {
 	return &CommunicationPool{
 		RegisteredNodeMap:     registeredNodeMap,
 		RegisteredNodeMapLock: registeredNodeMapLock,
@@ -90,7 +89,7 @@ func (commPool *CommunicationPool) GetConnForRequestingNode(nodeID *nodeid.NodeI
 }
 
 // AddRegisteredNode adds a new registered node
-func (commPool *CommunicationPool) AddRegisteredNode(nodeID *nodeid.NodeID, node *register.RegisteredNode) {
+func (commPool *CommunicationPool) AddRegisteredNode(nodeID *nodeid.NodeID, node *RegisteredNode) {
 	commPool.RegisteredNodeMapLock.Lock()
 	defer commPool.RegisteredNodeMapLock.Unlock()
 	(*commPool.RegisteredNodeMap)[nodeID.ToString()] = *node

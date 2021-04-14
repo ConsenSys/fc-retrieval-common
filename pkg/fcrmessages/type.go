@@ -49,8 +49,8 @@ const (
 	GatewayAdminSetReputationResponseType  = 405
 	GatewayAdminEnrollGatewayRequestType   = 406
 	GatewayAdminEnrollGatewayResponseType  = 407
-  GatewayAdminEnrollProviderRequestType  = 408
-  GatewayAdminEnrollProviderResponseType = 409
+	GatewayAdminEnrollProviderRequestType  = 408
+	GatewayAdminEnrollProviderResponseType = 409
 
 	// Message originating from provider admin
 	ProviderAdminInitialiseKeyRequestType      = 500

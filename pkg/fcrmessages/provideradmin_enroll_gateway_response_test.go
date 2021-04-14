@@ -1,13 +1,13 @@
 package fcrmessages
 
 import (
-  "testing"
+	"testing"
 
-  "github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/assert"
 )
 
-// TestEncodeProviderAdminEnrollProviderResponse success test
-func TestEncodeProviderAdminEnrollProviderResponse(t *testing.T) {
+// TestEncodeProviderAdminEnrollGatewayResponse success test
+func TestEncodeProviderAdminEnrollGatewayResponse(t *testing.T) {
 
 	validMsg := &FCRMessage{
 		messageType:       509,
@@ -16,13 +16,13 @@ func TestEncodeProviderAdminEnrollProviderResponse(t *testing.T) {
 		messageBody:       []byte(`{"enrolled":true}`),
 	}
 
-	msg, err := EncodeProviderAdminEnrollProviderResponse(true)
+	msg, err := EncodeProviderAdminEnrollGatewayResponse(true)
 	assert.Empty(t, err)
 	assert.Equal(t, validMsg, msg)
 }
 
-// TestDecodeProviderAdminEnrollProviderResponse success test
-func TestDecodeProviderAdminEnrollProviderResponse(t *testing.T) {
+// TestDecodeProviderAdminEnrollGatewayResponse success test
+func TestDecodeProviderAdminEnrollGatewayResponse(t *testing.T) {
 	validMsg := &FCRMessage{
 		messageType:       509,
 		protocolVersion:   1,
@@ -30,7 +30,7 @@ func TestDecodeProviderAdminEnrollProviderResponse(t *testing.T) {
 		messageBody:       []byte(`{"enrolled":true}`),
 	}
 
-	enrolled, err := DecodeProviderAdminEnrollProviderResponse(validMsg)
+	enrolled, err := DecodeProviderAdminEnrollGatewayResponse(validMsg)
 	assert.Empty(t, err)
 	assert.Equal(t, true, enrolled)
 }

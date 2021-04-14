@@ -20,33 +20,33 @@ import (
 	"errors"
 )
 
-// providerAdminEnrollProviderResponse is the response to providerAdminEnrollProviderRequest
-type providerAdminEnrollProviderResponse struct {
+// providerAdminEnrollGatewayResponse is the response to providerAdminEnrollGatewayRequest
+type providerAdminEnrollGatewayResponse struct {
 	Enrolled bool `json:"enrolled"`
 }
 
-// EncodeProviderAdminEnrollProviderResponse is used to get the FCRMessage of providerAdminEnrollProviderResponse
-func EncodeProviderAdminEnrollProviderResponse(
+// EncodeProviderAdminEnrollGatewayResponse is used to get the FCRMessage of providerAdminEnrollGatewayResponse
+func EncodeProviderAdminEnrollGatewayResponse(
 	enrolled bool,
 ) (*FCRMessage, error) {
-	body, err := json.Marshal(providerAdminEnrollProviderResponse{
+	body, err := json.Marshal(providerAdminEnrollGatewayResponse{
 		Enrolled: enrolled,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return CreateFCRMessage(ProviderAdminEnrollProviderResponseType, body), nil
+	return CreateFCRMessage(ProviderAdminEnrollGatewayResponseType, body), nil
 }
 
-// DecodeProviderAdminEnrollProviderResponse is used to get the fields from FCRMessage of providerAdminEnrollProviderResponse
-func DecodeProviderAdminEnrollProviderResponse(fcrMsg *FCRMessage) (
-	bool,  // enrolled
+// DecodeProviderAdminEnrollGatewayResponse is used to get the fields from FCRMessage of providerAdminEnrollGatewayResponse
+func DecodeProviderAdminEnrollGatewayResponse(fcrMsg *FCRMessage) (
+	bool, // enrolled
 	error, // error
 ) {
-	if fcrMsg.GetMessageType() != ProviderAdminEnrollProviderResponseType {
+	if fcrMsg.GetMessageType() != ProviderAdminEnrollGatewayResponseType {
 		return false, errors.New("message type mismatch")
 	}
-	msg := providerAdminEnrollProviderResponse{}
+	msg := providerAdminEnrollGatewayResponse{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)
 	if err != nil {
 		return false, err

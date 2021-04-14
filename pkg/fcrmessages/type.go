@@ -61,8 +61,8 @@ const (
 	ProviderAdminPublishDHTOfferResponseType   = 505
 	ProviderAdminGetPublishedOfferRequestType  = 506
 	ProviderAdminGetPublishedOfferResponseType = 507
-	ProviderAdminEnrollProviderRequestType     = 508
-	ProviderAdminEnrollProviderResponseType    = 509
+	ProviderAdminEnrollGatewayRequestType      = 508
+	ProviderAdminEnrollGatewayResponseType     = 509
 
 	// Messages for basic protocol
 	ProtocolChangeRequestType     = 900

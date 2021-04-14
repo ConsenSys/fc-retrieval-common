@@ -8,8 +8,8 @@ import (
 	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 )
 
-// TestEncodeProviderAdminEnrollProviderRequest success test
-func TestEncodeProviderAdminEnrollProviderRequest(t *testing.T) {
+// TestEncodeProviderAdminEnrollGatewayRequest success test
+func TestEncodeProviderAdminEnrollGatewayRequest(t *testing.T) {
 	mockNodeID, _ := nodeid.NewNodeIDFromHexString("42")
 	mockAddress := "address"
 	mockRootSigningKey := "root signing key"
@@ -26,13 +26,13 @@ func TestEncodeProviderAdminEnrollProviderRequest(t *testing.T) {
 		messageBody:       []byte(`{"node_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","address":"address","root_signing_key":"root signing key","signing_key":"signing key","region_code":"region code","network_info_gateway":"network info gateway","network_info_client":"network info client","network_info_admin":"network info admin"}`),
 	}
 
-	msg, err := EncodeProviderAdminEnrollProviderRequest(mockNodeID, mockAddress, mockRootSigningKey, mockSigningKey, mockRegionCode, mockNetworkInfoGateway, mockNetworkInfoClient, mockNetworkInfoAdmin)
+	msg, err := EncodeProviderAdminEnrollGatewayRequest(mockNodeID, mockAddress, mockRootSigningKey, mockSigningKey, mockRegionCode, mockNetworkInfoGateway, mockNetworkInfoClient, mockNetworkInfoAdmin)
 	assert.Empty(t, err)
 	assert.Equal(t, validMsg, msg)
 }
 
-// TestDecodeProviderAdminEnrollProviderRequest success test
-func TestDecodeProviderAdminEnrollProviderRequest(t *testing.T) {
+// TestDecodeProviderAdminEnrollGatewayRequest success test
+func TestDecodeProviderAdminEnrollGatewayRequest(t *testing.T) {
 	mockNodeID, _ := nodeid.NewNodeIDFromHexString("42")
 	mockAddress := "address"
 	mockRootSigningKey := "root signing key"
@@ -50,7 +50,7 @@ func TestDecodeProviderAdminEnrollProviderRequest(t *testing.T) {
 	}
 
 	nodeID, address, rootSigningKey, signingKey, regionCode, networkInfoGateway, networkInfoClient,
-		networkInfoAdmin, err := DecodeProviderAdminEnrollProviderRequest(validMsg)
+		networkInfoAdmin, err := DecodeProviderAdminEnrollGatewayRequest(validMsg)
 
 	assert.Empty(t, err)
 	assert.Equal(t, mockNodeID, nodeID)

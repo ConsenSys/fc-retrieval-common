@@ -8,8 +8,8 @@ import (
 	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 )
 
-// TestEncodeGatewayAdminEnrollProviderRequest success test
-func TestEncodeGatewayAdminEnrollProviderRequest(t *testing.T) {
+// TestEncodeProviderAdminEnrollProviderRequest success test
+func TestEncodeProviderAdminEnrollProviderRequest(t *testing.T) {
 	mockNodeID, _ := nodeid.NewNodeIDFromHexString("42")
 	mockAddress := "address"
 	mockRootSigningKey := "root signing key"
@@ -20,19 +20,19 @@ func TestEncodeGatewayAdminEnrollProviderRequest(t *testing.T) {
 	mockNetworkInfoAdmin := "network info admin"
 
 	validMsg := &FCRMessage{
-		messageType:       408,
+		messageType:       508,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
 		messageBody:       []byte(`{"node_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","address":"address","root_signing_key":"root signing key","signing_key":"signing key","region_code":"region code","network_info_gateway":"network info gateway","network_info_client":"network info client","network_info_admin":"network info admin"}`),
 	}
 
-	msg, err := EncodeGatewayAdminEnrollProviderRequest(mockNodeID, mockAddress, mockRootSigningKey, mockSigningKey, mockRegionCode, mockNetworkInfoGateway, mockNetworkInfoClient, mockNetworkInfoAdmin)
+	msg, err := EncodeProviderAdminEnrollProviderRequest(mockNodeID, mockAddress, mockRootSigningKey, mockSigningKey, mockRegionCode, mockNetworkInfoGateway, mockNetworkInfoClient, mockNetworkInfoAdmin)
 	assert.Empty(t, err)
 	assert.Equal(t, validMsg, msg)
 }
 
-// TestDecodeGatewayAdminEnrollProviderRequest success test
-func TestDecodeGatewayAdminEnrollProviderRequest(t *testing.T) {
+// TestDecodeProviderAdminEnrollProviderRequest success test
+func TestDecodeProviderAdminEnrollProviderRequest(t *testing.T) {
 	mockNodeID, _ := nodeid.NewNodeIDFromHexString("42")
 	mockAddress := "address"
 	mockRootSigningKey := "root signing key"
@@ -43,14 +43,14 @@ func TestDecodeGatewayAdminEnrollProviderRequest(t *testing.T) {
 	mockNetworkInfoAdmin := "network info admin"
 
 	validMsg := &FCRMessage{
-		messageType:       408,
+		messageType:       508,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
 		messageBody:       []byte(`{"node_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","address":"address","root_signing_key":"root signing key","signing_key":"signing key","region_code":"region code","network_info_gateway":"network info gateway","network_info_client":"network info client","network_info_admin":"network info admin"}`),
 	}
 
 	nodeID, address, rootSigningKey, signingKey, regionCode, networkInfoGateway, networkInfoClient,
-		networkInfoAdmin, err := DecodeGatewayAdminEnrollProviderRequest(validMsg)
+		networkInfoAdmin, err := DecodeProviderAdminEnrollProviderRequest(validMsg)
 
 	assert.Empty(t, err)
 	assert.Equal(t, mockNodeID, nodeID)

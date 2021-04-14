@@ -41,13 +41,16 @@ const (
 	ProviderPublishDHTOfferResponseType   = 303
 
 	// Message originating from gateway admin
-	GatewayAdminInitialiseKeyRequestType  = 400
-	GatewayAdminInitialiseKeyResponseType = 401
-	GatewayAdminGetReputationRequestType  = 402
-	GatewayAdminGetReputationResponseType = 403
-	GatewayAdminSetReputationRequestType  = 404
-	GatewayAdminSetReputationResponseType = 405
-	GatewayAdminEnrollGatewayRequestType  = 406
+	GatewayAdminInitialiseKeyRequestType   = 400
+	GatewayAdminInitialiseKeyResponseType  = 401
+	GatewayAdminGetReputationRequestType   = 402
+	GatewayAdminGetReputationResponseType  = 403
+	GatewayAdminSetReputationRequestType   = 404
+	GatewayAdminSetReputationResponseType  = 405
+	GatewayAdminEnrollGatewayRequestType   = 406
+	GatewayAdminEnrollGatewayResponseType  = 407
+  GatewayAdminEnrollProviderRequestType  = 408
+  GatewayAdminEnrollProviderResponseType = 409
 
 	// Message originating from provider admin
 	ProviderAdminInitialiseKeyRequestType      = 500
@@ -59,6 +62,7 @@ const (
 	ProviderAdminGetPublishedOfferRequestType  = 506
 	ProviderAdminGetPublishedOfferResponseType = 507
 	ProviderAdminEnrollProviderRequestType     = 508
+	ProviderAdminEnrollProviderResponseType    = 509
 
 	// Messages for basic protocol
 	ProtocolChangeRequestType     = 900

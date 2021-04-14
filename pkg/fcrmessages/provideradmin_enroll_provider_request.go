@@ -22,8 +22,8 @@ import (
 	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 )
 
-// gatewayAdminEnrolProviderRequest is the request from an admin client to a gateway to enroll a retrieval provider
-type gatewayAdminEnrolProviderRequest struct {
+// providerAdminEnrolProviderRequest is the request from an admin client to a gateway to enroll a retrieval provider
+type providerAdminEnrolProviderRequest struct {
 	NodeID             nodeid.NodeID `json:"node_id"`
 	Address            string        `json:"address"`
 	RootSigningKey     string        `json:"root_signing_key"`
@@ -34,8 +34,8 @@ type gatewayAdminEnrolProviderRequest struct {
 	NetworkInfoAdmin   string        `json:"network_info_admin"`
 }
 
-// EncodeGatewayAdminEnrollProviderRequest is used to get the FCRMessage of gatewayAdminEnrolProviderRequest
-func EncodeGatewayAdminEnrollProviderRequest(
+// EncodeProviderAdminEnrollProviderRequest is used to get the FCRMessage of providerAdminEnrolProviderRequest
+func EncodeProviderAdminEnrollProviderRequest(
 	nodeID *nodeid.NodeID,
 	address string,
 	rootSigningKey string,
@@ -45,7 +45,7 @@ func EncodeGatewayAdminEnrollProviderRequest(
 	networkInfoClient string,
 	networkInfoAdmin string,
 ) (*FCRMessage, error) {
-	body, err := json.Marshal(gatewayAdminEnrolProviderRequest{
+	body, err := json.Marshal(providerAdminEnrolProviderRequest{
 		NodeID:             *nodeID,
 		Address:            address,
 		RootSigningKey:     rootSigningKey,
@@ -58,11 +58,11 @@ func EncodeGatewayAdminEnrollProviderRequest(
 	if err != nil {
 		return nil, err
 	}
-	return CreateFCRMessage(GatewayAdminEnrollProviderRequestType, body), nil
+	return CreateFCRMessage(ProviderAdminEnrollProviderRequestType, body), nil
 }
 
-// DecodeGatewayAdminEnrollProviderRequest is used to get the fields from FCRMessage of gatewayAdminEnrolProviderRequest
-func DecodeGatewayAdminEnrollProviderRequest(fcrMsg *FCRMessage) (
+// DecodeProviderAdminEnrollProviderRequest is used to get the fields from FCRMessage of providerAdminEnrolProviderRequest
+func DecodeProviderAdminEnrollProviderRequest(fcrMsg *FCRMessage) (
 	*nodeid.NodeID, // node id
 	string, // address
 	string, // root signing key
@@ -73,10 +73,10 @@ func DecodeGatewayAdminEnrollProviderRequest(fcrMsg *FCRMessage) (
 	string, // network info admin
 	error, // error
 ) {
-	if fcrMsg.GetMessageType() != GatewayAdminEnrollProviderRequestType {
+	if fcrMsg.GetMessageType() != ProviderAdminEnrollProviderRequestType {
 		return nil, "", "", "", "", "", "", "", errors.New("message type mismatch")
 	}
-	msg := gatewayAdminEnrolProviderRequest{}
+	msg := providerAdminEnrolProviderRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)
 	if err != nil {
 		return nil, "", "", "", "", "", "", "", err

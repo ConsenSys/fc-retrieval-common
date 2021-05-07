@@ -82,7 +82,7 @@ type laneState struct {
 // NewFCRPaymentMgr creates a new payment manager.
 func NewFCRPaymentMgr(privateKey, lotusAPIAddr, authToken string) (*FCRPaymentMgr, error) {
 	// Register algorithm for signing and verification
-	sigs.RegisterSignature(crypto2.SigTypeSecp256k1, secpSigner{})
+	sigs.RegisterSignature(crypto2.SigTypeSecp256k1, SecpSigner{})
 	// Get private key and address
 	privKey, err := hex.DecodeString(privateKey)
 	if err != nil {
@@ -512,11 +512,11 @@ func getLotusAPI(authToken, lotusAPIAddr string) (*apistruct.FullNodeStruct, jso
 	return &api, closer, nil
 }
 
-// secpSigner is used to sign, and the following code is taken from lotus source code.
-type secpSigner struct{}
+// SecpSigner is used to sign, and the following code is taken from lotus source code.
+type SecpSigner struct{}
 
 // GenPrivate generates a private key
-func (secpSigner) GenPrivate() ([]byte, error) {
+func (SecpSigner) GenPrivate() ([]byte, error) {
 	priv, err := crypto.GenerateKey()
 	if err != nil {
 		return nil, err
@@ -525,12 +525,12 @@ func (secpSigner) GenPrivate() ([]byte, error) {
 }
 
 // ToPublic gets the public key of a given private key
-func (secpSigner) ToPublic(pk []byte) ([]byte, error) {
+func (SecpSigner) ToPublic(pk []byte) ([]byte, error) {
 	return crypto.PublicKey(pk), nil
 }
 
 // Sign signs the given msg using given private key
-func (secpSigner) Sign(pk []byte, msg []byte) ([]byte, error) {
+func (SecpSigner) Sign(pk []byte, msg []byte) ([]byte, error) {
 	b2sum := blake2b.Sum256(msg)
 	sig, err := crypto.Sign(pk, b2sum[:])
 	if err != nil {
@@ -541,7 +541,7 @@ func (secpSigner) Sign(pk []byte, msg []byte) ([]byte, error) {
 }
 
 // Verify verifies the given msg, using given signature and given public key
-func (secpSigner) Verify(sig []byte, a address.Address, msg []byte) error {
+func (SecpSigner) Verify(sig []byte, a address.Address, msg []byte) error {
 	b2sum := blake2b.Sum256(msg)
 	pubk, err := crypto.EcRecover(b2sum[:], sig)
 	if err != nil {

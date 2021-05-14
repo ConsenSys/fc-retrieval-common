@@ -43,14 +43,16 @@ const (
 	ProviderPublishDHTOfferResponseType   = 303
 
 	// Message originating from gateway admin
-	GatewayAdminInitialiseKeyRequestType  = 400
-	GatewayAdminInitialiseKeyResponseType = 401
-	GatewayAdminGetReputationRequestType  = 402
-	GatewayAdminGetReputationResponseType = 403
-	GatewayAdminSetReputationRequestType  = 404
-	GatewayAdminSetReputationResponseType = 405
-	GatewayAdminForceRefreshRequestType   = 406
-	GatewayAdminForceRefreshResponseType  = 407
+	GatewayAdminInitialiseKeyRequestType                      = 400
+	GatewayAdminInitialiseKeyResponseType                     = 401
+	GatewayAdminGetReputationRequestType                      = 402
+	GatewayAdminGetReputationResponseType                     = 403
+	GatewayAdminSetReputationRequestType                      = 404
+	GatewayAdminSetReputationResponseType                     = 405
+	GatewayAdminForceRefreshRequestType                       = 406
+	GatewayAdminForceRefreshResponseType                      = 407
+	GatewayAdminUpdateGatewayGroupCIDOfferSupportRequestType  = 408
+	GatewayAdminUpdateGatewayGroupCIDOfferSupportResponseType = 409
 
 	// Message originating from provider admin
 	ProviderAdminInitialiseKeyRequestType      = 500

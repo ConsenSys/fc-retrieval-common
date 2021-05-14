@@ -36,15 +36,16 @@ type RegisteredNode interface {
 
 // GatewayRegister stores information of a registered gateway
 type GatewayRegister struct {
-	NodeID              string `json:"nodeId"`
-	Address             string `json:"address"`
-	RootSigningKey      string `json:"rootSigningKey"`
-	SigningKey          string `json:"sigingKey"`
-	RegionCode          string `json:"regionCode"`
-	NetworkInfoGateway  string `json:"networkInfoGateway"`
-	NetworkInfoProvider string `json:"networkInfoProvider"`
-	NetworkInfoClient   string `json:"networkInfoClient"`
-	NetworkInfoAdmin    string `json:"networkInfoAdmin"`
+	NodeID                 string `json:"nodeId"`
+	Address                string `json:"address"`
+	RootSigningKey         string `json:"rootSigningKey"`
+	SigningKey             string `json:"signingKey"`
+	RegionCode             string `json:"regionCode"`
+	NetworkInfoGateway     string `json:"networkInfoGateway"`
+	NetworkInfoProvider    string `json:"networkInfoProvider"`
+	NetworkInfoClient      string `json:"networkInfoClient"`
+	NetworkInfoAdmin       string `json:"networkInfoAdmin"`
+	GroupCIDOfferSupported bool   `json:"groupCIDOfferSupported""`
 }
 
 // ProviderRegister stores information of a registered provider
@@ -52,7 +53,7 @@ type ProviderRegister struct {
 	NodeID             string `json:"nodeId"`
 	Address            string `json:"address"`
 	RootSigningKey     string `json:"rootSigningKey"`
-	SigningKey         string `json:"sigingKey"`
+	SigningKey         string `json:"signingKey"`
 	RegionCode         string `json:"regionCode"`
 	NetworkInfoGateway string `json:"networkInfoGateway"`
 	NetworkInfoClient  string `json:"networkInfoClient"`

@@ -26,13 +26,14 @@ import (
 
 // gatewayListDHTOfferRequest is the request from gateway to provider during start-up asking for dht offers
 type gatewayListDHTOfferRequest struct {
-	GatewayID          nodeid.NodeID                `json:"gateway_id"`
-	CIDMin             cid.ContentID                `json:"cid_min"`
-	CIDMax             cid.ContentID                `json:"cid_max"`
-	BlockHash          string                       `json:"block_hash"`
-	TransactionReceipt string                       `json:"transaction_receipt"`
-	MerkleRoot         string                       `json:"merkle_root"`
-	MerkleProof        fcrmerkletree.FCRMerkleProof `json:"merkle_proof"`
+	GatewayID            nodeid.NodeID                `json:"gateway_id"`
+	CIDMin               cid.ContentID                `json:"cid_min"`
+	CIDMax               cid.ContentID                `json:"cid_max"`
+	BlockHash            string                       `json:"block_hash"`
+	TransactionReceipt   string                       `json:"transaction_receipt"`
+	MerkleRoot           string                       `json:"merkle_root"`
+	MerkleProof          fcrmerkletree.FCRMerkleProof `json:"merkle_proof"`
+	PublishGroupCIDOffer bool                         `json:"publish_group_cid_offer"`
 }
 
 // EncodeGatewayListDHTOfferRequest is used to get the FCRMessage of gatewayListDHTOfferRequest
@@ -44,15 +45,17 @@ func EncodeGatewayListDHTOfferRequest(
 	transactionReceipt string,
 	merkleRoot string,
 	merkleProof *fcrmerkletree.FCRMerkleProof,
+	publishGroupCIDOffer bool,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(gatewayListDHTOfferRequest{
-		GatewayID:          *gatewayID,
-		CIDMin:             *cidMin,
-		CIDMax:             *cidMax,
-		BlockHash:          blockHash,
-		TransactionReceipt: transactionReceipt,
-		MerkleRoot:         merkleRoot,
-		MerkleProof:        *merkleProof,
+		GatewayID:            *gatewayID,
+		CIDMin:               *cidMin,
+		CIDMax:               *cidMax,
+		BlockHash:            blockHash,
+		TransactionReceipt:   transactionReceipt,
+		MerkleRoot:           merkleRoot,
+		MerkleProof:          *merkleProof,
+		PublishGroupCIDOffer: publishGroupCIDOffer,
 	})
 	if err != nil {
 		return nil, err
@@ -69,15 +72,16 @@ func DecodeGatewayListDHTOfferRequest(fcrMsg *FCRMessage) (
 	string, // transaction receipt
 	string, // merkle root
 	*fcrmerkletree.FCRMerkleProof, // merkle proof
+	bool, // publish group cid offer
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != GatewayListDHTOfferRequestType {
-		return nil, nil, nil, "", "", "", nil, errors.New("Message type mismatch")
+		return nil, nil, nil, "", "", "", nil, false, errors.New("Message type mismatch")
 	}
 	msg := gatewayListDHTOfferRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)
 	if err != nil {
-		return nil, nil, nil, "", "", "", nil, err
+		return nil, nil, nil, "", "", "", nil, false, err
 	}
-	return &msg.GatewayID, &msg.CIDMin, &msg.CIDMax, msg.BlockHash, msg.TransactionReceipt, msg.MerkleRoot, &msg.MerkleProof, nil
+	return &msg.GatewayID, &msg.CIDMin, &msg.CIDMax, msg.BlockHash, msg.TransactionReceipt, msg.MerkleRoot, &msg.MerkleProof, msg.PublishGroupCIDOffer, nil
 }

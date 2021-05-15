@@ -23,17 +23,17 @@ import (
 )
 
 type updateGatewayGroupCIDOfferSupportRequest struct {
-	GatewayID              nodeid.NodeID `json:"gateway_id"`
-	GroupCIDOfferSupported bool          `json:"group_cid_offer_supported"`
+	GatewayID   nodeid.NodeID   `json:"gateway_id"`
+	ProviderIDs []nodeid.NodeID `json:"provider_ids"` // the Gateway supports Group CID Offers only from these Providers
 }
 
 func EncodeUpdateGatewayGroupCIDOfferSupportRequest(
 	nodeID *nodeid.NodeID,
-	groupCIDOfferSupported bool,
+	providerIDs []nodeid.NodeID,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(updateGatewayGroupCIDOfferSupportRequest{
 		*nodeID,
-		groupCIDOfferSupported,
+		providerIDs,
 	})
 	if err != nil {
 		return nil, err
@@ -42,17 +42,17 @@ func EncodeUpdateGatewayGroupCIDOfferSupportRequest(
 }
 
 func DecodeUpdateGatewayGroupCIDOfferSupportRequest(fcrMsg *FCRMessage) (
-	*nodeid.NodeID, // gateway id
-	bool, // group CID offer is supported by the gateway
+	*nodeid.NodeID, // gateway ID
+	[]nodeid.NodeID, // providers IDs
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != GatewayAdminUpdateGatewayGroupCIDOfferSupportRequestType {
-		return nil, false, errors.New("message type mismatch")
+		return nil, nil, errors.New("message type mismatch")
 	}
 	msg := updateGatewayGroupCIDOfferSupportRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)
 	if err != nil {
-		return nil, false, err
+		return nil, nil, err
 	}
-	return &msg.GatewayID, msg.GroupCIDOfferSupported, nil
+	return &msg.GatewayID, msg.ProviderIDs, nil
 }

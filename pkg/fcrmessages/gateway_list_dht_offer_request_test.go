@@ -32,11 +32,11 @@ func TestEncodeGatewayListDHTOfferRequest(t *testing.T) {
 		messageType:       200,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"gateway_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","cid_min":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","cid_max":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=","block_hash":"bafy2bzaceabhr6taytcdntpr4poz43dhf3l5jml6z43e5sdv4gdlgsujsg2ze","transaction_receipt":"bafy2bzacecz3sy5ar4rg73ri5cq3tndmwn4vnxgzt4bw4cpig7q25af6y5cnc","merkle_root":"c3c3a46684c07d12a9c238787df3049a6f258e7af203e5ddb66a8bd66637e108","merkle_proof":"AAAAMFsiQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRT0iXQAAAANbMV0=","publish_group_cid_offer":false}`),
+		messageBody:       []byte(`{"gateway_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","cid_min":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","cid_max":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=","block_hash":"bafy2bzaceabhr6taytcdntpr4poz43dhf3l5jml6z43e5sdv4gdlgsujsg2ze","transaction_receipt":"bafy2bzacecz3sy5ar4rg73ri5cq3tndmwn4vnxgzt4bw4cpig7q25af6y5cnc","merkle_root":"c3c3a46684c07d12a9c238787df3049a6f258e7af203e5ddb66a8bd66637e108","merkle_proof":"AAAAMFsiQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRT0iXQAAAANbMV0="}`),
 		signature:         "",
 	}
 
-	msg, err := EncodeGatewayListDHTOfferRequest(mockNodeID, mockCidMin, mockCidMax, mockBlockHash, mockTransactionReceipt, mockMerkleRoot, mockMerkleProof, false)
+	msg, err := EncodeGatewayListDHTOfferRequest(mockNodeID, mockCidMin, mockCidMax, mockBlockHash, mockTransactionReceipt, mockMerkleRoot, mockMerkleProof)
 	assert.Empty(t, err)
 	assert.Equal(t, msg, validMsg)
 }
@@ -66,7 +66,7 @@ func TestDecodeGatewayListDHTOfferRequest(t *testing.T) {
 		signature:         "",
 	}
 
-	nodeID, cidMin, cidMax, blockHash, transactionReceipt, merkleRoot, merkleProof, publishGroupCIDOffer, err := DecodeGatewayListDHTOfferRequest(validMsg)
+	nodeID, cidMin, cidMax, blockHash, transactionReceipt, merkleRoot, merkleProof, err := DecodeGatewayListDHTOfferRequest(validMsg)
 	assert.Empty(t, err)
 	assert.Equal(t, nodeID, mockNodeID)
 	assert.Equal(t, cidMin, mockCidMin)
@@ -75,5 +75,4 @@ func TestDecodeGatewayListDHTOfferRequest(t *testing.T) {
 	assert.Equal(t, transactionReceipt, mockTransactionReceipt)
 	assert.Equal(t, merkleRoot, mockMerkleRoot)
 	assert.Equal(t, merkleProof, mockMerkleProof)
-	assert.Equal(t, false, publishGroupCIDOffer)
 }

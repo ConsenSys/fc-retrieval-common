@@ -28,13 +28,15 @@ const (
 	ClientDHTOfferAckResponseType      = 107
 
 	// Message originating from gateway
-	GatewayListDHTOfferRequestType  = 200
-	GatewayListDHTOfferResponseType = 201
-	GatewayListDHTOfferAckType      = 202
-	GatewayDHTDiscoverRequestType   = 203
-	GatewayDHTDiscoverResponseType  = 204
-	GatewayPingRequestType          = 205
-	GatewayPingResponseType         = 206
+	GatewayListDHTOfferRequestType                          = 200
+	GatewayListDHTOfferResponseType                         = 201
+	GatewayListDHTOfferAckType                              = 202
+	GatewayDHTDiscoverRequestType                           = 203
+	GatewayDHTDiscoverResponseType                          = 204
+	GatewayPingRequestType                                  = 205
+	GatewayPingResponseType                                 = 206
+	GatewayNotifyProviderGroupCIDOfferSupportedRequestType  = 205
+	GatewayNotifyProviderGroupCIDOfferSupportedResponseType = 206
 
 	// Message originating from provider
 	ProviderPublishGroupOfferRequestType  = 300

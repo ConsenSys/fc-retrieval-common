@@ -317,16 +317,7 @@ func (mgr *FCRRegisterMgr) GetGatewaysNearCID(cID *cid.ContentID, numDHT int, no
 	return res, nil
 }
 
-func (mgr *FCRRegisterMgr) mapNodeIDs(nodsIDs []*nodeid.NodeID) map[string]string {
-	mapNodeIDs := make(map[string]string)
-	for _, v := range nodsIDs {
-		mapNodeIDs[v.ToString()] = v.ToString()
-	}
-	return mapNodeIDs
-}
-
 // updateGateways updates gateways.
-// TODO: Support removal of gateways
 func (mgr *FCRRegisterMgr) updateGateways() {
 	refreshForce := false
 	for {
@@ -334,8 +325,17 @@ func (mgr *FCRRegisterMgr) updateGateways() {
 		if err != nil {
 			logging.Error("Register manager has error in getting registered gateways: %s", err.Error())
 		} else {
+			deprecatedGateways := make(map[string]struct{}, len(mgr.registeredGatewaysMap))
+			mgr.registeredGatewaysMapLock.RLock()
+			for k := range mgr.registeredGatewaysMap {
+				deprecatedGateways[k] = struct{}{}
+			}
+			mgr.registeredGatewaysMapLock.RUnlock()
+
 			// Check for update
 			for _, gateway := range gateways {
+				//this gateway is not deprected
+				delete(deprecatedGateways, gateway.NodeID)
 				mgr.registeredGatewaysMapLock.RLock()
 				storedInfo, ok := mgr.registeredGatewaysMap[gateway.NodeID]
 				mgr.registeredGatewaysMapLock.RUnlock()
@@ -363,6 +363,17 @@ func (mgr *FCRRegisterMgr) updateGateways() {
 						mgr.registeredGatewaysMapLock.Unlock()
 					}
 				}
+			}
+
+			// remove gateways not returned by register
+			for k, _ := range deprecatedGateways {
+				mgr.registeredGatewaysMapLock.Lock()
+				delete(mgr.registeredGatewaysMap, k)
+				mgr.registeredGatewaysMapLock.Unlock()
+
+				mgr.closestGatewaysIDsLock.Lock()
+				mgr.closestGatewaysIDs.Remove(k)
+				mgr.closestGatewaysIDsLock.Unlock()
 			}
 		}
 		if refreshForce {

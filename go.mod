@@ -3,6 +3,9 @@ module github.com/ConsenSys/fc-retrieval-common
 go 1.14
 
 require (
+	github.com/ConsenSys/fc-retrieval-gateway v0.0.0-20210519163637-5e19bcb272f6 // indirect
+	github.com/ConsenSys/fc-retrieval-provider v0.0.0-20210519163735-7eba52a4a64f // indirect
+	github.com/ConsenSys/fc-retrieval-register v0.0.0-20210519163822-da3a7cfa1662 // indirect
 	github.com/ant0ine/go-json-rest v3.3.2+incompatible
 	github.com/cbergoon/merkletree v0.2.0
 	github.com/davidlazar/go-crypto v0.0.0-20200604182044-b73af7476f6c

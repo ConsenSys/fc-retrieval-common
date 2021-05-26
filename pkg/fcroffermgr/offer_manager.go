@@ -101,3 +101,15 @@ func (mgr *FCROfferMgr) GetOffers(cid *cid.ContentID) ([]cidoffer.CIDOffer, bool
 	res := append(mgr.groupOffers.get(cid), mgr.dhtOffers.get(cid)...)
 	return res, len(res) > 0
 }
+
+// GetOfferByDigest allows a gateway to be able to respond to a query to search for an offer by the offer digest
+func (mgr *FCROfferMgr) GetOfferByDigest(digest [cidoffer.CIDOfferDigestSize]byte) (*cidoffer.CIDOffer, bool) {
+  for _, digestAndOffer :=  range mgr.dhtOffers.cidMap {
+    for currentDigest, currentOffer := range digestAndOffer.dMap {
+      if currentDigest == digest {
+        return currentOffer, true
+      }
+    }
+  }
+  return nil, false
+}

@@ -11,7 +11,7 @@ require (
 	github.com/filecoin-project/go-jsonrpc v0.1.4-0.20210217175800-45ea43ac2bec
 	github.com/filecoin-project/go-state-types v0.1.0
 	github.com/filecoin-project/lotus v1.6.0
-	github.com/filecoin-project/specs-actors/v3 v3.1.0
+	github.com/filecoin-project/specs-actors/v2 v2.3.5-0.20210114162132-5b58b773f4fb
 	github.com/google/go-cmp v0.5.4 // indirect
 	github.com/ipfs/go-cid v0.0.7
 	github.com/ipsn/go-secp256k1 v0.0.0-20180726113642-9d62b9f0bc52

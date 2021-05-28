@@ -28,10 +28,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
 	"github.com/filecoin-project/go-address"
 	"github.com/filecoin-project/go-crypto"
 	"github.com/filecoin-project/go-jsonrpc"
+	lotusbig "github.com/filecoin-project/go-state-types/big"
 	crypto2 "github.com/filecoin-project/go-state-types/crypto"
 	"github.com/filecoin-project/lotus/api/apistruct"
 	"github.com/filecoin-project/lotus/chain/actors"
@@ -41,6 +41,8 @@ import (
 	init3 "github.com/filecoin-project/specs-actors/v3/actors/builtin/init"
 	"github.com/ipfs/go-cid"
 	"github.com/minio/blake2b-simd"
+
+	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
 )
 
 // Payment manager manages all payment related functions
@@ -108,14 +110,9 @@ func NewFCRPaymentMgr(privateKey, lotusAPIAddr, authToken string) (*FCRPaymentMg
 }
 
 // Topup will topup a payment channel to recipient with given amount. (amount of value "1" equals 1 coin)
-func (mgr *FCRPaymentMgr) Topup(recipient string, amount string) error {
+func (mgr *FCRPaymentMgr) Topup(recipient string, amount *big.Int) error {
 	// Get recipient address
 	recipientAddr, err := address.NewFromString(recipient)
-	if err != nil {
-		return err
-	}
-	// Get amount
-	amt, err := types.ParseFIL(amount)
 	if err != nil {
 		return err
 	}
@@ -135,7 +132,7 @@ func (mgr *FCRPaymentMgr) Topup(recipient string, amount string) error {
 		mgr.outboundChsLock.Lock()
 		defer mgr.outboundChsLock.Unlock()
 		builder := paych.Message(actors.Version3, *mgr.address)
-		msg, err := builder.Create(recipientAddr, types.BigInt(amt))
+		msg, err := builder.Create(recipientAddr, lotusbig.NewFromGo(amount))
 		if err != nil {
 			return err
 		}
@@ -161,7 +158,7 @@ func (mgr *FCRPaymentMgr) Topup(recipient string, amount string) error {
 		// Create new channel
 		mgr.outboundChs[recipient] = &channelState{
 			addr:       decodedReturn.RobustAddress,
-			balance:    *amt.Int,
+			balance:    *amount,
 			redeemed:   *big.NewInt(0),
 			lock:       sync.RWMutex{},
 			laneStates: make(map[uint64]*laneState),
@@ -175,7 +172,7 @@ func (mgr *FCRPaymentMgr) Topup(recipient string, amount string) error {
 		msg := &types.Message{
 			To:     cs.addr,
 			From:   *mgr.address,
-			Value:  types.BigInt(amt),
+			Value:  lotusbig.NewFromGo(amount),
 			Method: 0,
 		}
 		signedMsg, err := fillMsg(mgr.privKey, api, msg)
@@ -192,19 +189,14 @@ func (mgr *FCRPaymentMgr) Topup(recipient string, amount string) error {
 			return errors.New("Transaction fail to execute")
 		}
 		// Need to update the balance of this payment channel
-		cs.balance.Add(&cs.balance, amt.Int)
+		cs.balance.Add(&cs.balance, amount)
 	}
 	return nil
 }
 
 // Pay will generate a voucher and pay the recipient a given amount.
 // Return channel address, voucher, true if needs to top up, and error.
-func (mgr *FCRPaymentMgr) Pay(recipient string, lane uint64, amount string) (string, string, bool, error) {
-	// Get amount
-	amt, err := types.ParseFIL(amount)
-	if err != nil {
-		return "", "", false, err
-	}
+func (mgr *FCRPaymentMgr) Pay(recipient string, lane uint64, amount *big.Int) (string, string, bool, error) {
 	zero, err := types.ParseFIL("0")
 	if err != nil {
 		return "", "", false, err
@@ -221,7 +213,7 @@ func (mgr *FCRPaymentMgr) Pay(recipient string, lane uint64, amount string) (str
 	cs.lock.Lock()
 	defer cs.lock.Unlock()
 	// Check balance
-	newRedeemed := big.NewInt(0).Add(&cs.redeemed, amt.Int)
+	newRedeemed := big.NewInt(0).Add(&cs.redeemed, amount)
 	if cs.balance.Cmp(newRedeemed) < 0 {
 		// Balance not enough
 		return "", "", true, nil
@@ -238,7 +230,7 @@ func (mgr *FCRPaymentMgr) Pay(recipient string, lane uint64, amount string) (str
 		cs.laneStates[lane] = ls
 	}
 	// Create a voucher
-	zero.Add(&ls.redeemed, amt.Int)
+	zero.Add(&ls.redeemed, amount)
 	sv := &paych.SignedVoucher{
 		ChannelAddr: cs.addr,
 		Lane:        lane,
@@ -260,10 +252,10 @@ func (mgr *FCRPaymentMgr) Pay(recipient string, lane uint64, amount string) (str
 	}
 	// Voucher created, update lane state
 	ls.nonce++
-	ls.redeemed.Add(&ls.redeemed, amt.Int)
+	ls.redeemed.Add(&ls.redeemed, amount)
 	ls.vouchers = append(ls.vouchers, voucher)
 	// Update channel state
-	cs.redeemed.Add(&cs.redeemed, amt.Int)
+	cs.redeemed.Add(&cs.redeemed, amount)
 	return cs.addr.String(), voucher, false, nil
 }
 

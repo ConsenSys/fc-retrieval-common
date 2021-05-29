@@ -81,9 +81,6 @@ type laneState struct {
 
 // NewFCRPaymentMgr creates a new payment manager.
 func NewFCRPaymentMgr(privateKey, lotusAPIAddr, authToken string) (*FCRPaymentMgr, error) {
-	if privateKey == "" {
-		return nil, errors.New("Private key string is empty")
-	}
 	// Register algorithm for signing and verification
 	sigs.RegisterSignature(crypto2.SigTypeSecp256k1, SecpSigner{})
 	// Get private key and address
@@ -529,6 +526,10 @@ func (SecpSigner) GenPrivate() ([]byte, error) {
 
 // ToPublic gets the public key of a given private key
 func (SecpSigner) ToPublic(pk []byte) ([]byte, error) {
+	// check empty key to avoid segment fault
+	if len(pk) == 0 {
+		return nil, fmt.Errorf("the private key is empty")
+	}
 	return crypto.PublicKey(pk), nil
 }
 

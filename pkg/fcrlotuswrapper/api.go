@@ -1,3 +1,6 @@
+/*
+Package fcrlotuswrapper - is a wrapper API over FileCoin Lotus API
+*/
 package fcrlotuswrapper
 
 /*
@@ -17,6 +20,7 @@ package fcrlotuswrapper
 
 import (
 	"context"
+
 	"github.com/filecoin-project/go-address"
 	"github.com/filecoin-project/go-jsonrpc"
 	"github.com/filecoin-project/lotus/api"

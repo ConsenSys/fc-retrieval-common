@@ -1,3 +1,8 @@
+/*
+Package register - provides methods for FileCoin Secondary Retrieval from Retrieval Register perspective.
+
+Retrieval Register is a central node, holding information about Retrieval Gateways and Retrieval Providers.
+*/
 package register
 
 /*

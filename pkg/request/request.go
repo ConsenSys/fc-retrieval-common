@@ -1,3 +1,6 @@
+/*
+Package request - contains common methods for JSON over HTTP communications
+*/
 package request
 
 /*

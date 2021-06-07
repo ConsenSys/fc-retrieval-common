@@ -1,3 +1,8 @@
+/*
+Package cid - provides methods for ContentID struct.
+
+ContentID is 32 bytes is a unique identifier of a file stored in a Filecoin blockchain network.
+*/
 package cid
 
 /*
@@ -21,8 +26,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
 	"github.com/cbergoon/merkletree"
+
+	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
 )
 
 const WordSize = 32 // the ContentID length is 32 bytes.

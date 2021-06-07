@@ -1,3 +1,8 @@
+/*
+Package fcrpaymentmgr - provides common methods facilitate payment process for parties.
+
+Methods like pay, receive payment, top up balance and verify payment.
+*/
 package fcrpaymentmgr
 
 /*

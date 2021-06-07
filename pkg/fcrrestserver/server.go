@@ -1,3 +1,6 @@
+/*
+Package fcrrestserver - common methods to create HTTP endpoints and handle HTTP requests across the application.
+*/
 package fcrrestserver
 
 /*
@@ -20,9 +23,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/ant0ine/go-json-rest/rest"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrmessages"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
-	"github.com/ant0ine/go-json-rest/rest"
 )
 
 // FCRRESTServer represents a REST server handling http requests.

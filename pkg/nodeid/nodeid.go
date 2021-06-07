@@ -1,3 +1,9 @@
+/*
+Package nodeid - combines common operation on FileCoin NodeID.
+
+NodeID is a unique identifier for a node, participating in FileCoin network operations.
+Example of the node might be a Retrieval Gateway or a Retrieval Provider.
+*/
 package nodeid
 
 /*

@@ -1,3 +1,6 @@
+/*
+Package fcrmerkletree - provides methods to work with Merkle Tree data structure
+*/
 package fcrmerkletree
 
 /*

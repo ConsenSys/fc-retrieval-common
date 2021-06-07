@@ -1,3 +1,6 @@
+/*
+Package dhtring - provides operations like find a closest node, add new and remove for a Distributed Hash Table Ring data structure
+*/
 package dhtring
 
 /*

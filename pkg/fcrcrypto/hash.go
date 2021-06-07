@@ -1,3 +1,6 @@
+/*
+Package fcrcrypto - location for cryptographic tools to perform common operations on hashes, keys and signatures
+*/
 package fcrcrypto
 
 /*

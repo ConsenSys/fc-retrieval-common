@@ -1,3 +1,6 @@
+/*
+Package logging - common package, used for logging purposes. Is a wrapper around 3-rd party logging framework.
+*/
 package logging
 
 /*

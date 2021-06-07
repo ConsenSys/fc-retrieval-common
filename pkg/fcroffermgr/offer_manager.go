@@ -1,3 +1,9 @@
+/*
+Package fcroffermgr - is dedicated for operations on FileCoin Retrieval Offers, including DHT (Distributed Hash Table structure)
+Offers and Group Offers.
+
+Offer is an agreement from a Storage Provider to deliver a file from their storage to a client.
+*/
 package fcroffermgr
 
 /*

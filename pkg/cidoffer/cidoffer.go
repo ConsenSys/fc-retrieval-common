@@ -1,3 +1,9 @@
+/*
+Package cidoffer - provides functionality like create, verify, sign and get details for CIDOffer and SubCIDOffer structures.
+
+CIDOffer represents an offer from a Storage Provider, explaining on what conditions the client can retrieve a set of uniquely identified files from Filecoin blockchain network.
+SubCIDOffer represents an offer from a Storage Provider, just like CIDOffer, but for a single file and includes a merkle proof
+*/
 package cidoffer
 
 /*
@@ -22,11 +28,12 @@ import (
 	"errors"
 	"time"
 
+	"github.com/cbergoon/merkletree"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrmerkletree"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
-	"github.com/cbergoon/merkletree"
 )
 
 const CIDOfferDigestSize = sha512.Size256

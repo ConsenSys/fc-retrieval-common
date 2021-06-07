@@ -1,3 +1,9 @@
+/*
+Package fcrregistermgr - provides network API methods to work with FileCoin Secondary Retrieval Manager.
+This package uses core Register functionality from `register` package internally.
+
+Retrieval Register is a central node, holding information about Retrieval Gateways and Retrieval Providers.
+*/
 package fcrregistermgr
 
 /*

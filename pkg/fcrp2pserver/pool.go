@@ -1,3 +1,9 @@
+/*
+Package fcrp2pserver - contains common operations used by FileCoin Secondary Retrieval network nodes to establish
+and perform TCP communications between the nodes.
+
+Operations like get a Gateway or Provider by an identifier, send or read messages.
+*/
 package fcrp2pserver
 
 /*

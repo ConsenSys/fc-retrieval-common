@@ -1,3 +1,6 @@
+/*
+Package math - contains common mathematical operations like distance calculation.
+*/
 package math
 
 /*

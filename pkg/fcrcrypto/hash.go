@@ -37,8 +37,8 @@ func GetBlockchainHasher() hash.Hash {
 
 // BlockchainHash message digests some data using the algorithm used by the Filecoin blockchain.
 func BlockchainHash(data []byte) []byte {
-	hash := blake2b.Sum256(data)
-	return hash[:]
+	hashSum := blake2b.Sum256(data)
+	return hashSum[:]
 }
 
 // GetRetrievalV1Hasher returns a message digest implementation that hashes according to the
@@ -55,8 +55,8 @@ func GetRetrievalV1Hasher() hash.Hash {
 // RetrievalV1Hash message digests some data using the algorithm used by version one of the
 // Filecoin retrieval protocol.
 func RetrievalV1Hash(data []byte) []byte {
-	hash := blake2b.Sum256(data)
-	return hash[:]
+	hashSum := blake2b.Sum256(data)
+	return hashSum[:]
 }
 
 // The PRNG to be used as part of the PRF in the PRNG

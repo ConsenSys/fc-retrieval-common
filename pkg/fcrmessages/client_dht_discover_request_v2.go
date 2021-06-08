@@ -33,7 +33,7 @@ type clientDHTDiscoverRequestV2 struct {
 	Voucher            string        `json:"voucher"`
 }
 
-// EncodeClientDHTDiscoverRequest is used to get the FCRMessage of clientDHTDiscoverRequest
+// EncodeClientDHTDiscoverRequestV2 is used to get the FCRMessage of clientDHTDiscoverRequest
 func EncodeClientDHTDiscoverRequestV2(
 	pieceCID *cid.ContentID,
 	nonce int64,
@@ -58,7 +58,7 @@ func EncodeClientDHTDiscoverRequestV2(
 	return CreateFCRMessage(ClientDHTDiscoverRequestV2Type, body), nil
 }
 
-// DecodeClientDHTDiscoverRequest is used to get the fields from FCRMessage of clientDHTDiscoverRequestV2
+// DecodeClientDHTDiscoverRequestV2 is used to get the fields from FCRMessage of clientDHTDiscoverRequestV2
 func DecodeClientDHTDiscoverRequestV2(fcrMsg *FCRMessage) (
 	*cid.ContentID, // piece cid
 	int64, // nonce
@@ -70,7 +70,7 @@ func DecodeClientDHTDiscoverRequestV2(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ClientDHTDiscoverRequestV2Type {
-		return nil, 0, 0, 0, false, "", "", errors.New("Message type mismatch")
+		return nil, 0, 0, 0, false, "", "", errors.New("message type mismatch")
 	}
 	msg := clientDHTDiscoverRequestV2{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

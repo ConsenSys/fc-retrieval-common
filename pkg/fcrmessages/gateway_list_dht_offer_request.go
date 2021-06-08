@@ -72,7 +72,7 @@ func DecodeGatewayListDHTOfferRequest(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != GatewayListDHTOfferRequestType {
-		return nil, nil, nil, "", "", "", nil, errors.New("Message type mismatch")
+		return nil, nil, nil, "", "", "", nil, errors.New("message type mismatch")
 	}
 	msg := gatewayListDHTOfferRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

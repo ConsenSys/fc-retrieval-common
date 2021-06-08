@@ -44,7 +44,7 @@ type Ring struct {
 	size int
 }
 
-// NewRing creates a new ring data structure
+// CreateRing creates a new ring data structure
 func CreateRing() *Ring {
 	return &Ring{
 		head: nil,
@@ -153,7 +153,8 @@ func (r *Ring) Remove(hex string) {
 		return
 	}
 	current := r.head
-	for ok := true; ok; ok = current != nil && current.val != r.head.val {
+	//ok := current != nil && current.val != r.head.val
+	for current != nil && current.val != r.head.val {
 		// Loop until we reach nil or we go back to head
 		if current.val == hex {
 			// We need to remove current
@@ -207,7 +208,7 @@ func (r *Ring) GetClosest(hex string, num int, exclude string) ([]string, error)
 	}
 	if num > r.size {
 		current := r.head
-		for ok := true; ok; ok = current != nil && current.val != r.head.val {
+		for current != nil && current.val != r.head.val {
 			res = append(res, current.val)
 			current = current.next
 		}
@@ -356,7 +357,7 @@ func (r *Ring) get(hex string) *ringNode {
 		return nil
 	}
 	current := r.head
-	for ok := true; ok; ok = ((current != nil) && (current.val != r.head.val)) {
+	for current != nil && current.val != r.head.val {
 		// Loop until we reach nil or we go back to head
 		if current.val == hex {
 			return current

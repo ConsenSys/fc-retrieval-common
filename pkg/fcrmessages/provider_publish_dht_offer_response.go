@@ -48,7 +48,7 @@ func DecodeProviderPublishDHTOfferResponse(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ProviderPublishDHTOfferResponseType {
-		return 0, "", errors.New("Message type mismatch")
+		return 0, "", errors.New("message type mismatch")
 	}
 	msg := providerPublishDHTOfferResponse{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

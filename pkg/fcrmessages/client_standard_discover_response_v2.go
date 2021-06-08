@@ -63,7 +63,7 @@ func DecodeClientStandardDiscoverResponseV2(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ClientStandardDiscoverResponseV2Type {
-		return nil, 0, false, nil, nil, errors.New("Message type mismatch")
+		return nil, 0, false, nil, nil, errors.New("message type mismatch")
 	}
 	msg := clientStandardDiscoverResponseV2{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

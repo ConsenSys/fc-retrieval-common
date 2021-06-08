@@ -55,7 +55,7 @@ func DecodeGatewayAdminInitialiseKeyRequest(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != GatewayAdminInitialiseKeyRequestType {
-		return nil, nil, nil, errors.New("Message type mismatch")
+		return nil, nil, nil, errors.New("message type mismatch")
 	}
 	msg := gatewayAdminInitialiseKeyRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)
@@ -64,7 +64,7 @@ func DecodeGatewayAdminInitialiseKeyRequest(fcrMsg *FCRMessage) (
 	}
 	privKey, err := fcrcrypto.DecodePrivateKey(msg.PrivateKey)
 	if err != nil {
-		return nil, nil, nil, errors.New("Fail to decode private key")
+		return nil, nil, nil, errors.New("fail to decode private key")
 	}
 	privKeyVer := fcrcrypto.DecodeKeyVersion(msg.PrivateKeyVersion)
 	return &msg.GatewayID, privKey, privKeyVer, nil

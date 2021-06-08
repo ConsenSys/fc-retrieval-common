@@ -51,7 +51,7 @@ func (k *KeyPair) EncodePrivateKey() string {
 // if the key algorithm is anything other than SigAlgEcdsaSecP256K1Blake2b.
 func (k *KeyPair) EncodeRawPrivateKey() (string, error) {
 	if k.alg.IsNot(SigAlgEcdsaSecP256K1Blake2b) {
-		return "", fmt.Errorf("Can not raw encode private key with algorithm: %d", k.alg.EncodeSigAlg())
+		return "", fmt.Errorf("can not raw encode private key with algorithm: %d", k.alg.EncodeSigAlg())
 	}
 	return hex.EncodeToString(k.pKey), nil
 }
@@ -68,7 +68,7 @@ func DecodePrivateKey(encoded string) (*KeyPair, error) {
 	case SigAlgEcdsaSecP256K1Blake2b:
 		return decodeSecP256K1PrivateKey(algKeyBytes[1:])
 	default:
-		return nil, fmt.Errorf("Unknown private key algorithm: %d", alg)
+		return nil, fmt.Errorf("unknown private key algorithm: %d", alg)
 	}
 }
 
@@ -87,7 +87,7 @@ func decodeSecP256K1PrivateKey(keyBytes []byte) (*KeyPair, error) {
 	key.alg = DecodeSigAlg(SigAlgEcdsaSecP256K1Blake2b)
 	key.pKey = keyBytes
 	if len(key.pKey) != secp256k1PrivateKeyBytes {
-		return nil, fmt.Errorf("Incorrect secp256k1 private key length: %d", len(key.pKey))
+		return nil, fmt.Errorf("incorrect secp256k1 private key length: %d", len(key.pKey))
 	}
 	return &key, nil
 }
@@ -95,7 +95,7 @@ func decodeSecP256K1PrivateKey(keyBytes []byte) (*KeyPair, error) {
 // EncodePublicKey encodes the algorithm and public key as a hex string.
 func (k *KeyPair) EncodePublicKey() (string, error) {
 	if k.alg.IsNot(SigAlgEcdsaSecP256K1Blake2b) {
-		return "", fmt.Errorf("Unsupported key algorithm: %d", k.alg.EncodeSigAlg())
+		return "", fmt.Errorf("unsupported key algorithm: %d", k.alg.EncodeSigAlg())
 	}
 	if k.pubKey == nil {
 		k.pubKey = secp256k1PublicKey(k.pKey)
@@ -117,7 +117,7 @@ func DecodePublicKey(encoded string) (*KeyPair, error) {
 	case SigAlgEcdsaSecP256K1Blake2b:
 		return decodeSecP256K1PublicKey(algKeyBytes[1:])
 	default:
-		return nil, fmt.Errorf("Unknown private key algorithm: %d", alg)
+		return nil, fmt.Errorf("unknown private key algorithm: %d", alg)
 	}
 }
 
@@ -126,7 +126,7 @@ func decodeSecP256K1PublicKey(keyBytes []byte) (*KeyPair, error) {
 	key.alg = DecodeSigAlg(SigAlgEcdsaSecP256K1Blake2b)
 	key.pubKey = keyBytes
 	if len(key.pubKey) != secp256k1PublicKeyBytes {
-		return nil, fmt.Errorf("Incorrect secp256k1 public key length: %d", len(key.pubKey))
+		return nil, fmt.Errorf("incorrect secp256k1 public key length: %d", len(key.pubKey))
 	}
 	return &key, nil
 }
@@ -134,7 +134,7 @@ func decodeSecP256K1PublicKey(keyBytes []byte) (*KeyPair, error) {
 // Sign some data.
 func (k *KeyPair) Sign(toBeSigned []byte) ([]byte, error) {
 	if k.alg.IsNot(SigAlgEcdsaSecP256K1Blake2b) {
-		return nil, fmt.Errorf("Unsupported key algorithm: %d", k.alg.EncodeSigAlg())
+		return nil, fmt.Errorf("unsupported key algorithm: %d", k.alg.EncodeSigAlg())
 	}
 	digest := RetrievalV1Hash(toBeSigned)
 	return secp256k1Sign(k.pKey, digest)
@@ -143,7 +143,7 @@ func (k *KeyPair) Sign(toBeSigned []byte) ([]byte, error) {
 // Verify a signature across some data.
 func (k *KeyPair) Verify(signature, toBeSigned []byte) (bool, error) {
 	if k.alg.IsNot(SigAlgEcdsaSecP256K1Blake2b) {
-		return false, fmt.Errorf("Unsupported key algorithm: %d", k.alg.EncodeSigAlg())
+		return false, fmt.Errorf("unsupported key algorithm: %d", k.alg.EncodeSigAlg())
 	}
 	if k.pubKey == nil {
 		k.pubKey = secp256k1PublicKey(k.pKey)
@@ -154,7 +154,7 @@ func (k *KeyPair) Verify(signature, toBeSigned []byte) (bool, error) {
 }
 
 // RetrievalV1Verify verifies a signature across some data assuming algorithms
-// used for Retreival V1.
+// used for Retrieval V1.
 func RetrievalV1Verify(signature, toBeSigned, hashedPublicKey []byte) (bool, error) {
 	digest := RetrievalV1Hash(toBeSigned)
 	pubKey, err := secp256k1EcRecover(digest, signature)
@@ -171,7 +171,7 @@ func RetrievalV1Verify(signature, toBeSigned, hashedPublicKey []byte) (bool, err
 // HashPublicKey generates a message digest that matches the public key.
 func (k *KeyPair) HashPublicKey() ([]byte, error) {
 	if k.alg.IsNot(SigAlgEcdsaSecP256K1Blake2b) {
-		return nil, fmt.Errorf("Unsupported key algorithm: %d", k.alg.EncodeSigAlg())
+		return nil, fmt.Errorf("unsupported key algorithm: %d", k.alg.EncodeSigAlg())
 	}
 
 	if k.pubKey == nil {

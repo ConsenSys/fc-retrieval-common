@@ -46,7 +46,7 @@ func DecodeProviderAdminGetPublishedOfferRequest(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ProviderAdminGetPublishedOfferRequestType {
-		return nil, errors.New("Message type mismatch")
+		return nil, errors.New("message type mismatch")
 	}
 	msg := providerAdminGetPublishedOfferRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

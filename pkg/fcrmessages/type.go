@@ -15,9 +15,8 @@ package fcrmessages
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// Message types
+// Message types originating from Retrieval Client
 const (
-	// Message originating from client
 	ClientEstablishmentRequestType          = 100
 	ClientEstablishmentResponseType         = 101
 	ClientStandardDiscoverRequestType       = 102
@@ -34,8 +33,10 @@ const (
 	ClientDHTDiscoverResponseV2Type         = 113
 	ClientDHTDiscoverOfferRequestType       = 114
 	ClientDHTDiscoverOfferResponseType      = 115
+)
 
-	// Message originating from gateway
+// Message types originating from Retrieval Gateway
+const (
 	GatewayListDHTOfferRequestType                          = 200
 	GatewayListDHTOfferResponseType                         = 201
 	GatewayListDHTOfferAckType                              = 202
@@ -49,14 +50,18 @@ const (
 	GatewayDHTDiscoverResponseV2Type                        = 208
 	GatewayDHTDiscoverOfferRequestType                      = 209
 	GatewayDHTDiscoverOfferResponseType                     = 210
+)
 
-	// Message originating from provider
+// Message types originating from Retrieval Provider
+const (
 	ProviderPublishGroupOfferRequestType  = 300
 	ProviderPublishGroupOfferResponseType = 301
 	ProviderPublishDHTOfferRequestType    = 302
 	ProviderPublishDHTOfferResponseType   = 303
+)
 
-	// Message originating from gateway admin
+// Message types originating from Retrieval Gateway Admin
+const (
 	GatewayAdminInitialiseKeyRequestType                      = 400
 	GatewayAdminInitialiseKeyResponseType                     = 401
 	GatewayAdminGetReputationRequestType                      = 402
@@ -70,8 +75,10 @@ const (
 	GatewayAdminListDHTOfferRequestType                       = 410
 	GatewayAdminListDHTOfferResponseType                      = 411
 	GatewayAdminInitialiseKeyRequestV2Type                    = 412
+)
 
-	// Message originating from provider admin
+// Message types originating from Retrieval Provider Admin
+const (
 	ProviderAdminInitialiseKeyRequestType      = 500
 	ProviderAdminInitialiseKeyResponseType     = 501
 	ProviderAdminPublishGroupOfferRequestType  = 502
@@ -83,8 +90,10 @@ const (
 	ProviderAdminForceRefreshRequestType       = 508
 	ProviderAdminForceRefreshResponseType      = 509
 	ProviderAdminInitialiseKeyRequestV2Type    = 510
+)
 
-	// Messages for basic protocol
+// Messages for basic protocol
+const (
 	ProtocolChangeRequestType     = 900
 	ProtocolChangeResponseType    = 901
 	InvalidMessageResponseType    = 902

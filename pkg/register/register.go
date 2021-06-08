@@ -169,7 +169,7 @@ func (r *ProviderRegister) RegisterProvider(registerURL string) error {
 // GetRegisteredGateways returns registered gateways
 func GetRegisteredGateways(registerURL string) ([]GatewayRegister, error) {
 	url := registerURL + "/registers/gateway"
-	gateways := []GatewayRegister{}
+	var gateways []GatewayRegister
 	err := request.GetJSON(url, &gateways)
 	if err != nil {
 		return gateways, err
@@ -180,7 +180,7 @@ func GetRegisteredGateways(registerURL string) ([]GatewayRegister, error) {
 // GetRegisteredProviders returns registered providers
 func GetRegisteredProviders(registerURL string) ([]ProviderRegister, error) {
 	url := registerURL + "/registers/provider"
-	providers := []ProviderRegister{}
+	var providers []ProviderRegister
 	err := request.GetJSON(url, &providers)
 	if err != nil {
 		return providers, err

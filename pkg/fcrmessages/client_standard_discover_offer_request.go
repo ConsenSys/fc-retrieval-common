@@ -67,7 +67,7 @@ func DecodeClientStandardDiscoverOfferRequest(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ClientStandardDiscoverOfferRequestType {
-		return nil, 0, 0, [][cidoffer.CIDOfferDigestSize]byte{}, "", "", errors.New("Message type mismatch")
+		return nil, 0, 0, [][cidoffer.CIDOfferDigestSize]byte{}, "", "", errors.New("message type mismatch")
 	}
 	msg := clientStandardDiscoverOfferRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

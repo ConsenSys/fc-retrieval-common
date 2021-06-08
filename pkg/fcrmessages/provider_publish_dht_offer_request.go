@@ -57,7 +57,7 @@ func DecodeProviderPublishDHTOfferRequest(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ProviderPublishDHTOfferRequestType {
-		return nil, 0, nil, errors.New("Message type mismatch")
+		return nil, 0, nil, errors.New("message type mismatch")
 	}
 	msg := providerPublishDHTOfferRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)
@@ -67,7 +67,7 @@ func DecodeProviderPublishDHTOfferRequest(fcrMsg *FCRMessage) (
 	// Check every offer is single offer
 	for _, offer := range msg.Offers {
 		if len(offer.GetCIDs()) != 1 {
-			return nil, 0, nil, errors.New("Offers contain group offer")
+			return nil, 0, nil, errors.New("offers contain group offer")
 		}
 	}
 	return &msg.ProviderID, msg.Nonce, msg.Offers, nil

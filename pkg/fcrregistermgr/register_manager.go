@@ -96,7 +96,7 @@ func NewFCRRegisterMgr(registerAPI string, providerDiscv bool, gatewayDiscv bool
 // Start starts a thread to auto update the internal map every given duration.
 func (mgr *FCRRegisterMgr) Start() error {
 	if mgr.start {
-		return errors.New("Manager has already started.")
+		return errors.New("manager has already started")
 	}
 	mgr.start = true
 	if mgr.gatewayDiscv {
@@ -269,7 +269,7 @@ func (mgr *FCRRegisterMgr) GetGatewayCIDRange(gatewayID *nodeid.NodeID) (*cid.Co
 	}
 	if len(temp) < 2 {
 		// TODO: What is the cid max and cid min if there is only 1 gw or 2.
-		return nil, nil, errors.New("Not enough gateways")
+		return nil, nil, errors.New("not enough gateways")
 	}
 	cidMin, err := cid.NewContentIDFromHexString(temp[0].NodeID)
 	if err != nil {
@@ -306,7 +306,7 @@ func (mgr *FCRRegisterMgr) GetGatewaysNearCID(cID *cid.ContentID, numDHT int, no
 	for _, id := range ids {
 		gateway, exists := mgr.registeredGatewaysMap[id]
 		if !exists {
-			return nil, errors.New("Internal error, register map not match dht ring")
+			return nil, errors.New("internal error, register map not match dht ring")
 		}
 		res = append(res, register.GatewayRegister{
 			NodeID:              gateway.NodeID,

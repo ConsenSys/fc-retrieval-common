@@ -1,19 +1,19 @@
 package fcrmessages
 
 import (
-	"testing"
 	"errors"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 // TestEncodeInvalidMessageResponse success test
 func TestEncodeInvalidMessageResponse(t *testing.T) {
 	emptyMsg := &FCRMessage{
-		messageType:902,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody: []byte(`{}`),
-		signature:"",
+		messageType:       902,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{}`),
+		signature:         "",
 	}
 
 	msg, err := EncodeInvalidMessageResponse()
@@ -24,11 +24,11 @@ func TestEncodeInvalidMessageResponse(t *testing.T) {
 // TestDecodeInvalidMessageResponseValid success test
 func TestDecodeInvalidMessageResponseValid(t *testing.T) {
 	validMsg := &FCRMessage{
-		messageType:902,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{}`), 
-		signature:"",
+		messageType:       902,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{}`),
+		signature:         "",
 	}
 
 	err := DecodeInvalidMessageResponse(validMsg)
@@ -38,14 +38,13 @@ func TestDecodeInvalidMessageResponseValid(t *testing.T) {
 // TestDecodeInvalidMessageResponseInvalid error test
 func TestDecodeInvalidMessageResponseInvalid(t *testing.T) {
 	invalidTypeMsg := &FCRMessage{
-		messageType:-1,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody: []byte(`{}`), 
-		signature:"",
+		messageType:       -1,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{}`),
+		signature:         "",
 	}
 
 	err := DecodeInvalidMessageResponse(invalidTypeMsg)
-	assert.Equal(t, err, errors.New("Message type mismatch"))
+	assert.Equal(t, err, errors.New("message type mismatch"))
 }
-

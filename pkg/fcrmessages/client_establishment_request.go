@@ -54,7 +54,7 @@ func DecodeClientEstablishmentRequest(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ClientEstablishmentRequestType {
-		return nil, "", 0, errors.New("Message type mismatch")
+		return nil, "", 0, errors.New("message type mismatch")
 	}
 	msg := clientEstablishmentRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

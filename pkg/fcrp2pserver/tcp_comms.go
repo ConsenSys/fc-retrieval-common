@@ -38,7 +38,9 @@ func readTCPMessage(conn net.Conn, timeout time.Duration) (*fcrmessages.FCRMessa
 	// Read the length
 	length := make([]byte, 4)
 	// Set timeout
-	conn.SetDeadline(time.Now().Add(timeout))
+	if err := conn.SetDeadline(time.Now().Add(timeout)); err != nil {
+		panic(err)
+	}
 	_, err := io.ReadFull(reader, length)
 	if err != nil {
 		return nil, err
@@ -46,7 +48,9 @@ func readTCPMessage(conn net.Conn, timeout time.Duration) (*fcrmessages.FCRMessa
 	// Read the data
 	data := make([]byte, int(binary.BigEndian.Uint32(length)))
 	// Set timeout
-	conn.SetDeadline(time.Now().Add(timeout))
+	if err := conn.SetDeadline(time.Now().Add(timeout)); err != nil {
+		panic(err)
+	}
 	_, err = io.ReadFull(reader, data)
 	if err != nil {
 		return nil, err
@@ -66,13 +70,17 @@ func sendTCPMessage(conn net.Conn, fcrMsg *fcrmessages.FCRMessage, timeout time.
 	length := make([]byte, 4)
 	binary.BigEndian.PutUint32(length, uint32(len(data)))
 	// Set timeout
-	conn.SetDeadline(time.Now().Add(timeout))
+	if err := conn.SetDeadline(time.Now().Add(timeout)); err != nil {
+		panic(err)
+	}
 	_, err = writer.Write(append(length, data...))
 	if err != nil {
 		return err
 	}
 	// Set timeout
-	conn.SetDeadline(time.Now().Add(timeout))
+	if err := conn.SetDeadline(time.Now().Add(timeout)); err != nil {
+		panic(err)
+	}
 	return writer.Flush()
 }
 

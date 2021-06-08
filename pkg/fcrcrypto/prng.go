@@ -83,7 +83,9 @@ func (r *randomImpl) ReadBytes(b []byte) {
 
 		// Get the output of the inner (untrusted DRBG) and add it to the message digest.
 		drbgBytes := make([]byte, lengthPerIteration)
-		r.drbg.Read(drbgBytes)
+		if _, err := r.drbg.Read(drbgBytes); err != nil {
+			panic(err)
+		}
 		r.prfHasher.Write(drbgBytes)
 
 		// Incorporate the current state of the PRF into the message digest.

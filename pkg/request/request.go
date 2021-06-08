@@ -38,22 +38,31 @@ func GetJSON(url string, target interface{}) error {
 	if err != nil {
 		return err
 	}
-	defer r.Body.Close()
-
-	return json.NewDecoder(r.Body).Decode(target)
+	if decodeErr := json.NewDecoder(r.Body).Decode(target); decodeErr != nil {
+		return decodeErr
+	}
+	if closeErr := r.Body.Close(); closeErr != nil {
+		return closeErr
+	}
+	return nil
 }
 
 // SendJSON request Send JSON
 func SendJSON(url string, data interface{}) error {
 	jsonData, _ := json.Marshal(data)
 	req, err := http.NewRequest("POST", url, bytes.NewReader(jsonData))
+	if req == nil {
+		return errors.New("SendJSON error, can't create request")
+	}
 	req.Header.Set("Content-Type", "application/json")
 
 	r, err := httpClient.Do(req)
 	if err != nil {
 		return err
 	}
-	defer r.Body.Close()
+	if err := r.Body.Close(); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -64,15 +73,17 @@ func SendMessage(url string, message *fcrmessages.FCRMessage) (*fcrmessages.FCRM
 	logging.Info("Sending JSON to url: %v", url)
 	contentReader := bytes.NewReader(jsonData)
 	req, err := http.NewRequest("POST", "http://"+url+"/v1", contentReader)
+	if req == nil {
+		return nil, errors.New("SendMessage error, can't create request")
+	}
 	req.Header.Set("Content-Type", "application/json")
 
 	r, err := httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
-	defer r.Body.Close()
 
-	bytes, err := ioutil.ReadAll(r.Body)
+	bodyBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return &data, err
 	}
@@ -82,6 +93,11 @@ func SendMessage(url string, message *fcrmessages.FCRMessage) (*fcrmessages.FCRM
 		return nil, err
 	}
 
-	json.Unmarshal(bytes, &data)
+	if err := json.Unmarshal(bodyBytes, &data); err != nil {
+		return nil, errors.New("SendMessage error, can't unmarshal request body")
+	}
+	if err := r.Body.Close(); err != nil {
+		return &data, errors.New("SendMessage error, can't close request body")
+	}
 	return &data, nil
 }

@@ -56,7 +56,9 @@ func (s *dumpState) dump(out io.Writer, buf []byte) {
 		}
 		s.maxRowWidth = len(row)
 
-		fmt.Fprintf(out, "%5d: %s | %s\n", s.rowIndex*s.width, hex, ascii)
+		if _, err := fmt.Fprintf(out, "%5d: %s | %s\n", s.rowIndex*s.width, hex, ascii); err != nil {
+			panic(err)
+		}
 		s.rowIndex++
 	}
 }

@@ -52,9 +52,9 @@ func NewFCRP2PServer(
 		timeout:     defaultTimeout,
 		pool: &communicationPool{
 			registerMgr:         registerMgr,
-			activeGateways:      make(map[string](*communicationChannel)),
+			activeGateways:      make(map[string]*communicationChannel),
 			activeGatewaysLock:  sync.RWMutex{},
-			activeProviders:     make(map[string](*communicationChannel)),
+			activeProviders:     make(map[string]*communicationChannel),
 			activeProvidersLock: sync.RWMutex{},
 		},
 		handlers:   make(map[string]map[int32]func(reader *FCRServerReader, writer *FCRServerWriter, request *fcrmessages.FCRMessage) error),
@@ -92,7 +92,7 @@ func (s *FCRP2PServer) AddRequester(msgType int32, requester func(reader *FCRSer
 func (s *FCRP2PServer) Start() error {
 	// Start server
 	if s.start {
-		return errors.New("Server already started")
+		return errors.New("server already started")
 	}
 	for _, listenAddr := range s.listenAddrs {
 		ln, err := net.Listen("tcp", ":"+listenAddr)
@@ -119,7 +119,11 @@ func (s *FCRP2PServer) Start() error {
 // handleIncomingConnection handles incomming connection using given handlers.
 func (s *FCRP2PServer) handleIncomingConnection(conn net.Conn, handlers map[int32]func(reader *FCRServerReader, writer *FCRServerWriter, request *fcrmessages.FCRMessage) error) {
 	// Close connection on exit.
-	defer conn.Close()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			panic(err)
+		}
+	}()
 
 	// Loop until error occurs and connection is dropped.
 	for {
@@ -159,11 +163,11 @@ func (s *FCRP2PServer) handleIncomingConnection(conn net.Conn, handlers map[int3
 // RequestGatewayFromGateway uses a given requester to send a request to a given gateway from gateway.
 func (s *FCRP2PServer) RequestGatewayFromGateway(id *nodeid.NodeID, msgType int32, args ...interface{}) (*fcrmessages.FCRMessage, error) {
 	if !s.start {
-		return nil, errors.New("Server not started")
+		return nil, errors.New("server not started")
 	}
 	requester := s.requesters[msgType]
 	if requester == nil {
-		return nil, errors.New("No available requester found for given type")
+		return nil, errors.New("no available requester found for given type")
 	}
 	comm, err := s.pool.getGatewayConn(id, accessFromGateway)
 	if err != nil {
@@ -187,11 +191,11 @@ func (s *FCRP2PServer) RequestGatewayFromGateway(id *nodeid.NodeID, msgType int3
 // RequestGatewayFromProvider uses a given requester to send a request to a given gateway from provider.
 func (s *FCRP2PServer) RequestGatewayFromProvider(id *nodeid.NodeID, msgType int32, args ...interface{}) (*fcrmessages.FCRMessage, error) {
 	if !s.start {
-		return nil, errors.New("Server not started")
+		return nil, errors.New("server not started")
 	}
 	requester := s.requesters[msgType]
 	if requester == nil {
-		return nil, errors.New("No available requester found for given type")
+		return nil, errors.New("no available requester found for given type")
 	}
 	comm, err := s.pool.getGatewayConn(id, accessFromProvider)
 	if err != nil {
@@ -215,11 +219,11 @@ func (s *FCRP2PServer) RequestGatewayFromProvider(id *nodeid.NodeID, msgType int
 // RequestProvider uses a given requester to send a request to a given provider. (Only possible from gateway)
 func (s *FCRP2PServer) RequestProvider(id *nodeid.NodeID, msgType int32, args ...interface{}) (*fcrmessages.FCRMessage, error) {
 	if !s.start {
-		return nil, errors.New("Server not started")
+		return nil, errors.New("server not started")
 	}
 	requester := s.requesters[msgType]
 	if requester == nil {
-		return nil, errors.New("No available requester found for given type")
+		return nil, errors.New("no available requester found for given type")
 	}
 	comm, err := s.pool.getProviderConn(id)
 	if err != nil {

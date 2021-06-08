@@ -22,7 +22,7 @@ import (
 	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 )
 
-// EncodeClientDHTDiscoverResponse is used to get the FCRMessage of ClientDHTDiscoverResponse
+// EncodeClientDHTDiscoverResponseV2 is used to get the FCRMessage of ClientDHTDiscoverResponse
 func EncodeClientDHTDiscoverResponseV2(
 	contacted []nodeid.NodeID,
 	response []FCRMessage,
@@ -41,7 +41,7 @@ func EncodeClientDHTDiscoverResponseV2(
 	return CreateFCRMessage(ClientDHTDiscoverResponseV2Type, body), nil
 }
 
-// DecodeClientDHTDiscoverResponse is used to get the fields from FCRMessage of ClientDHTDiscoverResponse
+// DecodeClientDHTDiscoverResponseV2 is used to get the fields from FCRMessage of ClientDHTDiscoverResponse
 func DecodeClientDHTDiscoverResponseV2(fcrMsg *FCRMessage) (
 	[]nodeid.NodeID, // contacted
 	[]FCRMessage, // response
@@ -50,7 +50,7 @@ func DecodeClientDHTDiscoverResponseV2(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ClientDHTDiscoverResponseV2Type {
-		return nil, nil, nil, 0, errors.New("Message type mismatch")
+		return nil, nil, nil, 0, errors.New("message type mismatch")
 	}
 	msg := clientDHTDiscoverResponse{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

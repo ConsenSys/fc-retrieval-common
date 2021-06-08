@@ -44,7 +44,7 @@ func DecodeProviderAdminInitialiseKeyResponse(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ProviderAdminInitialiseKeyResponseType {
-		return false, errors.New("Message type mismatch")
+		return false, errors.New("message type mismatch")
 	}
 	msg := providerAdminInitialiseKeyResponse{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

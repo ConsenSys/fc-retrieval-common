@@ -68,7 +68,7 @@ func DecodeClientDHTDiscoverOfferRequest(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ClientDHTDiscoverOfferRequestType {
-		return nil, 0, nil, nil, "", "", errors.New("Message type mismatch")
+		return nil, 0, nil, nil, "", "", errors.New("message type mismatch")
 	}
 	msg := clientDHTDiscoverOfferRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

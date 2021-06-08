@@ -49,7 +49,7 @@ func NewFCROfferMgr() *FCROfferMgr {
 // AddGroupOffer stores a group offer
 func (mgr *FCROfferMgr) AddGroupOffer(offer *cidoffer.CIDOffer) error {
 	if len(offer.GetCIDs()) <= 1 {
-		return errors.New("Not a group offer")
+		return errors.New("not a group offer")
 	}
 	return mgr.groupOffers.add(offer)
 }
@@ -57,7 +57,7 @@ func (mgr *FCROfferMgr) AddGroupOffer(offer *cidoffer.CIDOffer) error {
 // AddDHTOffer stores a dht offer
 func (mgr *FCROfferMgr) AddDHTOffer(offer *cidoffer.CIDOffer) error {
 	if len(offer.GetCIDs()) != 1 {
-		return errors.New("Not a DHT offer")
+		return errors.New("not a DHT offer")
 	}
 	mgr.dhtOfferRing.Insert(offer.GetCIDs()[0].ToString())
 	return mgr.dhtOffers.add(offer)
@@ -85,12 +85,12 @@ func (mgr *FCROfferMgr) GetDHTOffersWithinRange(cidMin, cidMax *cid.ContentID, m
 	}
 
 	for _, entry := range entries {
-		cid, err := cid.NewContentIDFromHexString(entry)
+		contentID, err := cid.NewContentIDFromHexString(entry)
 		if err != nil {
 			logging.Error("Internal error")
 			return offers, false
 		}
-		offersTemp := mgr.dhtOffers.get(cid)
+		offersTemp := mgr.dhtOffers.get(contentID)
 		for _, offer := range offersTemp {
 			offers = append(offers, offer)
 			if len(offers) >= maxOffers {

@@ -51,7 +51,7 @@ func DecodeClientDHTOfferAckRequest(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ClientDHTOfferAckRequestType {
-		return nil, nil, errors.New("Message type mismatch")
+		return nil, nil, errors.New("message type mismatch")
 	}
 	msg := clientDHTOfferAckRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

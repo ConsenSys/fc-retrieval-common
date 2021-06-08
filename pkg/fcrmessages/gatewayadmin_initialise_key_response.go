@@ -44,7 +44,7 @@ func DecodeGatewayAdminInitialiseKeyResponse(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != GatewayAdminInitialiseKeyResponseType {
-		return false, errors.New("Message type mismatch")
+		return false, errors.New("message type mismatch")
 	}
 	msg := gatewayAdminInitialiseKeyResponse{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

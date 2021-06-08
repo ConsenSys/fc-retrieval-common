@@ -49,7 +49,7 @@ func DecodeInsufficientFundsResponse(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != InsufficientFundsResponseType {
-		return 0, errors.New("Message type mismatch")
+		return 0, errors.New("message type mismatch")
 	}
 	msg := insufficientFundsResponse{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

@@ -49,10 +49,10 @@ type communicationChannel struct {
 type communicationPool struct {
 	registerMgr *fcrregistermgr.FCRRegisterMgr
 
-	activeGateways     map[string](*communicationChannel)
+	activeGateways     map[string]*communicationChannel
 	activeGatewaysLock sync.RWMutex
 
-	activeProviders     map[string](*communicationChannel)
+	activeProviders     map[string]*communicationChannel
 	activeProvidersLock sync.RWMutex
 }
 
@@ -67,7 +67,7 @@ func (c *communicationPool) getGatewayConn(id *nodeid.NodeID, accessFrom int) (*
 	logging.Info("P2P server has no active connection to gateway %s, attempt connecting", id.ToString())
 	gatewayInfo := c.registerMgr.GetGateway(id)
 	if gatewayInfo == nil {
-		return nil, errors.New("Gateway not found")
+		return nil, errors.New("gateway not found")
 	}
 	// Get address
 	var address string
@@ -94,7 +94,9 @@ func (c *communicationPool) getGatewayConn(id *nodeid.NodeID, accessFrom int) (*
 		c.activeGateways[id.ToString()] = comm
 	} else {
 		comm = c.activeGateways[id.ToString()]
-		conn.Close()
+		if err := conn.Close(); err != nil {
+			panic(err)
+		}
 	}
 	c.activeGatewaysLock.Unlock()
 	return comm, nil
@@ -111,7 +113,7 @@ func (c *communicationPool) getProviderConn(id *nodeid.NodeID) (*communicationCh
 	logging.Info("P2P server has no active connection to provider %s, attempt connecting", id.ToString())
 	providerInfo := c.registerMgr.GetProvider(id)
 	if providerInfo == nil {
-		return nil, errors.New("Provider not found")
+		return nil, errors.New("provider not found")
 	}
 	// Get address
 	address := providerInfo.GetNetworkInfoGateway()
@@ -132,7 +134,9 @@ func (c *communicationPool) getProviderConn(id *nodeid.NodeID) (*communicationCh
 		c.activeProviders[id.ToString()] = comm
 	} else {
 		comm = c.activeProviders[id.ToString()]
-		conn.Close()
+		if err := conn.Close(); err != nil {
+			panic(err)
+		}
 	}
 	c.activeProvidersLock.Unlock()
 	return comm, nil
@@ -141,25 +145,29 @@ func (c *communicationPool) getProviderConn(id *nodeid.NodeID) (*communicationCh
 // removeActiveGateway remove a given gateway, and close the connection.
 func (c *communicationPool) removeActiveGateway(id *nodeid.NodeID) {
 	c.activeGatewaysLock.Lock()
+	defer c.activeGatewaysLock.Unlock()
 	comm := c.activeGateways[id.ToString()]
 	if comm != nil {
 		comm.lock.Lock()
-		comm.conn.Close()
-		comm.lock.Unlock()
+		defer comm.lock.Unlock()
+		if err := comm.conn.Close(); err != nil {
+			panic(err)
+		}
 		delete(c.activeGateways, id.ToString())
 	}
-	c.activeGatewaysLock.Unlock()
 }
 
 // removeActiveProvider remove a given provider, and close the connection.
 func (c *communicationPool) removeActiveProvider(id *nodeid.NodeID) {
 	c.activeProvidersLock.Lock()
+	defer c.activeProvidersLock.Unlock()
 	comm := c.activeProviders[id.ToString()]
 	if comm != nil {
 		comm.lock.Lock()
-		comm.conn.Close()
-		comm.lock.Unlock()
+		defer comm.lock.Unlock()
+		if err := comm.conn.Close(); err != nil {
+			panic(err)
+		}
 		delete(c.activeProviders, id.ToString())
 	}
-	c.activeProvidersLock.Unlock()
 }

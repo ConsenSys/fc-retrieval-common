@@ -44,7 +44,7 @@ func DecodeProviderAdminPublishGroupOfferResponse(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ProviderAdminPublishGroupOfferResponseType {
-		return false, errors.New("Message type mismatch")
+		return false, errors.New("message type mismatch")
 	}
 	msg := providerAdminPublishGroupOfferResponse{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

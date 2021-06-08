@@ -185,8 +185,8 @@ func (c *CIDOffer) GenerateSubCIDOffer(cid *cid.ContentID) (*SubCIDOffer, error)
 // message digest should only be used within the gateway.
 func (c *CIDOffer) GetMessageDigest() (sum256 [CIDOfferDigestSize]byte) {
 	b := c.providerID.ToBytes()
-	for _, cid := range c.cids {
-		b = append(b, cid.ToBytes()...)
+	for _, id := range c.cids {
+		b = append(b, id.ToBytes()...)
 	}
 	bPrice := make([]byte, 8)
 	binary.BigEndian.PutUint64(bPrice, uint64(c.price))

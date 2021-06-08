@@ -44,7 +44,7 @@ func DecodeGatewayListDHTOfferAck(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != GatewayListDHTOfferAckType {
-		return nil, errors.New("Message type mismatch")
+		return nil, errors.New("message type mismatch")
 	}
 	msg := gatewayListDHTOfferAck{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

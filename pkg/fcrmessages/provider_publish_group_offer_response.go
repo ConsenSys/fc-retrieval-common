@@ -51,7 +51,7 @@ func DecodeProviderPublishGroupOfferResponse(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ProviderPublishGroupOfferResponseType {
-		return nil, [cidoffer.CIDOfferDigestSize]byte{}, errors.New("Message type mismatch")
+		return nil, [cidoffer.CIDOfferDigestSize]byte{}, errors.New("message type mismatch")
 	}
 	msg := providerPublishGroupOfferResponse{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

@@ -50,7 +50,7 @@ func DecodeGatewayAdminSetReputationRequest(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != GatewayAdminSetReputationRequestType {
-		return nil, 0, errors.New("Message type mismatch")
+		return nil, 0, errors.New("message type mismatch")
 	}
 	msg := gatewayAdminSetReputationRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

@@ -50,7 +50,7 @@ import (
 	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
 )
 
-// Payment manager manages all payment related functions
+// FCRPaymentMgr - payment manager, manages all payment related functions
 type FCRPaymentMgr struct {
 	privKey []byte
 	address *address.Address
@@ -99,18 +99,18 @@ func NewFCRPaymentMgr(privateKey, lotusAPIAddr, authToken string) (*FCRPaymentMg
 	if err != nil {
 		return nil, err
 	}
-	address, err := address.NewSecp256k1Address(pubKey)
+	addr, err := address.NewSecp256k1Address(pubKey)
 
 	// TODO: Storage on payment channels needs to read from a DB. For now, everytime a new payment channel is called
 	// new maps are created with no previous data.
 	return &FCRPaymentMgr{
 		privKey:         privKey,
-		address:         &address,
+		address:         &addr,
 		authToken:       authToken,
 		lotusAPIAddr:    lotusAPIAddr,
-		outboundChs:     make(map[string](*channelState)),
+		outboundChs:     make(map[string]*channelState),
 		outboundChsLock: sync.RWMutex{},
-		inboundChs:      make(map[string](*channelState)),
+		inboundChs:      make(map[string]*channelState),
 		inboundChsLock:  sync.RWMutex{}}, nil
 }
 
@@ -146,20 +146,20 @@ func (mgr *FCRPaymentMgr) Topup(recipient string, amount *big.Int) error {
 			return err
 		}
 		// Send request to lotus
-		cid, err := api.MpoolPush(context.Background(), signedMsg)
+		contentID, err := api.MpoolPush(context.Background(), signedMsg)
 		if err != nil {
 			return err
 		}
-		receipt := waitReceipt(&cid, api)
+		receipt := waitReceipt(&contentID, api)
 		if receipt.ExitCode != 0 {
 			logging.Error("Transaction fails to execute: %v", receipt.ExitCode.Error())
-			return errors.New("Transaction fails to execute")
+			return errors.New("transaction fails to execute")
 		}
 		var decodedReturn init3.ExecReturn
 		err = decodedReturn.UnmarshalCBOR(bytes.NewReader(receipt.Return))
 		if err != nil {
 			logging.Error("Payment manager has error unmarshal receipt: %v", receipt)
-			return errors.New("Error unmarshal receipt")
+			return errors.New("error unmarshal receipt")
 		}
 		// Create new channel
 		mgr.outboundChs[recipient] = &channelState{
@@ -186,13 +186,13 @@ func (mgr *FCRPaymentMgr) Topup(recipient string, amount *big.Int) error {
 			return err
 		}
 		// Send request to lotus
-		cid, err := api.MpoolPush(context.Background(), signedMsg)
+		contentID, err := api.MpoolPush(context.Background(), signedMsg)
 		if err != nil {
 			return err
 		}
-		receipt := waitReceipt(&cid, api)
+		receipt := waitReceipt(&contentID, api)
 		if receipt.ExitCode != 0 {
-			return errors.New("Transaction fail to execute")
+			return errors.New("transaction fail to execute")
 		}
 		// Need to update the balance of this payment channel
 		cs.balance.Add(&cs.balance, amount)
@@ -296,7 +296,7 @@ func (mgr *FCRPaymentMgr) Receive(channel string, voucher string) (*big.Int, err
 	// TODO, Need to make sure it is indeed paych actor state
 	paychState, ok := state.State.(map[string]interface{})
 	if !ok {
-		return nil, errors.New("Not a paych state")
+		return nil, errors.New("not a paych state")
 	}
 
 	// Get channel state from local storage
@@ -322,7 +322,7 @@ func (mgr *FCRPaymentMgr) Receive(channel string, voucher string) (*big.Int, err
 		defer cs.lock.Unlock()
 		if cs.balance.Cmp(state.Balance.Int) > 0 {
 			// No possible to happen
-			return nil, errors.New("On chain state has smaller balance than local chain state")
+			return nil, errors.New("on chain state has smaller balance than local chain state")
 		} else {
 			// Update local channel balance
 			cs.balance = *state.Balance.Int
@@ -339,7 +339,7 @@ func (mgr *FCRPaymentMgr) Receive(channel string, voucher string) (*big.Int, err
 		return nil, err
 	}
 	if recipient != *mgr.address {
-		return nil, errors.New("Wrong recipient")
+		return nil, errors.New("wrong recipient")
 	}
 
 	// Verify signature
@@ -373,11 +373,11 @@ func (mgr *FCRPaymentMgr) Receive(channel string, voucher string) (*big.Int, err
 	}
 	if ls.nonce > sv.Nonce {
 		// Nonce not match.
-		return nil, errors.New("Nonce is smaller than local stored value")
+		return nil, errors.New("nonce is smaller than local stored value")
 	}
 	if ls.redeemed.Cmp(sv.Amount.Int) >= 0 {
 		// Amount in voucher is smaller than redeemed in storage
-		return nil, errors.New("Voucher has bad amount")
+		return nil, errors.New("voucher has bad amount")
 	}
 	paymentValue := big.NewInt(0).Sub(sv.Amount.Int, &ls.redeemed)
 
@@ -385,7 +385,7 @@ func (mgr *FCRPaymentMgr) Receive(channel string, voucher string) (*big.Int, err
 	newRedeemed := big.NewInt(0).Add(&cs.redeemed, paymentValue)
 	if cs.balance.Cmp(newRedeemed) < 0 {
 		// Channel Balance not enough
-		return nil, errors.New("Not enough channel balance")
+		return nil, errors.New("not enough channel balance")
 	}
 	// Voucher validated, update lane state
 	ls.nonce = sv.Nonce + 1
@@ -402,7 +402,7 @@ func (mgr *FCRPaymentMgr) Shutdown() {
 }
 
 // Dump is used for debugging only, it returns the string repr of payment manager.
-// This is not threadsafe and should only be called for debugging.
+// This is not thread safe and should only be called for debugging.
 func (mgr *FCRPaymentMgr) Dump() string {
 	var sb strings.Builder
 	sb.WriteString("Payment Manager status:\n")
@@ -539,7 +539,7 @@ func (SecpSigner) GenPrivate() ([]byte, error) {
 func (SecpSigner) ToPublic(pk []byte) ([]byte, error) {
 	// Check empty key to avoid segment fault
 	if len(pk) == 0 {
-		return nil, fmt.Errorf("Unable to get public key, private key is empty")
+		return nil, fmt.Errorf("unable to get public key, private key is empty")
 	}
 	return crypto.PublicKey(pk), nil
 }

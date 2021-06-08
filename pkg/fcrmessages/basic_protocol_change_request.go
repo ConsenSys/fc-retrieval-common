@@ -44,7 +44,7 @@ func DecodeProtocolChangeRequest(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ProtocolChangeRequestType {
-		return 0, errors.New("Message type mismatch")
+		return 0, errors.New("message type mismatch")
 	}
 	msg := protocolChangeRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

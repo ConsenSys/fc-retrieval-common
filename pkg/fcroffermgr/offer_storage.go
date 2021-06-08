@@ -49,7 +49,7 @@ func (o *offerStorage) add(newOffer *cidoffer.CIDOffer) error {
 	// If this offer exists
 	testCIDs := newOffer.GetCIDs()
 	if len(testCIDs) == 0 {
-		return errors.New("This offer has no cid")
+		return errors.New("this offer has no cid")
 	}
 	testCIDStr := testCIDs[0].ToString()
 	digest := newOffer.GetMessageDigest()
@@ -67,11 +67,11 @@ func (o *offerStorage) add(newOffer *cidoffer.CIDOffer) error {
 	}
 
 	if newOffer.HasExpired() {
-		return errors.New("Offers: Attempt to add an expired offer")
+		return errors.New("offers: Attempt to add an expired offer")
 	}
 
-	for _, cid := range newOffer.GetCIDs() {
-		cidStr := cid.ToString()
+	for _, contentID := range newOffer.GetCIDs() {
+		cidStr := contentID.ToString()
 		o.lock.RLock()
 		digestMap, exists = o.cidMap[cidStr]
 		o.lock.RUnlock()
@@ -120,8 +120,8 @@ func (o *offerStorage) get(cid *cid.ContentID) []cidoffer.CIDOffer {
 	o.lock.RLock()
 	for _, offer := range toRemove {
 		digest := offer.GetMessageDigest()
-		for _, cid := range offer.GetCIDs() {
-			digestMap, exists := o.cidMap[cid.ToString()]
+		for _, contentID := range offer.GetCIDs() {
+			digestMap, exists := o.cidMap[contentID.ToString()]
 			if !exists {
 				// Something is wrong
 				panic("Internal error: Try to remove cid offer that are not existed in cid map")
@@ -136,20 +136,3 @@ func (o *offerStorage) get(cid *cid.ContentID) []cidoffer.CIDOffer {
 	o.lock.RUnlock()
 	return res
 }
-
-// func (o *offerStorage) print() {
-// 	fmt.Println("")
-// 	fmt.Println("")
-// 	fmt.Println("")
-// 	fmt.Println("====================Print offer storage=====================")
-// 	for key, val := range o.cidMap {
-// 		fmt.Printf("CID %v -> \n", key)
-// 		for digest, offer := range val.dMap {
-// 			fmt.Printf("\t\tDigest: %v -> Offer: %v\n", digest, offer.GetCIDs())
-// 		}
-// 	}
-// 	fmt.Println("============================================================")
-// 	fmt.Println("")
-// 	fmt.Println("")
-// 	fmt.Println("")
-// }

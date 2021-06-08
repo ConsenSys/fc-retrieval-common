@@ -106,7 +106,7 @@ func (fcrMsg *FCRMessage) Verify(pubKey *fcrcrypto.KeyPair) error {
 		return err
 	}
 	if !res {
-		return errors.New("Message does not pass signature verification")
+		return errors.New("message does not pass signature verification")
 	}
 	// Recover signature
 	fcrMsg.signature = sig

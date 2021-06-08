@@ -58,7 +58,7 @@ func DecodeProviderAdminPublishDHTOfferRequest(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ProviderAdminPublishDHTOfferRequestType {
-		return nil, nil, nil, nil, errors.New("Message type mismatch")
+		return nil, nil, nil, nil, errors.New("message type mismatch")
 	}
 	msg := providerAdminPublishDHTOfferRequest{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

@@ -36,7 +36,7 @@ func EncodeInvalidMessageResponse() (*FCRMessage, error) {
 // DecodeInvalidMessageResponse is used to get the fields from FCRMessage of invalidMessageResponse
 func DecodeInvalidMessageResponse(fcrMsg *FCRMessage) error {
 	if fcrMsg.GetMessageType() != InvalidMessageResponseType {
-		return errors.New("Message type mismatch")
+		return errors.New("message type mismatch")
 	}
 	msg := invalidMessageResponse{}
 	return json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

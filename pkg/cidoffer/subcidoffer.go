@@ -61,7 +61,7 @@ type subCIDOfferSigning struct {
 	qos        uint64
 }
 
-// NewCidOffer creates a sub CID Offer.
+// NewSubCIDOffer creates a sub CID Offer.
 func NewSubCIDOffer(providerID *nodeid.NodeID, subCID *cid.ContentID, merkleRoot string, merkleProof *fcrmerkletree.FCRMerkleProof, price uint64, expiry int64, qos uint64, signature string) *SubCIDOffer {
 	return &SubCIDOffer{
 		providerID:  providerID,

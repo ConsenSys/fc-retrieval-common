@@ -14,7 +14,9 @@ import (
 // NewRandomChallenge generates and returns 32 byte long, base64 encoded random string
 func NewRandomChallenge() string {
 	random := make([]byte, 32)
-	rand.Read(random)
+	if _, err := rand.Read(random); err != nil {
+		panic(err)
+	}
 	challenge := make([]byte, base64.StdEncoding.EncodedLen(len(random)))
 	base64.StdEncoding.Encode(challenge, random[:])
 	return string(challenge)

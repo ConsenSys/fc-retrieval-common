@@ -63,7 +63,7 @@ func DecodeGatewayDHTDiscoverResponse(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != GatewayDHTDiscoverResponseType {
-		return nil, 0, false, nil, nil, errors.New("Message type mismatch")
+		return nil, 0, false, nil, nil, errors.New("message type mismatch")
 	}
 	msg := gatewayDHTDiscoverResponse{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

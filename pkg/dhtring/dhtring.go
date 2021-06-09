@@ -148,12 +148,42 @@ func (r *Ring) Remove(hex string) {
 		logging.Error("Ring invalid hex: %v", hex)
 		return
 	}
-	hexKey, _ := new(big.Int).SetString(hex, 16)
 	if r.size == 0 {
 		return
 	}
-	current := r.head
-	//ok := current != nil && current.val != r.head.val
+	if r.size == 1 {
+		r.head = nil
+		r.size = 0
+		return
+	}
+	if r.size == 2 {
+		if r.head.val == hex {
+			r.head = r.head.next
+			r.head.next = nil
+			r.head.prv = nil
+			r.head.distPrv = big.NewInt(0)
+			r.head.distNext = big.NewInt(0)
+		}
+		r.size = 1
+		return
+	}
+	if r.head.val == hex {
+		oldHead := r.head
+		// first becomes the head
+		r.head = r.head.next
+		// tail links to the new head
+		oldHead.prv = r.head
+		// update distances
+		tailToNewHeadDistance := getDist(r.head.prv.key, r.head.key)
+		r.head.distPrv = tailToNewHeadDistance
+		r.head.prv.distNext = tailToNewHeadDistance
+		// help GC
+		oldHead = nil
+		r.size--
+		return
+	}
+	hexKey, _ := new(big.Int).SetString(hex, 16)
+	current := r.head.next
 	for current != nil && current.val != r.head.val {
 		// Loop until we reach nil or we go back to head
 		if current.val == hex {
@@ -192,7 +222,7 @@ func (r *Ring) Remove(hex string) {
 func (r *Ring) GetClosest(hex string, num int, exclude string) ([]string, error) {
 	if !validateInput(hex) || (exclude != "" && !validateInput(exclude)) {
 		logging.Error("Ring invalid hex: %v %v", hex, exclude)
-		return nil, errors.New("Invalid input")
+		return nil, errors.New("invalid input")
 	}
 	res := make([]string, 0)
 	if num == 0 || r.size == 0 || (exclude != "" && r.size == 1) {
@@ -207,7 +237,10 @@ func (r *Ring) GetClosest(hex string, num int, exclude string) ([]string, error)
 		}
 	}
 	if num > r.size {
-		current := r.head
+		if r.head.val == hex {
+			res = append(res, r.head.val)
+		}
+		current := r.head.next
 		for current != nil && current.val != r.head.val {
 			res = append(res, current.val)
 			current = current.next
@@ -274,7 +307,7 @@ func (r *Ring) GetClosest(hex string, num int, exclude string) ([]string, error)
 func (r *Ring) GetWithinRange(startHex string, endHex string) ([]string, error) {
 	if !validateInput(startHex) || !validateInput(endHex) {
 		logging.Error("Ring invalid hex: %v %v", startHex, endHex)
-		return nil, errors.New("Invalid input")
+		return nil, errors.New("invalid input")
 	}
 	res := make([]string, 0)
 	var startNode *ringNode
@@ -288,7 +321,7 @@ func (r *Ring) GetWithinRange(startHex string, endHex string) ([]string, error) 
 		r.Insert(startHex)
 		startNode = r.get(startHex)
 		if startNode == nil {
-			return res, errors.New("Internal error")
+			return res, errors.New("internal error")
 		}
 		defer r.Remove(startHex)
 	}
@@ -300,7 +333,7 @@ func (r *Ring) GetWithinRange(startHex string, endHex string) ([]string, error) 
 		r.Insert(endHex)
 		endNode = r.get(endHex)
 		if endNode == nil {
-			return res, errors.New("Internal error")
+			return res, errors.New("internal error")
 		}
 		defer r.Remove(endHex)
 	}
@@ -356,7 +389,10 @@ func (r *Ring) get(hex string) *ringNode {
 	if r.size == 0 {
 		return nil
 	}
-	current := r.head
+	if r.head.val == hex {
+		return r.head
+	}
+	current := r.head.next
 	for current != nil && current.val != r.head.val {
 		// Loop until we reach nil or we go back to head
 		if current.val == hex {

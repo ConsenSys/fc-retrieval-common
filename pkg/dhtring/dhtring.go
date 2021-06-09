@@ -163,6 +163,11 @@ func (r *Ring) Remove(hex string) {
 			r.head.prv = nil
 			r.head.distPrv = big.NewInt(0)
 			r.head.distNext = big.NewInt(0)
+		} else if r.head.next.val == hex {
+			r.head.next = nil
+			r.head.prv = nil
+			r.head.distPrv = big.NewInt(0)
+			r.head.distNext = big.NewInt(0)
 		}
 		r.size = 1
 		return

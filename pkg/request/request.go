@@ -18,6 +18,9 @@ package request
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// do not remove
+//go:generate mockgen -destination=../mocks/mock_request.go -package=mocks github.com/ConsenSys/fc-retrieval-common/pkg/request HttpCommunications
+
 import (
 	"bytes"
 	"encoding/json"
@@ -30,11 +33,26 @@ import (
 	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
 )
 
-var httpClient = &http.Client{Timeout: 180 * time.Second}
+// HttpCommunications - facilitates communications between nodes using HTTP
+type HttpCommunications interface {
+  GetJSON(url string, target interface{}) error
+  SendJSON(url string, data interface{}) error
+  SendMessage(url string, message *fcrmessages.FCRMessage) (*fcrmessages.FCRMessage, error)
+}
+
+type HttpCommunicator struct {
+  httpClient *http.Client
+}
+
+func NewHttpCommunicator() HttpCommunications {
+  return &HttpCommunicator{
+    httpClient: &http.Client{Timeout: 180 * time.Second},
+  }
+}
 
 // GetJSON request Get JSON
-func GetJSON(url string, target interface{}) error {
-	r, err := httpClient.Get(url)
+func(c *HttpCommunicator) GetJSON(url string, target interface{}) error {
+	r, err := c.httpClient.Get(url)
 	if err != nil {
 		return err
 	}
@@ -48,7 +66,7 @@ func GetJSON(url string, target interface{}) error {
 }
 
 // SendJSON request Send JSON
-func SendJSON(url string, data interface{}) error {
+func(c *HttpCommunicator) SendJSON(url string, data interface{}) error {
 	jsonData, _ := json.Marshal(data)
 	req, err := http.NewRequest("POST", url, bytes.NewReader(jsonData))
 	if req == nil {
@@ -56,7 +74,7 @@ func SendJSON(url string, data interface{}) error {
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	r, err := httpClient.Do(req)
+	r, err := c.httpClient.Do(req)
 	if err != nil {
 		return err
 	}
@@ -67,7 +85,7 @@ func SendJSON(url string, data interface{}) error {
 }
 
 // SendMessage request Send JSON
-func SendMessage(url string, message *fcrmessages.FCRMessage) (*fcrmessages.FCRMessage, error) {
+func(c *HttpCommunicator) SendMessage(url string, message *fcrmessages.FCRMessage) (*fcrmessages.FCRMessage, error) {
 	var data fcrmessages.FCRMessage
 	jsonData, _ := json.Marshal(message)
 	logging.Info("Sending JSON to url: %v", url)
@@ -78,7 +96,7 @@ func SendMessage(url string, message *fcrmessages.FCRMessage) (*fcrmessages.FCRM
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	r, err := httpClient.Do(req)
+	r, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, err
 	}

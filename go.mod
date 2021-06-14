@@ -12,6 +12,7 @@ require (
 	github.com/filecoin-project/go-state-types v0.1.0
 	github.com/filecoin-project/lotus v1.8.0
 	github.com/filecoin-project/specs-actors/v4 v4.0.1
+	github.com/golang/mock v1.6.0 // indirect
 	github.com/google/go-cmp v0.5.4 // indirect
 	github.com/ipfs/go-cid v0.0.7
 	github.com/ipsn/go-secp256k1 v0.0.0-20180726113642-9d62b9f0bc52
@@ -28,7 +29,6 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/whyrusleeping/cbor-gen v0.0.0-20210303213153-67a261a1d291 // indirect
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
-	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
 	golang.org/x/text v0.3.5 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.4.0 // indirect

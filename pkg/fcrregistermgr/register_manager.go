@@ -31,6 +31,7 @@ import (
 	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/register"
+  "github.com/ConsenSys/fc-retrieval-common/pkg/request"
 )
 
 // FCRRegisterMgr Register Manager manages the internal storage of registered nodes.
@@ -65,6 +66,8 @@ type FCRRegisterMgr struct {
 	// registeredProvidersMap stores mapping from provider id (big int in string repr) to its registration info
 	registeredProvidersMap     map[string]register.ProviderRegister
 	registeredProvidersMapLock sync.RWMutex
+
+  httpCommunicator    request.HttpCommunications
 }
 
 // NewFCRRegisterMgr creates a new register manager.
@@ -75,6 +78,7 @@ func NewFCRRegisterMgr(registerAPI string, providerDiscv bool, gatewayDiscv bool
 		refreshDuration: refreshDuration,
 		gatewayDiscv:    gatewayDiscv,
 		providerDiscv:   providerDiscv,
+		httpCommunicator: request.NewHttpCommunicator(),
 	}
 	if gatewayDiscv {
 		res.registeredGatewaysMap = make(map[string]register.GatewayRegister)
@@ -336,7 +340,7 @@ func (mgr *FCRRegisterMgr) mapNodeIDs(nodsIDs []*nodeid.NodeID) map[string]strin
 func (mgr *FCRRegisterMgr) updateGateways() {
 	refreshForce := false
 	for {
-		gateways, err := register.GetRegisteredGateways(mgr.registerAPI)
+		gateways, err := mgr.GetRegisteredGateways()
 		if err != nil {
 			logging.Error("Register manager has error in getting registered gateways: %s", err.Error())
 		} else {
@@ -395,7 +399,7 @@ func (mgr *FCRRegisterMgr) updateGateways() {
 func (mgr *FCRRegisterMgr) updateProviders() {
 	refreshForce := false
 	for {
-		providers, err := register.GetRegisteredProviders(mgr.registerAPI)
+		providers, err := mgr.GetRegisteredProviders()
 		if err != nil {
 			logging.Error("Register manager has error in getting registered providers: %s", err.Error())
 		} else {
@@ -445,3 +449,48 @@ func (mgr *FCRRegisterMgr) updateProviders() {
 		}
 	}
 }
+
+// GetGatewayByID gets the gateway register info by a given ID
+func (mgr *FCRRegisterMgr) GetGatewayByID(nodeID *nodeid.NodeID) (register.GatewayRegister, error) {
+  url := mgr.registerAPI + "/registers/gateway/" + nodeID.ToString()
+  gateway := register.GatewayRegister{}
+  err := mgr.httpCommunicator.GetJSON(url, &gateway)
+  if err != nil {
+    return gateway, err
+  }
+  return gateway, nil
+}
+
+// GetRegisteredGateways returns registered gateways
+func (mgr *FCRRegisterMgr) GetRegisteredGateways() ([]register.GatewayRegister, error) {
+  url := mgr.registerAPI + "/registers/gateway"
+  var gateways []register.GatewayRegister
+  err := mgr.httpCommunicator.GetJSON(url, &gateways)
+  if err != nil {
+    return gateways, err
+  }
+  return gateways, nil
+}
+
+// GetRegisteredProviders returns registered providers
+func (mgr *FCRRegisterMgr) GetRegisteredProviders() ([]register.ProviderRegister, error) {
+  url := mgr.registerAPI + "/registers/provider"
+  var providers []register.ProviderRegister
+  err := mgr.httpCommunicator.GetJSON(url, &providers)
+  if err != nil {
+    return providers, err
+  }
+  return providers, nil
+}
+
+// GetProviderByID gets the provider register info by a given ID
+func (mgr *FCRRegisterMgr) GetProviderByID(nodeID *nodeid.NodeID) (register.ProviderRegister, error) {
+  url := mgr.registerAPI + "/registers/provider/" + nodeID.ToString()
+  provider := register.ProviderRegister{}
+  err := mgr.httpCommunicator.GetJSON(url, &provider)
+  if err != nil {
+    return provider, err
+  }
+  return provider, nil
+}
+

@@ -48,6 +48,7 @@ type ProviderRegisterOperations interface {
   GetNetworkInfoGateway() string
   GetNetworkInfoClient() string
   GetNetworkInfoAdmin() string
+  RegisterProvider(registerURL string) error
 }
 
 func NewProviderRegister(

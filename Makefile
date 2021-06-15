@@ -1,6 +1,6 @@
 # Copyright (C) 2020 ConsenSys Software Inc.
 
-COV?=63
+COV?=62
 
 default: clean utest
 

@@ -1,14 +1,19 @@
 package fcrregistermgr
 
 import (
-	"reflect"
-	"sync"
-	"testing"
+  "fmt"
+  "reflect"
+  "sync"
+  "testing"
+  "time"
 
-	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
-	"github.com/ConsenSys/fc-retrieval-common/pkg/register"
-	"github.com/stretchr/testify/assert"
+  "github.com/stretchr/testify/assert"
+
+  "github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
+  "github.com/ConsenSys/fc-retrieval-common/pkg/register"
 )
+const fakeRegisterAPIURL = "fakeRegisterAPIURL"
+var rm = NewFCRRegisterMgr(fakeRegisterAPIURL, false, false, 1*time.Second)
 
 func TestFCRRegisterMgr_GetGateway(t *testing.T) {
 
@@ -164,4 +169,50 @@ func TestFCRRegisterMgr_GetAllGateways(t *testing.T) {
 			assert.ElementsMatch(t, got, tt.want)
 		})
 	}
+}
+
+func ExampleFCRRegisterMgr_GetRegisteredGateways() {
+  v, err := rm.GetRegisteredGateways()
+  fmt.Println(v, err)
+  // Output:
+  // [] Get "fakeRegisterAPIURL/registers/gateway": unsupported protocol scheme ""
+}
+
+func ExampleFCRRegisterMgr_GetGatewayByID_nil() {
+  v, err := rm.GetGatewayByID(nil)
+  fmt.Println(v, err)
+  // Output:
+  // {         <nil>} gateway ID is not provided in GetGatewayByID
+}
+
+func ExampleFCRRegisterMgr_GetGatewayByID_new() {
+  nd := &nodeid.NodeID{}
+  v, err := rm.GetGatewayByID(nd)
+  fmt.Println(v, err)
+  // Output:
+  // {         <nil>} Get "fakeRegisterAPIURL/registers/gateway/00": unsupported protocol scheme ""
+}
+
+func ExampleFCRRegisterMgr_GetRegisteredProviders() {
+  v, err := rm.GetRegisteredProviders()
+  fmt.Println(v, err)
+  // Output:
+  // [] Get "fakeRegisterAPIURL/registers/provider": unsupported protocol scheme ""
+}
+
+func ExampleFCRRegisterMgr_GetProviderByID_nil() {
+  v, err := rm.GetProviderByID(nil)
+  fmt.Println(v, err)
+  // Output:
+  // {        <nil>} provider ID is not provided in GetProviderByID
+
+}
+
+func ExampleFCRRegisterMgr_GetProviderByID_new() {
+  nd := &nodeid.NodeID{}
+  v, err := rm.GetProviderByID(nd)
+  fmt.Println(v, err)
+  // Output:
+  // {        <nil>} Get "fakeRegisterAPIURL/registers/provider/00": unsupported protocol scheme ""
+
 }

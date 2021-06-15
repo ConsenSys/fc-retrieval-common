@@ -25,19 +25,6 @@ import (
   "github.com/ConsenSys/fc-retrieval-common/pkg/request"
 )
 
-// RegisteredNode stored network information of a registered node
-type RegisteredNode interface {
-	GetNodeID() string
-	GetAddress() string
-	GetRegionCode() string
-	GetRootSigningKey() (*fcrcrypto.KeyPair, error)
-	GetSigningKey() (*fcrcrypto.KeyPair, error)
-	GetNetworkInfoGateway() string
-	GetNetworkInfoProvider() string
-	GetNetworkInfoClient() string
-	GetNetworkInfoAdmin() string
-}
-
 // ProviderRegister stores information of a registered provider
 type ProviderRegister struct {
 	NodeID             string `json:"nodeId"`
@@ -48,7 +35,43 @@ type ProviderRegister struct {
 	NetworkInfoGateway string `json:"networkInfoGateway"`
 	NetworkInfoClient  string `json:"networkInfoClient"`
 	NetworkInfoAdmin   string `json:"networkInfoAdmin"`
-  httpCommunicator   request.HttpCommunications
+  HttpCommunicator   request.HttpCommunications
+}
+
+// ProviderRegisterOperations stored network information of a registered node
+type ProviderRegisterOperations interface {
+  GetNodeID() string
+  GetAddress() string
+  GetRegionCode() string
+  GetRootSigningKey() (*fcrcrypto.KeyPair, error)
+  GetSigningKey() (*fcrcrypto.KeyPair, error)
+  GetNetworkInfoGateway() string
+  GetNetworkInfoClient() string
+  GetNetworkInfoAdmin() string
+}
+
+func NewProviderRegister(
+  nodeID              string,
+  address             string,
+  rootSigningKey      string,
+  signingKey          string,
+  regionCode          string,
+  networkInfoGateway  string,
+  networkInfoClient   string,
+  networkInfoAdmin    string,
+  httpCommunicator    request.HttpCommunications,
+) ProviderRegisterOperations {
+  return &ProviderRegister {
+    NodeID: nodeID,
+    Address: address,
+    RootSigningKey: rootSigningKey,
+    SigningKey: signingKey,
+    RegionCode: regionCode,
+    NetworkInfoGateway: networkInfoGateway,
+    NetworkInfoClient: networkInfoClient,
+    NetworkInfoAdmin: networkInfoAdmin,
+    HttpCommunicator: httpCommunicator,
+  }
 }
 
 // GetNodeID gets the node id
@@ -70,16 +93,6 @@ func (r *ProviderRegister) GetRegionCode() string {
 // GetNetworkInfoGateway gets the network gateway ap
 func (r *ProviderRegister) GetNetworkInfoGateway() string {
 	return r.NetworkInfoGateway
-}
-
-// GetNetworkInfoProvider gets the network provider ap
-func (r *GatewayRegister) GetNetworkInfoProvider() string {
-	return r.NetworkInfoProvider
-}
-
-// GetNetworkInfoProvider gets the network provider ap
-func (r *ProviderRegister) GetNetworkInfoProvider() string {
-	return ""
 }
 
 // GetNetworkInfoClient gets the network client ap
@@ -107,5 +120,5 @@ func (r *ProviderRegister) GetSigningKey() (*fcrcrypto.KeyPair, error) {
 // RegisterProvider to register a provider
 func (r *ProviderRegister) RegisterProvider(registerURL string) error {
 	url := registerURL + "/registers/provider"
-	return r.httpCommunicator.SendJSON(url, r)
+	return r.HttpCommunicator.SendJSON(url, r)
 }

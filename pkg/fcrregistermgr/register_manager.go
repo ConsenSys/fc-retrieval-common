@@ -22,15 +22,15 @@ package fcrregistermgr
  */
 
 import (
-	"errors"
-	"sync"
-	"time"
+  "errors"
+  "sync"
+  "time"
 
-	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
-	"github.com/ConsenSys/fc-retrieval-common/pkg/dhtring"
-	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
-	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
-	"github.com/ConsenSys/fc-retrieval-common/pkg/register"
+  "github.com/ConsenSys/fc-retrieval-common/pkg/cid"
+  "github.com/ConsenSys/fc-retrieval-common/pkg/dhtring"
+  "github.com/ConsenSys/fc-retrieval-common/pkg/logging"
+  "github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
+  "github.com/ConsenSys/fc-retrieval-common/pkg/register"
   "github.com/ConsenSys/fc-retrieval-common/pkg/request"
 )
 
@@ -452,6 +452,9 @@ func (mgr *FCRRegisterMgr) updateProviders() {
 
 // GetGatewayByID gets the gateway register info by a given ID
 func (mgr *FCRRegisterMgr) GetGatewayByID(nodeID *nodeid.NodeID) (register.GatewayRegister, error) {
+  if nodeID == nil {
+    return register.GatewayRegister{}, errors.New("gateway ID is not provided in GetGatewayByID")
+  }
   url := mgr.registerAPI + "/registers/gateway/" + nodeID.ToString()
   gateway := register.GatewayRegister{}
   err := mgr.httpCommunicator.GetJSON(url, &gateway)
@@ -485,6 +488,9 @@ func (mgr *FCRRegisterMgr) GetRegisteredProviders() ([]register.ProviderRegister
 
 // GetProviderByID gets the provider register info by a given ID
 func (mgr *FCRRegisterMgr) GetProviderByID(nodeID *nodeid.NodeID) (register.ProviderRegister, error) {
+  if nodeID == nil {
+    return register.ProviderRegister{}, errors.New("provider ID is not provided in GetProviderByID")
+  }
   url := mgr.registerAPI + "/registers/provider/" + nodeID.ToString()
   provider := register.ProviderRegister{}
   err := mgr.httpCommunicator.GetJSON(url, &provider)
@@ -493,4 +499,3 @@ func (mgr *FCRRegisterMgr) GetProviderByID(nodeID *nodeid.NodeID) (register.Prov
   }
   return provider, nil
 }
-

@@ -33,15 +33,15 @@ import (
 	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
 )
 
+type HttpCommunicator struct {
+  httpClient *http.Client
+}
+
 // HttpCommunications - facilitates communications between nodes using HTTP
 type HttpCommunications interface {
   GetJSON(url string, target interface{}) error
   SendJSON(url string, data interface{}) error
   SendMessage(url string, message *fcrmessages.FCRMessage) (*fcrmessages.FCRMessage, error)
-}
-
-type HttpCommunicator struct {
-  httpClient *http.Client
 }
 
 func NewHttpCommunicator() HttpCommunications {

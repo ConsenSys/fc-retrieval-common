@@ -16,9 +16,47 @@ type GatewayRegister struct {
   NetworkInfoProvider string `json:"networkInfoProvider"`
   NetworkInfoClient   string `json:"networkInfoClient"`
   NetworkInfoAdmin    string `json:"networkInfoAdmin"`
-  httpCommunicator    request.HttpCommunications
+  HttpCommunicator    request.HttpCommunications
 }
 
+type GatewayRegisterOperations interface {
+  GetNodeID() string
+  GetAddress() string
+  GetRegionCode() string
+  GetNetworkInfoGateway() string
+  GetNetworkInfoProvider() string
+  GetNetworkInfoClient() string
+  GetNetworkInfoAdmin() string
+  GetRootSigningKey() (*fcrcrypto.KeyPair, error)
+  GetSigningKey() (*fcrcrypto.KeyPair, error)
+  RegisterGateway(registerURL string) error
+}
+
+func NewGatewayRegister(
+  nodeID              string,
+  address             string,
+  rootSigningKey      string,
+  signingKey          string,
+  regionCode          string,
+  networkInfoGateway  string,
+  networkInfoProvider string,
+  networkInfoClient   string,
+  networkInfoAdmin    string,
+  httpCommunicator    request.HttpCommunications,
+  ) GatewayRegisterOperations {
+  return &GatewayRegister {
+    NodeID: nodeID,
+    Address: address,
+    RootSigningKey: rootSigningKey,
+    SigningKey: signingKey,
+    RegionCode: regionCode,
+    NetworkInfoGateway: networkInfoGateway,
+    NetworkInfoProvider: networkInfoProvider,
+    NetworkInfoClient: networkInfoClient,
+    NetworkInfoAdmin: networkInfoAdmin,
+    HttpCommunicator: httpCommunicator,
+  }
+}
 
 // GetNodeID gets the node id
 func (r *GatewayRegister) GetNodeID() string {
@@ -38,6 +76,11 @@ func (r *GatewayRegister) GetRegionCode() string {
 // GetNetworkInfoGateway gets the network gateway ap
 func (r *GatewayRegister) GetNetworkInfoGateway() string {
   return r.NetworkInfoGateway
+}
+
+// GetNetworkInfoProvider gets the network provider ap
+func (r *GatewayRegister) GetNetworkInfoProvider() string {
+  return r.NetworkInfoProvider
 }
 
 // GetNetworkInfoClient gets the network client ap
@@ -63,5 +106,5 @@ func (r *GatewayRegister) GetSigningKey() (*fcrcrypto.KeyPair, error) {
 // RegisterGateway to register a gateway
 func (r *GatewayRegister) RegisterGateway(registerURL string) error {
   url := registerURL + "/registers/gateway"
-  return r.httpCommunicator.SendJSON(url, r)
+  return r.HttpCommunicator.SendJSON(url, r)
 }

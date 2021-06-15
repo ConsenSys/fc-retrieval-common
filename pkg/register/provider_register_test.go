@@ -17,43 +17,43 @@ var pr = NewProviderRegister(
     "AA",
     request.NewHttpCommunicator())
 
-func ExampleProviderRegisterOperations_GetNodeID() {
+func ExampleProviderRegistrar_GetNodeID() {
 	fmt.Println(pr.GetNodeID())
 	// Output: AA
 }
 
-func ExampleProviderRegisterOperations_GetAddress() {
+func ExampleProviderRegistrar_GetAddress() {
 	fmt.Println(pr.GetAddress())
 	// Output: AA
 }
 
-func ExampleProviderRegisterOperations_GetRegionCode() {
+func ExampleProviderRegistrar_GetRegionCode() {
 	fmt.Println(pr.GetRegionCode())
 	// Output: AA
 }
 
-func ExampleProviderRegisterOperations_GetNetworkInfoGateway() {
+func ExampleProviderRegistrar_GetNetworkInfoGateway() {
 	fmt.Println(pr.GetNetworkInfoGateway())
 	// Output: AA
 }
 
-func ExampleProviderRegisterOperations_GetNetworkInfoClient() {
+func ExampleProviderRegistrar_GetNetworkInfoClient() {
 	fmt.Println(pr.GetNetworkInfoClient())
 	// Output: AA
 }
 
-func ExampleProviderRegisterOperations_GetNetworkInfoAdmin() {
+func ExampleProviderRegistrar_GetNetworkInfoAdmin() {
 	fmt.Println(pr.GetNetworkInfoAdmin())
 	// Output: AA
 }
 
-func ExampleProviderRegisterOperations_GetRootSigningKey() {
+func ExampleProviderRegistrar_GetRootSigningKey() {
 	v, err := pr.GetRootSigningKey()
 	fmt.Println(v, err)
 	// Output: <nil> incorrect secp256k1 public key length: 32
 }
 
-func ExampleProviderRegisterOperations_GetSigningKey() {
+func ExampleProviderRegistrar_GetSigningKey() {
 	v, err := pr.GetSigningKey()
 	fmt.Println(v, err)
 	// Output: <nil> incorrect secp256k1 public key length: 32

@@ -22,49 +22,49 @@ var gr = NewGatewayRegister(
     "AA",
     request.NewHttpCommunicator())
 
-func ExampleGatewayRegisterOperations_GetNodeID() {
+func ExampleGatewayRegistrar_GetNodeID() {
 	fmt.Println(gr.GetNodeID())
 	// Output: AA
 }
 
-func ExampleGatewayRegisterOperations_GetAddress() {
+func ExampleGatewayRegistrar_GetAddress() {
 	fmt.Println(gr.GetAddress())
 	// Output: AA
 }
 
-func ExampleGatewayRegisterOperations_GetRegionCode() {
+func ExampleGatewayRegistrar_GetRegionCode() {
 	fmt.Println(gr.GetRegionCode())
 	// Output: AA
 }
 
-func ExampleGatewayRegisterOperations_GetNetworkInfoGateway() {
+func ExampleGatewayRegistrar_GetNetworkInfoGateway() {
 	fmt.Println(gr.GetNetworkInfoGateway())
 	// Output: AA
 }
 
-func ExampleGatewayRegisterOperations_GetNetworkInfoClient() {
+func ExampleGatewayRegistrar_GetNetworkInfoClient() {
 	fmt.Println(gr.GetNetworkInfoClient())
 	// Output: AA
 }
 
-func ExampleGatewayRegisterOperations_GetNetworkInfoAdmin() {
+func ExampleGatewayRegistrar_GetNetworkInfoAdmin() {
 	fmt.Println(gr.GetNetworkInfoAdmin())
 	// Output: AA
 }
 
-func ExampleGatewayRegisterOperations_GetRootSigningKey() {
+func ExampleGatewayRegistrar_GetRootSigningKey() {
 	v, err := gr.GetRootSigningKey()
 	fmt.Println(v, err)
 	// Output: <nil> incorrect secp256k1 public key length: 32
 }
 
-func ExampleGatewayRegisterOperations_GetSigningKey() {
+func ExampleGatewayRegistrar_GetSigningKey() {
 	v, err := gr.GetSigningKey()
 	fmt.Println(v, err)
 	// Output: <nil> incorrect secp256k1 public key length: 32
 }
 
-func ExampleGatewayRegisterOperations_RegisterGateway() {
+func ExampleGatewayRegistrar_RegisterGateway() {
 	err := gr.RegisterGateway("")
 	fmt.Println(err)
 	// Output:

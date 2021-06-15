@@ -19,7 +19,7 @@ type GatewayRegister struct {
   HttpCommunicator    request.HttpCommunications
 }
 
-type GatewayRegisterOperations interface {
+type GatewayRegistrar interface {
   GetNodeID() string
   GetAddress() string
   GetRegionCode() string
@@ -43,7 +43,7 @@ func NewGatewayRegister(
   networkInfoClient   string,
   networkInfoAdmin    string,
   httpCommunicator    request.HttpCommunications,
-  ) GatewayRegisterOperations {
+  ) GatewayRegistrar {
   return &GatewayRegister {
     NodeID: nodeID,
     Address: address,

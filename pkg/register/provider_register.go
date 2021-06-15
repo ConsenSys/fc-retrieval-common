@@ -38,8 +38,8 @@ type ProviderRegister struct {
   HttpCommunicator   request.HttpCommunications
 }
 
-// ProviderRegisterOperations stored network information of a registered node
-type ProviderRegisterOperations interface {
+// ProviderRegistrar performs network operations for a registered node
+type ProviderRegistrar interface {
   GetNodeID() string
   GetAddress() string
   GetRegionCode() string
@@ -61,7 +61,7 @@ func NewProviderRegister(
   networkInfoClient   string,
   networkInfoAdmin    string,
   httpCommunicator    request.HttpCommunications,
-) ProviderRegisterOperations {
+) ProviderRegistrar {
   return &ProviderRegister {
     NodeID: nodeID,
     Address: address,

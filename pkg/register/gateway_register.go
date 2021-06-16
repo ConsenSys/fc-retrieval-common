@@ -9,6 +9,7 @@ import (
 type GatewayRegister struct {
   NodeID              string `json:"nodeId"`
   Address             string `json:"address"`
+  //todo: change type to fcrcrypto.KeyPair ?
   RootSigningKey      string `json:"rootSigningKey"`
   SigningKey          string `json:"sigingKey"`
   RegionCode          string `json:"regionCode"`

@@ -1,6 +1,6 @@
 module github.com/ConsenSys/fc-retrieval-common
 
-go 1.14
+go 1.16
 
 require (
 	github.com/ant0ine/go-json-rest v3.3.2+incompatible

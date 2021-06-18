@@ -28,9 +28,9 @@ func ExampleHttpCommunications_GetJSON_v02() {
 
 func ExampleHttpCommunications_GetJSON_v03() {
   v03 := map[string]string{"k1":"v1"}
-  _, err := c.GetJSON("http://localhost")
+  _, err := c.GetJSON("http://127.0.0.1:80")
   fmt.Println(v03, err)
-  // Output: map[k1:v1] Get "http://localhost": dial tcp 127.0.0.1:80: connect: connection refused
+  // Output: map[k1:v1] Get "http://127.0.0.1:80": dial tcp 127.0.0.1:80: connect: connection refused
 }
 
 func ExampleHttpCommunications_SendMessage_v03() {

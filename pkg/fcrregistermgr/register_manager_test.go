@@ -17,6 +17,84 @@ import (
 const fakeRegisterAPIURL = "fakeRegisterAPIURL"
 var rm = NewFCRRegisterMgr(fakeRegisterAPIURL, false, false, 1*time.Second)
 
+func TestFCRRegisterMgr_GetAllGateways(t *testing.T) {
+  nodeID00, _ := nodeid.NewNodeIDFromHexString("00")
+  nodeID01, _ := nodeid.NewNodeIDFromHexString("01")
+  nodeID02, _ := nodeid.NewNodeIDFromHexString("02")
+  nodeID5A, _ := nodeid.NewNodeIDFromHexString("5A")
+  nodeIDFFFF, _ := nodeid.NewNodeIDFromHexString("FFFF")
+
+  gr := map[string]register.GatewayRegistrar{}
+  gr[nodeID00.ToString()] = register.NewGatewayRegister(nodeID00.ToString(),"", "", "", "", "", "", "", "")
+  gr[nodeID01.ToString()] = register.NewGatewayRegister(nodeID01.ToString(),"", "", "", "", "", "", "", "")
+  gr[nodeID02.ToString()] = register.NewGatewayRegister(nodeID02.ToString(),"", "", "", "", "", "", "", "")
+  gr[nodeID5A.ToString()] = register.NewGatewayRegister(nodeID5A.ToString(),"", "", "", "", "", "", "", "")
+  gr[nodeIDFFFF.ToString()] = register.NewGatewayRegister(nodeIDFFFF.ToString(), "", "", "", "", "", "", "", "")
+
+  type fields struct {
+    start                     bool
+    gatewayDiscv              bool
+    registeredGatewaysMap     map[string]register.GatewayRegistrar
+    registeredGatewaysMapLock sync.RWMutex
+  }
+  tests := []struct {
+    name   string
+    fields fields
+
+    want []register.GatewayRegistrar
+  }{
+    {name: "getGateway not started returns nil",
+      fields: fields{
+        start:                     false,
+        gatewayDiscv:              false,
+        registeredGatewaysMap:     gr,
+        registeredGatewaysMapLock: sync.RWMutex{},
+      },
+
+      want: nil,
+    },
+    {name: "getGateway - gatewayDiscv not started returns nil",
+      fields: fields{
+        start:                     true,
+        gatewayDiscv:              false,
+        registeredGatewaysMap:     gr,
+        registeredGatewaysMapLock: sync.RWMutex{},
+      },
+
+      want: nil,
+    },
+    {name: "getGateway - started return nodeID00",
+      fields: fields{
+        start:                     true,
+        gatewayDiscv:              true,
+        registeredGatewaysMap:     gr,
+        registeredGatewaysMapLock: sync.RWMutex{},
+      },
+
+      want : []register.GatewayRegistrar{
+        register.NewGatewayRegister(nodeID00.ToString(),"", "", "", "", "", "", "", ""),
+        register.NewGatewayRegister(nodeID01.ToString(),"", "", "", "", "", "", "", ""),
+        register.NewGatewayRegister(nodeID02.ToString(),"", "", "", "", "", "", "", ""),
+        register.NewGatewayRegister(nodeID5A.ToString(),"", "", "", "", "", "", "", ""),
+        register.NewGatewayRegister(nodeIDFFFF.ToString(), "", "", "", "", "", "", "", ""),
+      },
+    },
+  }
+
+  for _, tt := range tests {
+    t.Run(tt.name, func(t *testing.T) {
+      mgr := &FCRRegisterMgr{
+        start:                     tt.fields.start,
+        gatewayDiscv:              tt.fields.gatewayDiscv,
+        registeredGatewaysMap:     tt.fields.registeredGatewaysMap,
+        registeredGatewaysMapLock: tt.fields.registeredGatewaysMapLock,
+      }
+      got := mgr.GetAllGateways()
+      assert.ElementsMatch(t, got, tt.want)
+    })
+  }
+}
+
 func TestFCRRegisterMgr_GetGateway(t *testing.T) {
 
 	nodeID00, _ := nodeid.NewNodeIDFromHexString("00")
@@ -154,7 +232,7 @@ func TestFCRRegisterMgr_GetGateway(t *testing.T) {
 	}
 }
 
-func TestFCRRegisterMgr_GetAllGateways_ReturnsNil(t *testing.T) {
+func TestPullGatewaysFromRegisterSrv_ReturnsNil(t *testing.T) {
 	nodeID00, _ := nodeid.NewNodeIDFromHexString("00")
 	nodeID01, _ := nodeid.NewNodeIDFromHexString("01")
 	nodeID02, _ := nodeid.NewNodeIDFromHexString("02")
@@ -267,7 +345,7 @@ func TestFCRRegisterMgr_GetAllGateways_ReturnsNil(t *testing.T) {
 	}
 }
 
-func TestFCRRegisterMgr_GetAllGateways_ReturnNode(t *testing.T) {
+func TestPullGatewaysFromRegisterSrv_ReturnsNode(t *testing.T) {
   nodeID00, _ := nodeid.NewNodeIDFromHexString("00")
   nodeID01, _ := nodeid.NewNodeIDFromHexString("01")
   nodeID02, _ := nodeid.NewNodeIDFromHexString("02")
@@ -329,7 +407,6 @@ func TestFCRRegisterMgr_GetAllGateways_ReturnNode(t *testing.T) {
     "networkInfoProvider",
     "networkInfoClient",
     "networkInfoAdmin",
-
   )
 
   type fields struct {
@@ -426,7 +503,6 @@ func TestFCRRegisterMgr_GetAllGateways_ReturnNode(t *testing.T) {
     expectedResult = append(expectedResult, register.NewGatewayRegister(g.NodeID, g.Address, g.RootSigningKey, g.SigningKey, g.RegionCode, g.NetworkInfoGateway, g.NetworkInfoProvider, g.NetworkInfoClient, g.NetworkInfoAdmin))
   }
 
-
-  got := mgr.GetAllGateways()
+  got := mgr.PullGatewaysFromRegisterSrv()
   assert.ElementsMatch(t, got, fakeResponse)
 }

@@ -11,7 +11,7 @@ type GatewayRegister struct {
   Address             string `json:"address"`
   //todo: change type to fcrcrypto.KeyPair ?
   RootSigningKey      string `json:"rootSigningKey"`
-  SigningKey          string `json:"sigingKey"`
+  SigningKey          string `json:"signingKey"`
   RegionCode          string `json:"regionCode"`
   NetworkInfoGateway  string `json:"networkInfoGateway"`
   NetworkInfoProvider string `json:"networkInfoProvider"`

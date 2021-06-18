@@ -30,7 +30,7 @@ type ProviderRegister struct {
 	NodeID             string `json:"nodeId"`
 	Address            string `json:"address"`
 	RootSigningKey     string `json:"rootSigningKey"`
-	SigningKey         string `json:"sigingKey"`
+	SigningKey         string `json:"signingKey"`
 	RegionCode         string `json:"regionCode"`
 	NetworkInfoGateway string `json:"networkInfoGateway"`
 	NetworkInfoClient  string `json:"networkInfoClient"`

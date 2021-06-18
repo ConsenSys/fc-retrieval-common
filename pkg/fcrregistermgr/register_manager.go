@@ -22,6 +22,7 @@ package fcrregistermgr
  */
 
 import (
+  "encoding/json"
   "errors"
   "sync"
   "time"
@@ -126,7 +127,7 @@ func (mgr *FCRRegisterMgr) Shutdown() {
 	mgr.start = false
 }
 
-// Refresh refreshs the internal map immediately.
+// Refresh refreshes the internal map immediately.
 func (mgr *FCRRegisterMgr) Refresh() {
 	if !mgr.start {
 		return
@@ -139,6 +140,18 @@ func (mgr *FCRRegisterMgr) Refresh() {
 		mgr.providerRefreshCh <- true
 		<-mgr.providerRefreshCh
 	}
+}
+
+// RegisterGateway to register a gateway
+func (mgr *FCRRegisterMgr) RegisterGateway(gatewayRegistrar register.GatewayRegistrar) error {
+  url := mgr.registerAPI + "/registers/gateway"
+  return mgr.httpCommunicator.SendJSON(url, gatewayRegistrar.Serialize())
+}
+
+// RegisterProvider to register a provider
+func (mgr *FCRRegisterMgr) RegisterProvider(providerRegistrar register.ProviderRegistrar) error {
+  url := mgr.registerAPI + "/registers/provider"
+  return mgr.httpCommunicator.SendJSON(url, providerRegistrar.Serialize())
 }
 
 // GetGateway returns a gateway register if found.
@@ -183,18 +196,28 @@ func (mgr *FCRRegisterMgr) GetProvider(id *nodeid.NodeID) register.ProviderRegis
 	return provider
 }
 
-// GetAllGateways returns  all discovered gateways.
+// GetAllGateways returns  all discovered gateways, from a remote synchronized node
 func (mgr *FCRRegisterMgr) GetAllGateways() []register.GatewayRegistrar {
 	if !mgr.start || !mgr.gatewayDiscv {
 		return nil
 	}
-	res := make([]register.GatewayRegistrar, 0)
-	mgr.registeredGatewaysMapLock.RLock()
-	defer mgr.registeredGatewaysMapLock.RUnlock()
-	for _, gateway := range mgr.registeredGatewaysMap {
-		res = append(res, gateway)
-	}
-	return res
+  url := mgr.registerAPI + "/registers/gateway/"
+  rspBytes, err := mgr.httpCommunicator.GetJSON(url)
+  if err != nil {
+    logging.Error("error updating gateways: %s", err.Error())
+    return nil
+  }
+  var gateways []*register.GatewayRegister
+  if err := json.Unmarshal(rspBytes, &gateways); err != nil {
+    logging.Error("error updating gateways, invalid response")
+    return nil
+  }
+
+  var result []register.GatewayRegistrar
+  for _, g := range gateways {
+    result = append(result, register.NewGatewayRegister(g.NodeID, g.Address, g.RootSigningKey, g.SigningKey, g.RegionCode, g.NetworkInfoGateway, g.NetworkInfoProvider, g.NetworkInfoClient, g.NetworkInfoAdmin))
+  }
+  return result
 }
 
 // GetAllProviders returns  all discovered providers.
@@ -202,13 +225,22 @@ func (mgr *FCRRegisterMgr) GetAllProviders() []register.ProviderRegistrar {
 	if !mgr.start || !mgr.providerDiscv {
 		return nil
 	}
-	res := make([]register.ProviderRegistrar, 0)
-	mgr.registeredProvidersMapLock.RLock()
-	defer mgr.registeredProvidersMapLock.RUnlock()
-	for _, provider := range mgr.registeredProvidersMap {
-		res = append(res, provider)
-	}
-	return res
+  url := mgr.registerAPI + "/registers/provider/"
+  var providers []*register.ProviderRegister
+  rspBytes, err := mgr.httpCommunicator.GetJSON(url)
+  if err != nil {
+    logging.Error("error updating providers: %s", err.Error())
+    return nil
+  }
+  if err := json.Unmarshal(rspBytes, &providers); err != nil {
+    logging.Error("error updating providers, invalid response")
+    return nil
+  }
+  var result []register.ProviderRegistrar
+  for _, g := range providers {
+    result = append(result, register.NewProviderRegister(g.NodeID, g.Address, g.RootSigningKey, g.SigningKey, g.RegionCode, g.NetworkInfoGateway, g.NetworkInfoClient, g.NetworkInfoAdmin))
+  }
+  return result
 }
 
 // GetGatewayCIDRange gets the cid max and cid min of this gateway at start up

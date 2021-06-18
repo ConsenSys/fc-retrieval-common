@@ -22,7 +22,6 @@ package register
 
 import (
   "github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
-  "github.com/ConsenSys/fc-retrieval-common/pkg/request"
 )
 
 // ProviderRegister stores information of a registered provider
@@ -30,12 +29,11 @@ type ProviderRegister struct {
 	NodeID             string `json:"nodeId"`
 	Address            string `json:"address"`
 	RootSigningKey     string `json:"rootSigningKey"`
-	SigningKey         string `json:"sigingKey"`
+	SigningKey         string `json:"signingKey"`
 	RegionCode         string `json:"regionCode"`
 	NetworkInfoGateway string `json:"networkInfoGateway"`
 	NetworkInfoClient  string `json:"networkInfoClient"`
 	NetworkInfoAdmin   string `json:"networkInfoAdmin"`
-  HttpCommunicator   request.HttpCommunications
 }
 
 // ProviderRegistrar performs network operations for a registered node
@@ -48,7 +46,7 @@ type ProviderRegistrar interface {
   GetNetworkInfoGateway() string
   GetNetworkInfoClient() string
   GetNetworkInfoAdmin() string
-  RegisterProvider(registerURL string) error
+  Serialize() ProviderRegister
 }
 
 func NewProviderRegister(
@@ -60,7 +58,6 @@ func NewProviderRegister(
   networkInfoGateway  string,
   networkInfoClient   string,
   networkInfoAdmin    string,
-  httpCommunicator    request.HttpCommunications,
 ) ProviderRegistrar {
   return &ProviderRegister {
     NodeID: nodeID,
@@ -71,7 +68,28 @@ func NewProviderRegister(
     NetworkInfoGateway: networkInfoGateway,
     NetworkInfoClient: networkInfoClient,
     NetworkInfoAdmin: networkInfoAdmin,
-    HttpCommunicator: httpCommunicator,
+  }
+}
+
+func NewProviderRegisterWithDep(
+  nodeID              string,
+  address             string,
+  rootSigningKey      string,
+  signingKey          string,
+  regionCode          string,
+  networkInfoGateway  string,
+  networkInfoClient   string,
+  networkInfoAdmin    string,
+) ProviderRegistrar {
+  return &ProviderRegister {
+    NodeID: nodeID,
+    Address: address,
+    RootSigningKey: rootSigningKey,
+    SigningKey: signingKey,
+    RegionCode: regionCode,
+    NetworkInfoGateway: networkInfoGateway,
+    NetworkInfoClient: networkInfoClient,
+    NetworkInfoAdmin: networkInfoAdmin,
   }
 }
 
@@ -117,9 +135,6 @@ func (r *ProviderRegister) GetSigningKey() (*fcrcrypto.KeyPair, error) {
 	return fcrcrypto.DecodePublicKey(r.SigningKey)
 }
 
-
-// RegisterProvider to register a provider
-func (r *ProviderRegister) RegisterProvider(registerURL string) error {
-	url := registerURL + "/registers/provider"
-	return r.HttpCommunicator.SendJSON(url, r)
+func (r *ProviderRegister) Serialize() ProviderRegister {
+  return *r
 }

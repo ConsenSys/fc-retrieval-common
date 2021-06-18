@@ -2,8 +2,6 @@ package register
 
 import (
   "fmt"
-
-  "github.com/ConsenSys/fc-retrieval-common/pkg/request"
 )
 
 const (
@@ -20,7 +18,7 @@ var gr = NewGatewayRegister(
     "AA",
     "AA",
     "AA",
-    request.NewHttpCommunicator())
+)
 
 func ExampleGatewayRegistrar_GetNodeID() {
 	fmt.Println(gr.GetNodeID())
@@ -62,11 +60,4 @@ func ExampleGatewayRegistrar_GetSigningKey() {
 	v, err := gr.GetSigningKey()
 	fmt.Println(v, err)
 	// Output: <nil> incorrect secp256k1 public key length: 32
-}
-
-func ExampleGatewayRegistrar_RegisterGateway() {
-	err := gr.RegisterGateway("")
-	fmt.Println(err)
-	// Output:
-	// Post "/registers/gateway": unsupported protocol scheme ""
 }

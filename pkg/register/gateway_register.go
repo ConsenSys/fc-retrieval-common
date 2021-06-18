@@ -2,14 +2,12 @@ package register
 
 import (
   "github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
-  "github.com/ConsenSys/fc-retrieval-common/pkg/request"
 )
 
 // GatewayRegister stores information of a registered gateway
 type GatewayRegister struct {
   NodeID              string `json:"nodeId"`
   Address             string `json:"address"`
-  //todo: change type to fcrcrypto.KeyPair ?
   RootSigningKey      string `json:"rootSigningKey"`
   SigningKey          string `json:"sigingKey"`
   RegionCode          string `json:"regionCode"`
@@ -17,7 +15,6 @@ type GatewayRegister struct {
   NetworkInfoProvider string `json:"networkInfoProvider"`
   NetworkInfoClient   string `json:"networkInfoClient"`
   NetworkInfoAdmin    string `json:"networkInfoAdmin"`
-  HttpCommunicator    request.HttpCommunications
 }
 
 type GatewayRegistrar interface {
@@ -30,7 +27,7 @@ type GatewayRegistrar interface {
   GetNetworkInfoAdmin() string
   GetRootSigningKey() (*fcrcrypto.KeyPair, error)
   GetSigningKey() (*fcrcrypto.KeyPair, error)
-  RegisterGateway(registerURL string) error
+  Serialize() GatewayRegister
 }
 
 func NewGatewayRegister(
@@ -43,7 +40,6 @@ func NewGatewayRegister(
   networkInfoProvider string,
   networkInfoClient   string,
   networkInfoAdmin    string,
-  httpCommunicator    request.HttpCommunications,
   ) GatewayRegistrar {
   return &GatewayRegister {
     NodeID: nodeID,
@@ -55,7 +51,6 @@ func NewGatewayRegister(
     NetworkInfoProvider: networkInfoProvider,
     NetworkInfoClient: networkInfoClient,
     NetworkInfoAdmin: networkInfoAdmin,
-    HttpCommunicator: httpCommunicator,
   }
 }
 
@@ -104,8 +99,6 @@ func (r *GatewayRegister) GetSigningKey() (*fcrcrypto.KeyPair, error) {
   return fcrcrypto.DecodePublicKey(r.SigningKey)
 }
 
-// RegisterGateway to register a gateway
-func (r *GatewayRegister) RegisterGateway(registerURL string) error {
-  url := registerURL + "/registers/gateway"
-  return r.HttpCommunicator.SendJSON(url, r)
+func (r *GatewayRegister) Serialize() GatewayRegister {
+  return *r
 }

@@ -2,8 +2,6 @@ package register
 
 import (
   "fmt"
-
-  "github.com/ConsenSys/fc-retrieval-common/pkg/request"
 )
 
 var pr = NewProviderRegister(
@@ -15,7 +13,7 @@ var pr = NewProviderRegister(
     "AA",
     "AA",
     "AA",
-    request.NewHttpCommunicator())
+)
 
 func ExampleProviderRegistrar_GetNodeID() {
 	fmt.Println(pr.GetNodeID())

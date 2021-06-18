@@ -25,7 +25,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+  "fmt"
+  "io/ioutil"
 	"net/http"
 	"time"
 
@@ -39,7 +40,7 @@ type HttpCommunicator struct {
 
 // HttpCommunications - facilitates communications between nodes using HTTP
 type HttpCommunications interface {
-  GetJSON(url string, target interface{}) error
+  GetJSON(url string) ([]byte, error)
   SendJSON(url string, data interface{}) error
   SendMessage(url string, message *fcrmessages.FCRMessage) (*fcrmessages.FCRMessage, error)
 }
@@ -51,18 +52,20 @@ func NewHttpCommunicator() HttpCommunications {
 }
 
 // GetJSON request Get JSON
-func(c *HttpCommunicator) GetJSON(url string, target interface{}) error {
+func(c *HttpCommunicator) GetJSON(url string) ([]byte, error) {
 	r, err := c.httpClient.Get(url)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	if decodeErr := json.NewDecoder(r.Body).Decode(target); decodeErr != nil {
-		return decodeErr
-	}
+  result, readErr := ioutil.ReadAll(r.Body)
+  if readErr != nil {
+    return nil, fmt.Errorf("can't read from JSON response, error: %s", readErr.Error())
+  }
+
 	if closeErr := r.Body.Close(); closeErr != nil {
-		return closeErr
+		return nil, closeErr
 	}
-	return nil
+	return result, nil
 }
 
 // SendJSON request Send JSON

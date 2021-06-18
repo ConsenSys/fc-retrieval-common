@@ -9,25 +9,27 @@ import (
 )
 
 var c = NewHttpCommunicator()
+type A struct {
+  B string
+}
 
 func ExampleHttpCommunications_GetJSON_v01() {
-	var v01 int
-	err := c.GetJSON("", &v01)
-	fmt.Println(v01, err)
-	// Output: 0 Get "": unsupported protocol scheme ""
+  bytes, err := c.GetJSON("")
+	fmt.Println(bytes, err)
+	// Output: [] Get "": unsupported protocol scheme ""
 }
 
 func ExampleHttpCommunications_GetJSON_v02() {
-	v01 := map[string]string{"k1":"v1"}
-	err := c.GetJSON("", &v01)
-	fmt.Println(v01, err)
+	v02 := map[string]string{"k1":"v1"}
+  _, err := c.GetJSON("")
+	fmt.Println(v02, err)
 	// Output: map[k1:v1] Get "": unsupported protocol scheme ""
 }
 
 func ExampleHttpCommunications_GetJSON_v03() {
-  v01 := map[string]string{"k1":"v1"}
-  err := c.GetJSON("http://localhost", &v01)
-  fmt.Println(v01, err)
+  v03 := map[string]string{"k1":"v1"}
+  _, err := c.GetJSON("http://localhost")
+  fmt.Println(v03, err)
   // Output: map[k1:v1] Get "http://localhost": dial tcp 127.0.0.1:80: connect: connection refused
 }
 

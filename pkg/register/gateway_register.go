@@ -1,3 +1,8 @@
+/*
+Package register - provides methods for FileCoin Secondary Retrieval from Retrieval Register perspective.
+
+Retrieval Register is a central node, holding information about Retrieval Gateways and Retrieval Providers.
+*/
 package register
 
 import (
@@ -9,7 +14,7 @@ type GatewayRegister struct {
   NodeID              string `json:"nodeId"`
   Address             string `json:"address"`
   RootSigningKey      string `json:"rootSigningKey"`
-  SigningKey          string `json:"sigingKey"`
+  SigningKey          string `json:"signingKey"`
   RegionCode          string `json:"regionCode"`
   NetworkInfoGateway  string `json:"networkInfoGateway"`
   NetworkInfoProvider string `json:"networkInfoProvider"`

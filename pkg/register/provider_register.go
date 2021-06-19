@@ -71,28 +71,6 @@ func NewProviderRegister(
   }
 }
 
-func NewProviderRegisterWithDep(
-  nodeID              string,
-  address             string,
-  rootSigningKey      string,
-  signingKey          string,
-  regionCode          string,
-  networkInfoGateway  string,
-  networkInfoClient   string,
-  networkInfoAdmin    string,
-) ProviderRegistrar {
-  return &ProviderRegister {
-    NodeID: nodeID,
-    Address: address,
-    RootSigningKey: rootSigningKey,
-    SigningKey: signingKey,
-    RegionCode: regionCode,
-    NetworkInfoGateway: networkInfoGateway,
-    NetworkInfoClient: networkInfoClient,
-    NetworkInfoAdmin: networkInfoAdmin,
-  }
-}
-
 // GetNodeID gets the node id
 func (r *ProviderRegister) GetNodeID() string {
 	return r.NodeID

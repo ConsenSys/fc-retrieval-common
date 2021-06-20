@@ -503,6 +503,6 @@ func TestPullGatewaysFromRegisterSrv_ReturnsNode(t *testing.T) {
     expectedResult = append(expectedResult, register.NewGatewayRegister(g.NodeID, g.Address, g.RootSigningKey, g.SigningKey, g.RegionCode, g.NetworkInfoGateway, g.NetworkInfoProvider, g.NetworkInfoClient, g.NetworkInfoAdmin))
   }
 
-  got := mgr.PullGatewaysFromRegisterSrv()
+  got := mgr.pullGatewaysFromRegisterSrv()
   assert.ElementsMatch(t, got, fakeResponse)
 }

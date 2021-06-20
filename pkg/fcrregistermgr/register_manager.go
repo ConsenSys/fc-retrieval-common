@@ -224,8 +224,8 @@ func (mgr *FCRRegisterMgr) GetAllProviders() []register.ProviderRegistrar {
   return res
 }
 
-// PullGatewaysFromRegisterSrv calls remote service to synchronize discovered Gateway nodes
-func (mgr *FCRRegisterMgr) PullGatewaysFromRegisterSrv() []register.GatewayRegistrar {
+// pullGatewaysFromRegisterSrv calls remote service to synchronize discovered Gateway nodes
+func (mgr *FCRRegisterMgr) pullGatewaysFromRegisterSrv() []register.GatewayRegistrar {
 	if !mgr.start || !mgr.gatewayDiscv {
 		return nil
 	}
@@ -248,7 +248,7 @@ func (mgr *FCRRegisterMgr) PullGatewaysFromRegisterSrv() []register.GatewayRegis
   return result
 }
 
-// PullProvidersFromRegisterSrv calls remote service to synchronize discovered Provider nodes
+// pullProvidersFromRegisterSrv calls remote service to synchronize discovered Provider nodes
 func (mgr *FCRRegisterMgr) pullProvidersFromRegisterSrv() []register.ProviderRegistrar {
 	if !mgr.start || !mgr.providerDiscv {
 		return nil
@@ -343,7 +343,7 @@ func (mgr *FCRRegisterMgr) mapNodeIDs(nodsIDs []*nodeid.NodeID) map[string]strin
 func (mgr *FCRRegisterMgr) updateGateways() {
 	refreshForce := false
 	for {
-		gateways := mgr.PullGatewaysFromRegisterSrv()
+		gateways := mgr.pullGatewaysFromRegisterSrv()
     // Check for update
     for _, gateway := range gateways {
       mgr.registeredGatewaysMapLock.RLock()

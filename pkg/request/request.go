@@ -28,7 +28,8 @@ import (
   "fmt"
   "io/ioutil"
 	"net/http"
-	"time"
+  "sync"
+  "time"
 
 	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrmessages"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
@@ -36,6 +37,7 @@ import (
 
 type HttpCommunicator struct {
   httpClient *http.Client
+  sync.Mutex
 }
 
 // HttpCommunications - facilitates communications between nodes using HTTP
@@ -48,11 +50,14 @@ type HttpCommunications interface {
 func NewHttpCommunicator() HttpCommunications {
   return &HttpCommunicator{
     httpClient: &http.Client{Timeout: 180 * time.Second},
+    Mutex: sync.Mutex{},
   }
 }
 
 // GetJSON request Get JSON
 func(c *HttpCommunicator) GetJSON(url string) ([]byte, error) {
+  c.Lock()
+  defer c.Unlock()
 	r, err := c.httpClient.Get(url)
 	if err != nil {
 		return nil, err
@@ -70,6 +75,8 @@ func(c *HttpCommunicator) GetJSON(url string) ([]byte, error) {
 
 // SendJSON request Send JSON
 func(c *HttpCommunicator) SendJSON(url string, data interface{}) error {
+  c.Lock()
+  defer c.Unlock()
 	jsonData, _ := json.Marshal(data)
 	req, err := http.NewRequest("POST", url, bytes.NewReader(jsonData))
 	if req == nil {
@@ -89,6 +96,8 @@ func(c *HttpCommunicator) SendJSON(url string, data interface{}) error {
 
 // SendMessage request Send JSON
 func(c *HttpCommunicator) SendMessage(url string, message *fcrmessages.FCRMessage) (*fcrmessages.FCRMessage, error) {
+  c.Lock()
+  defer c.Unlock()
 	var data fcrmessages.FCRMessage
 	jsonData, _ := json.Marshal(message)
 	logging.Info("Sending JSON to url: %v", url)

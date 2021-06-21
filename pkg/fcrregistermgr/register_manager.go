@@ -399,7 +399,7 @@ func (mgr *FCRRegisterMgr) updateGateways() {
 		select {
 		case <-mgr.gatewayRefreshCh:
 			// Need to refresh
-			logging.Error("Register manager force update internal gateway map.")
+			logging.Info("Register manager force update internal gateway map.")
 			refreshForce = true
 		case <-afterChan:
 			// Need to refresh

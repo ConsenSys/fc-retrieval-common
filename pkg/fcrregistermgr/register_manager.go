@@ -22,17 +22,17 @@ package fcrregistermgr
  */
 
 import (
-  "encoding/json"
-  "errors"
-  "sync"
-  "time"
+	"encoding/json"
+	"errors"
+	"sync"
+	"time"
 
-  "github.com/ConsenSys/fc-retrieval-common/pkg/cid"
-  "github.com/ConsenSys/fc-retrieval-common/pkg/dhtring"
-  "github.com/ConsenSys/fc-retrieval-common/pkg/logging"
-  "github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
-  "github.com/ConsenSys/fc-retrieval-common/pkg/register"
-  "github.com/ConsenSys/fc-retrieval-common/pkg/request"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/dhtring"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/register"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/request"
 )
 
 // FCRRegisterMgr Register Manager manages the internal storage of registered nodes.
@@ -68,17 +68,17 @@ type FCRRegisterMgr struct {
 	registeredProvidersMap     map[string]register.ProviderRegistrar
 	registeredProvidersMapLock sync.RWMutex
 
-  httpCommunicator    request.HttpCommunications
+	httpCommunicator request.HttpCommunications
 }
 
 // NewFCRRegisterMgr creates a new register manager.
 func NewFCRRegisterMgr(registerAPI string, providerDiscv bool, gatewayDiscv bool, refreshDuration time.Duration) *FCRRegisterMgr {
 	res := &FCRRegisterMgr{
-		start:           false,
-		registerAPI:     registerAPI,
-		refreshDuration: refreshDuration,
-		gatewayDiscv:    gatewayDiscv,
-		providerDiscv:   providerDiscv,
+		start:            false,
+		registerAPI:      registerAPI,
+		refreshDuration:  refreshDuration,
+		gatewayDiscv:     gatewayDiscv,
+		providerDiscv:    providerDiscv,
 		httpCommunicator: request.NewHttpCommunicator(),
 	}
 	if gatewayDiscv {
@@ -127,6 +127,25 @@ func (mgr *FCRRegisterMgr) Shutdown() {
 	mgr.start = false
 }
 
+// ShutdownAndWait stop the register manager
+// Initiates register manager blocking shutdown (waiting for all parties before return)
+func (mgr *FCRRegisterMgr) ShutdownAndWait() {
+	if !mgr.start {
+		return
+	}
+	if mgr.gatewayDiscv {
+		mgr.shutdownGateways()
+		// stop the main loop
+		mgr.gatewayShutdownCh <- true
+	}
+	if mgr.providerDiscv {
+		mgr.shutdownProviders()
+		// stop the main loop
+		mgr.providerShutdownCh <- true
+	}
+	mgr.start = false
+}
+
 // Refresh refreshes the internal map immediately.
 func (mgr *FCRRegisterMgr) Refresh() {
 	if !mgr.start {
@@ -144,20 +163,20 @@ func (mgr *FCRRegisterMgr) Refresh() {
 
 // RegisterGateway to register a gateway
 func (mgr *FCRRegisterMgr) RegisterGateway(gatewayRegistrar register.GatewayRegistrar) error {
-  url := mgr.registerAPI + "/registers/gateway"
-  return mgr.httpCommunicator.SendJSON(url, gatewayRegistrar.Serialize())
+	url := mgr.registerAPI + "/registers/gateway"
+	return mgr.httpCommunicator.SendJSON(url, gatewayRegistrar.Serialize())
 }
 
 // RegisterProvider to register a provider
 func (mgr *FCRRegisterMgr) RegisterProvider(providerRegistrar register.ProviderRegistrar) error {
-  url := mgr.registerAPI + "/registers/provider"
-  return mgr.httpCommunicator.SendJSON(url, providerRegistrar.Serialize())
+	url := mgr.registerAPI + "/registers/provider"
+	return mgr.httpCommunicator.SendJSON(url, providerRegistrar.Serialize())
 }
 
 // GetGateway returns a gateway register if found.
 func (mgr *FCRRegisterMgr) GetGateway(id *nodeid.NodeID) register.GatewayRegistrar {
 	if !mgr.start || !mgr.gatewayDiscv {
-    logging.Error("method GetGateway called while Register Manager is not started or gateway discovery is not enabled")
+		logging.Error("method GetGateway called, Register Manager is not started or gateway discovery is not enabled")
 		return nil
 	}
 	mgr.registeredGatewaysMapLock.RLock()
@@ -178,6 +197,7 @@ func (mgr *FCRRegisterMgr) GetGateway(id *nodeid.NodeID) register.GatewayRegistr
 // GetProvider returns a provider register if found.
 func (mgr *FCRRegisterMgr) GetProvider(id *nodeid.NodeID) register.ProviderRegistrar {
 	if !mgr.start || !mgr.providerDiscv {
+		logging.Error("method GetProvider called, Register Manager is not started or provider discovery is not enabled")
 		return nil
 	}
 	mgr.registeredProvidersMapLock.RLock()
@@ -198,54 +218,57 @@ func (mgr *FCRRegisterMgr) GetProvider(id *nodeid.NodeID) register.ProviderRegis
 
 // GetAllGateways returns  all discovered gateways.
 func (mgr *FCRRegisterMgr) GetAllGateways() []register.GatewayRegistrar {
-  if !mgr.start || !mgr.gatewayDiscv {
-    return nil
-  }
-  res := make([]register.GatewayRegistrar, 0)
-  mgr.registeredGatewaysMapLock.RLock()
-  defer mgr.registeredGatewaysMapLock.RUnlock()
-  for _, gateway := range mgr.registeredGatewaysMap {
-    res = append(res, gateway)
-  }
-  return res
+	if !mgr.start || !mgr.gatewayDiscv {
+		logging.Error("method GetAllGateways called, Register Manager is not started or gateway discovery is not enabled")
+		return nil
+	}
+	res := make([]register.GatewayRegistrar, 0)
+	mgr.registeredGatewaysMapLock.RLock()
+	defer mgr.registeredGatewaysMapLock.RUnlock()
+	for _, gateway := range mgr.registeredGatewaysMap {
+		res = append(res, gateway)
+	}
+	return res
 }
 
 // GetAllProviders returns  all discovered providers.
 func (mgr *FCRRegisterMgr) GetAllProviders() []register.ProviderRegistrar {
-  if !mgr.start || !mgr.providerDiscv {
-    return nil
-  }
-  res := make([]register.ProviderRegistrar, 0)
-  mgr.registeredProvidersMapLock.RLock()
-  defer mgr.registeredProvidersMapLock.RUnlock()
-  for _, provider := range mgr.registeredProvidersMap {
-    res = append(res, provider)
-  }
-  return res
+	if !mgr.start || !mgr.providerDiscv {
+		logging.Error("method GetAllProviders called, Register Manager is not started or provider discovery is not enabled")
+		return nil
+	}
+	res := make([]register.ProviderRegistrar, 0)
+	mgr.registeredProvidersMapLock.RLock()
+	defer mgr.registeredProvidersMapLock.RUnlock()
+	for _, provider := range mgr.registeredProvidersMap {
+		res = append(res, provider)
+	}
+	return res
 }
 
 // pullGatewaysFromRegisterSrv calls remote service to synchronize discovered Gateway nodes
 func (mgr *FCRRegisterMgr) pullGatewaysFromRegisterSrv() []register.GatewayRegistrar {
 	if !mgr.start || !mgr.gatewayDiscv {
+		logging.Error("method pullGatewaysFromRegisterSrv called, Register Manager is not started or gateway discovery is not enabled")
 		return nil
 	}
-  url := mgr.registerAPI + "/registers/gateway/"
-  rspBytes, err := mgr.httpCommunicator.GetJSON(url)
-  if err != nil {
-    logging.Error("error updating gateways: %s", err.Error())
-    return nil
-  }
-  var gateways []*register.GatewayRegister
-  if err := json.Unmarshal(rspBytes, &gateways); err != nil {
-    logging.Error("error updating gateways, invalid response")
-    return nil
-  }
+	url := mgr.registerAPI + "/registers/gateway/"
+	rspBytes, err := mgr.httpCommunicator.GetJSON(url)
+	if err != nil {
+		logging.Error("error updating gateways: %s", err.Error())
+		return nil
+	}
+	var gateways []*register.GatewayRegister
+	if err := json.Unmarshal(rspBytes, &gateways); err != nil {
+		logging.Error("error updating gateways, invalid response")
+		return nil
+	}
 
-  var result []register.GatewayRegistrar
-  for _, g := range gateways {
-    result = append(result, register.NewGatewayRegister(g.NodeID, g.Address, g.RootSigningKey, g.SigningKey, g.RegionCode, g.NetworkInfoGateway, g.NetworkInfoProvider, g.NetworkInfoClient, g.NetworkInfoAdmin))
-  }
-  return result
+	var result []register.GatewayRegistrar
+	for _, g := range gateways {
+		result = append(result, register.NewGatewayRegister(g.NodeID, g.Address, g.RootSigningKey, g.SigningKey, g.RegionCode, g.NetworkInfoGateway, g.NetworkInfoProvider, g.NetworkInfoClient, g.NetworkInfoAdmin))
+	}
+	return result
 }
 
 // pullProvidersFromRegisterSrv calls remote service to synchronize discovered Provider nodes
@@ -253,22 +276,22 @@ func (mgr *FCRRegisterMgr) pullProvidersFromRegisterSrv() []register.ProviderReg
 	if !mgr.start || !mgr.providerDiscv {
 		return nil
 	}
-  url := mgr.registerAPI + "/registers/provider/"
-  var providers []*register.ProviderRegister
-  rspBytes, err := mgr.httpCommunicator.GetJSON(url)
-  if err != nil {
-    logging.Error("error updating providers: %s", err.Error())
-    return nil
-  }
-  if err := json.Unmarshal(rspBytes, &providers); err != nil {
-    logging.Error("error updating providers, invalid response")
-    return nil
-  }
-  var result []register.ProviderRegistrar
-  for _, g := range providers {
-    result = append(result, register.NewProviderRegister(g.NodeID, g.Address, g.RootSigningKey, g.SigningKey, g.RegionCode, g.NetworkInfoGateway, g.NetworkInfoClient, g.NetworkInfoAdmin))
-  }
-  return result
+	url := mgr.registerAPI + "/registers/provider/"
+	var providers []*register.ProviderRegister
+	rspBytes, err := mgr.httpCommunicator.GetJSON(url)
+	if err != nil {
+		logging.Error("error updating providers: %s", err.Error())
+		return nil
+	}
+	if err := json.Unmarshal(rspBytes, &providers); err != nil {
+		logging.Error("error updating providers, invalid response")
+		return nil
+	}
+	var result []register.ProviderRegistrar
+	for _, g := range providers {
+		result = append(result, register.NewProviderRegister(g.NodeID, g.Address, g.RootSigningKey, g.SigningKey, g.RegionCode, g.NetworkInfoGateway, g.NetworkInfoClient, g.NetworkInfoAdmin))
+	}
+	return result
 }
 
 // GetGatewayCIDRange gets the cid max and cid min of this gateway at start up
@@ -344,29 +367,29 @@ func (mgr *FCRRegisterMgr) updateGateways() {
 	refreshForce := false
 	for {
 		gateways := mgr.pullGatewaysFromRegisterSrv()
-    // Check for update
-    for _, gateway := range gateways {
-      mgr.registeredGatewaysMapLock.RLock()
-      storedInfo, ok := mgr.registeredGatewaysMap[gateway.GetNodeID()]
-      mgr.registeredGatewaysMapLock.RUnlock()
-      if !ok {
-        // Not exist, we need to add a new entry
-        mgr.registeredGatewaysMapLock.Lock()
-        mgr.registeredGatewaysMap[gateway.GetNodeID()] = gateway
-        mgr.registeredGatewaysMapLock.Unlock()
-        mgr.closestGatewaysIDsLock.Lock()
-        mgr.closestGatewaysIDs.Insert(gateway.GetNodeID())
-        mgr.closestGatewaysIDsLock.Unlock()
-      } else {
-        // Exist, check if need update
-        if gateway != storedInfo {
-          // Need update
-          mgr.registeredGatewaysMapLock.Lock()
-          mgr.registeredGatewaysMap[gateway.GetNodeID()] = gateway
-          mgr.registeredGatewaysMapLock.Unlock()
-        }
-      }
-    }
+		// Check for update
+		for _, gateway := range gateways {
+			mgr.registeredGatewaysMapLock.RLock()
+			storedInfo, ok := mgr.registeredGatewaysMap[gateway.GetNodeID()]
+			mgr.registeredGatewaysMapLock.RUnlock()
+			if !ok {
+				// Not exist, we need to add a new entry
+				mgr.registeredGatewaysMapLock.Lock()
+				mgr.registeredGatewaysMap[gateway.GetNodeID()] = gateway
+				mgr.registeredGatewaysMapLock.Unlock()
+				mgr.closestGatewaysIDsLock.Lock()
+				mgr.closestGatewaysIDs.Insert(gateway.GetNodeID())
+				mgr.closestGatewaysIDsLock.Unlock()
+			} else {
+				// Exist, check if need update
+				if gateway != storedInfo {
+					// Need update
+					mgr.registeredGatewaysMapLock.Lock()
+					mgr.registeredGatewaysMap[gateway.GetNodeID()] = gateway
+					mgr.registeredGatewaysMapLock.Unlock()
+				}
+			}
+		}
 
 		if refreshForce {
 			mgr.gatewayRefreshCh <- true
@@ -382,7 +405,8 @@ func (mgr *FCRRegisterMgr) updateGateways() {
 			// Need to refresh
 		case <-mgr.gatewayShutdownCh:
 			// Need to shutdown
-			logging.Error("Register manager shutdown gateway routine.")
+			logging.Info("Register manager shutdown gateway routine.")
+			mgr.shutdownGateways()
 			return
 		}
 	}
@@ -393,26 +417,26 @@ func (mgr *FCRRegisterMgr) updateProviders() {
 	refreshForce := false
 	for {
 		providers := mgr.pullProvidersFromRegisterSrv()
-    // Check for update
-    for _, provider := range providers {
-      mgr.registeredProvidersMapLock.RLock()
-      storedInfo, ok := mgr.registeredProvidersMap[provider.GetNodeID()]
-      mgr.registeredProvidersMapLock.RUnlock()
-      if !ok {
-        // Not exist, we need to add a new entry
-        mgr.registeredProvidersMapLock.Lock()
-        mgr.registeredProvidersMap[provider.GetNodeID()] = provider
-        mgr.registeredProvidersMapLock.Unlock()
-      } else {
-        // Exist, check if need update
-        if provider != storedInfo {
-          // Need update
-          mgr.registeredProvidersMapLock.Lock()
-          mgr.registeredProvidersMap[provider.GetNodeID()] = provider
-          mgr.registeredProvidersMapLock.Unlock()
-        }
-      }
-    }
+		// Check for update
+		for _, provider := range providers {
+			mgr.registeredProvidersMapLock.RLock()
+			storedInfo, ok := mgr.registeredProvidersMap[provider.GetNodeID()]
+			mgr.registeredProvidersMapLock.RUnlock()
+			if !ok {
+				// Not exist, we need to add a new entry
+				mgr.registeredProvidersMapLock.Lock()
+				mgr.registeredProvidersMap[provider.GetNodeID()] = provider
+				mgr.registeredProvidersMapLock.Unlock()
+			} else {
+				// Exist, check if need update
+				if provider != storedInfo {
+					// Need update
+					mgr.registeredProvidersMapLock.Lock()
+					mgr.registeredProvidersMap[provider.GetNodeID()] = provider
+					mgr.registeredProvidersMapLock.Unlock()
+				}
+			}
+		}
 
 		if refreshForce {
 			mgr.providerRefreshCh <- true
@@ -429,7 +453,48 @@ func (mgr *FCRRegisterMgr) updateProviders() {
 		case <-mgr.providerShutdownCh:
 			// Need to shutdown
 			logging.Info("Register manager shutdown provider routine.")
+			mgr.shutdownProviders()
 			return
 		}
+	}
+}
+
+func (mgr *FCRRegisterMgr) shutdownGateways() {
+	if !mgr.gatewayDiscv {
+		logging.Error("method removeAllGatewaysFromRegisterSrv called, gateway discovery is not enabled")
+		return
+	}
+	mgr.registeredGatewaysMapLock.Lock()
+	mgr.registeredGatewaysMap = make(map[string]register.GatewayRegistrar)
+	mgr.registeredGatewaysMapLock.Unlock()
+	mgr.removeAllGatewaysFromRegisterSrv()
+}
+
+func (mgr *FCRRegisterMgr) shutdownProviders() {
+	if !mgr.providerDiscv {
+		logging.Error("method removeAllProvidersFromRegisterSrv called, provider discovery is not enabled")
+		return
+	}
+	mgr.registeredProvidersMapLock.Lock()
+	mgr.registeredProvidersMap = make(map[string]register.ProviderRegistrar)
+	mgr.registeredProvidersMapLock.Unlock()
+	mgr.removeAllProvidersFromRegisterSrv()
+}
+
+// removeAllGatewaysFromRegisterSrv calls remote service to remove Gateway nodes
+func (mgr *FCRRegisterMgr) removeAllGatewaysFromRegisterSrv() {
+	url := mgr.registerAPI + "/registers/gateway/"
+	err := mgr.httpCommunicator.Delete(url)
+	if err != nil {
+		logging.Error("error removing gateways: %s", err)
+	}
+}
+
+// removeAllProvidersFromRegisterSrv calls remote service to remove Providers nodes
+func (mgr *FCRRegisterMgr) removeAllProvidersFromRegisterSrv() {
+	url := mgr.registerAPI + "/registers/provider/"
+	err := mgr.httpCommunicator.Delete(url)
+	if err != nil {
+		logging.Error("error removing providers: %s", err)
 	}
 }

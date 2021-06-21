@@ -25,47 +25,48 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-  "fmt"
-  "io/ioutil"
+	"fmt"
+	"io/ioutil"
 	"net/http"
-  "sync"
-  "time"
+	"sync"
+	"time"
 
 	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrmessages"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/logging"
 )
 
 type HttpCommunicator struct {
-  httpClient *http.Client
-  sync.Mutex
+	httpClient *http.Client
+	sync.Mutex
 }
 
 // HttpCommunications - facilitates communications between nodes using HTTP
 type HttpCommunications interface {
-  GetJSON(url string) ([]byte, error)
-  SendJSON(url string, data interface{}) error
-  SendMessage(url string, message *fcrmessages.FCRMessage) (*fcrmessages.FCRMessage, error)
+	GetJSON(url string) ([]byte, error)
+	SendJSON(url string, data interface{}) error
+	SendMessage(url string, message *fcrmessages.FCRMessage) (*fcrmessages.FCRMessage, error)
+	Delete(url string) error
 }
 
 func NewHttpCommunicator() HttpCommunications {
-  return &HttpCommunicator{
-    httpClient: &http.Client{Timeout: 180 * time.Second},
-    Mutex: sync.Mutex{},
-  }
+	return &HttpCommunicator{
+		httpClient: &http.Client{Timeout: 180 * time.Second},
+		Mutex:      sync.Mutex{},
+	}
 }
 
 // GetJSON request Get JSON
-func(c *HttpCommunicator) GetJSON(url string) ([]byte, error) {
-  c.Lock()
-  defer c.Unlock()
+func (c *HttpCommunicator) GetJSON(url string) ([]byte, error) {
+	c.Lock()
+	defer c.Unlock()
 	r, err := c.httpClient.Get(url)
 	if err != nil {
 		return nil, err
 	}
-  result, readErr := ioutil.ReadAll(r.Body)
-  if readErr != nil {
-    return nil, fmt.Errorf("can't read from JSON response, error: %s", readErr.Error())
-  }
+	result, readErr := ioutil.ReadAll(r.Body)
+	if readErr != nil {
+		return nil, fmt.Errorf("can't read from JSON response, error: %s", readErr.Error())
+	}
 
 	if closeErr := r.Body.Close(); closeErr != nil {
 		return nil, closeErr
@@ -74,9 +75,9 @@ func(c *HttpCommunicator) GetJSON(url string) ([]byte, error) {
 }
 
 // SendJSON request Send JSON
-func(c *HttpCommunicator) SendJSON(url string, data interface{}) error {
-  c.Lock()
-  defer c.Unlock()
+func (c *HttpCommunicator) SendJSON(url string, data interface{}) error {
+	c.Lock()
+	defer c.Unlock()
 	jsonData, _ := json.Marshal(data)
 	req, err := http.NewRequest("POST", url, bytes.NewReader(jsonData))
 	if req == nil {
@@ -95,9 +96,9 @@ func(c *HttpCommunicator) SendJSON(url string, data interface{}) error {
 }
 
 // SendMessage request Send JSON
-func(c *HttpCommunicator) SendMessage(url string, message *fcrmessages.FCRMessage) (*fcrmessages.FCRMessage, error) {
-  c.Lock()
-  defer c.Unlock()
+func (c *HttpCommunicator) SendMessage(url string, message *fcrmessages.FCRMessage) (*fcrmessages.FCRMessage, error) {
+	c.Lock()
+	defer c.Unlock()
 	var data fcrmessages.FCRMessage
 	jsonData, _ := json.Marshal(message)
 	logging.Info("Sending JSON to url: %v", url)
@@ -130,4 +131,22 @@ func(c *HttpCommunicator) SendMessage(url string, message *fcrmessages.FCRMessag
 		return &data, errors.New("SendMessage error, can't close request body")
 	}
 	return &data, nil
+}
+
+// Delete request to delete a resource
+func (c *HttpCommunicator) Delete(url string) error {
+	c.Lock()
+	defer c.Unlock()
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		return err
+	}
+	r, err := c.httpClient.Do(req)
+	if err != nil {
+		return err
+	}
+	if r.StatusCode != http.StatusOK {
+		return fmt.Errorf("can't delete, got http status: %d", r.StatusCode)
+	}
+	return nil
 }

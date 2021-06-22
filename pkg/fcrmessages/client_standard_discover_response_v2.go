@@ -17,7 +17,7 @@ package fcrmessages
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 
 	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/cidoffer"
@@ -63,7 +63,7 @@ func DecodeClientStandardDiscoverResponseV2(fcrMsg *FCRMessage) (
 	error, // error
 ) {
 	if fcrMsg.GetMessageType() != ClientStandardDiscoverResponseV2Type {
-		return nil, 0, false, nil, nil, errors.New("message type mismatch")
+		return nil, 0, false, nil, nil, fmt.Errorf("message type mismatch, expected type ID: %d, actual type ID: %d", ClientStandardDiscoverResponseV2Type, fcrMsg.GetMessageType())
 	}
 	msg := clientStandardDiscoverResponseV2{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)

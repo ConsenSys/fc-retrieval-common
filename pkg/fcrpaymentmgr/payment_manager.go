@@ -278,24 +278,24 @@ func (mgr *FCRPaymentMgr) Receive(channel string, voucher string) (*big.Int, err
 	// Decode voucher
 	sv, err := paych.DecodeSignedVoucher(voucher)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("receive voucher method failed, error decoding voucher: %s", err.Error())
 	}
 	// Get API
 	api, closer, err := getLotusAPI(mgr.authToken, mgr.lotusAPIAddr)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("receive voucher method failed, error getting Lotus API endpoint value: %s", err.Error())
 	}
 	defer closer()
 
 	// Get channel state from the chain
 	state, err := api.StateReadState(context.Background(), channelAddr, types.EmptyTSK)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("receive voucher method failed, error reading state: %s", err.Error())
 	}
 	// TODO, Need to make sure it is indeed paych actor state
 	paychState, ok := state.State.(map[string]interface{})
 	if !ok {
-		return nil, errors.New("not a paych state")
+		return nil, errors.New("receive voucher method failed, not a paych state")
 	}
 
 	// Get channel state from local storage
@@ -335,10 +335,10 @@ func (mgr *FCRPaymentMgr) Receive(channel string, voucher string) (*big.Int, err
 	}
 	recipient, err := api.StateAccountKey(context.Background(), to, types.EmptyTSK)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("voucher recipient verification failed: error reading the recipient value: %s", err.Error())
 	}
 	if recipient != *mgr.address {
-		return nil, errors.New("wrong recipient")
+		return nil, fmt.Errorf("voucher recipient verification failed: wrong recipient; expected: %s, actual: %s", mgr.address.String(), recipient.String())
 	}
 
 	// Verify signature
@@ -348,7 +348,7 @@ func (mgr *FCRPaymentMgr) Receive(channel string, voucher string) (*big.Int, err
 	}
 	pubKey, err := api.StateAccountKey(context.Background(), f, types.EmptyTSK)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("voucher signature verification failed: error reading the sender value: %s", err.Error())
 	}
 	vb, err := sv.SigningBytes()
 	if err != nil {
@@ -356,7 +356,7 @@ func (mgr *FCRPaymentMgr) Receive(channel string, voucher string) (*big.Int, err
 	}
 	err = sigs.Verify(sv.Signature, pubKey, vb)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("voucher signature verification failed, error: %s", err.Error())
 	}
 
 	// Verify lane state

@@ -101,7 +101,7 @@ func (c *HttpCommunicator) SendMessage(url string, message *fcrmessages.FCRMessa
 	defer c.Unlock()
 	var data fcrmessages.FCRMessage
 	jsonData, _ := json.Marshal(message)
-	logging.Info("Sending JSON to url: %v", url)
+	logging.Debug("SendMessage - POST JSON to url: %v; request type: %d", url, message.GetMessageType())
 	contentReader := bytes.NewReader(jsonData)
 	req, err := http.NewRequest("POST", "http://"+url+"/v1", contentReader)
 	if req == nil {
@@ -130,6 +130,7 @@ func (c *HttpCommunicator) SendMessage(url string, message *fcrmessages.FCRMessa
 	if err := r.Body.Close(); err != nil {
 		return &data, errors.New("SendMessage error, can't close request body")
 	}
+	logging.Debug("SendMessage - received response type: %d; HTTP status code: %d", data.GetMessageType(), r.StatusCode)
 	return &data, nil
 }
 

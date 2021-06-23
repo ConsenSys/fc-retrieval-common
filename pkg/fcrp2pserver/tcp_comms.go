@@ -101,9 +101,3 @@ func sendInvalidMessage(conn net.Conn, timeout time.Duration) error {
 	fcrMsg, _ := fcrmessages.EncodeInvalidMessageResponse()
 	return sendTCPMessage(conn, fcrMsg, timeout)
 }
-
-// sendInsufficientFunds sends a insufficient payment message to a given connection.
-func sendInsufficientFunds(conn net.Conn, timeout time.Duration, paymentChannelID int64) error {
-	fcrMsg, _ := fcrmessages.EncodeInsufficientFundsResponse(paymentChannelID)
-	return sendTCPMessage(conn, fcrMsg, timeout)
-}

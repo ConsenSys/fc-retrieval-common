@@ -94,8 +94,7 @@ const (
 
 // Messages for basic protocol
 const (
-	ProtocolChangeRequestType     = 900
-	ProtocolChangeResponseType    = 901
-	InvalidMessageResponseType    = 902
-	InsufficientFundsResponseType = 903
+	ProtocolChangeRequestType  = 900
+	ProtocolChangeResponseType = 901
+	InvalidMessageResponseType = 902
 )

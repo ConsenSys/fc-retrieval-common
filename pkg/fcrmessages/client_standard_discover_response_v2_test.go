@@ -3,8 +3,9 @@ package fcrmessages
 import (
 	"testing"
 
-	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
 )
 
 // TestEncodeClientStandardDiscoverResponseV2 success test
@@ -18,9 +19,11 @@ func TestEncodeClientStandardDiscoverResponseV2(t *testing.T) {
 		messageType:       109,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"found":true,"sub_cid_offer_digests":[[1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"funded_payment_channel":[true]}`),
+		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"found":true,"sub_cid_offer_digests":[[1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"funded_payment_channel":[true],"payment_required":true,"payment_channel":42}`),
 		signature:         "",
 	}
+	var fakePaymentRequired = true
+	var fakePaymentChannel = int64(42)
 
 	msg, err := EncodeClientStandardDiscoverResponseV2(
 		mockContentID,
@@ -28,6 +31,8 @@ func TestEncodeClientStandardDiscoverResponseV2(t *testing.T) {
 		mockFound,
 		mockSubCIDOfferDigests,
 		mockFPCs,
+		fakePaymentRequired,
+		fakePaymentChannel,
 	)
 	assert.Empty(t, err)
 	assert.Equal(t, msg, validMsg)
@@ -44,15 +49,19 @@ func TestDecodeClientStandardDiscoverResponseV2(t *testing.T) {
 		messageType:       109,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"found":true,"sub_cid_offer_digests":[[1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"funded_payment_channel":[true]}`),
+		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"found":true,"sub_cid_offer_digests":[[1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"funded_payment_channel":[true],"payment_required":true,"payment_channel":42}`),
 		signature:         "",
 	}
+	var fakePaymentRequired = true
+	var fakePaymentChannel = int64(42)
 
-	contentID, nonce, found, subCIDOfferDigests, FPCs, err := DecodeClientStandardDiscoverResponseV2(validMsg)
+	contentID, nonce, found, subCIDOfferDigests, FPCs, paymentRequired, paymentChannel, err := DecodeClientStandardDiscoverResponseV2(validMsg)
 	assert.Empty(t, err)
 	assert.Equal(t, contentID, mockContentID)
 	assert.Equal(t, nonce, mockNonce)
 	assert.Equal(t, found, mockFound)
 	assert.Equal(t, subCIDOfferDigests, mockSubCIDOfferDigests)
 	assert.Equal(t, FPCs, mockFPCs)
+	assert.Equal(t, fakePaymentRequired, paymentRequired)
+	assert.Equal(t, fakePaymentChannel, paymentChannel)
 }

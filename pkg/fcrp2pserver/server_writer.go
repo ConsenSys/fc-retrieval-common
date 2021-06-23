@@ -49,9 +49,3 @@ func (w *FCRServerWriter) WriteInvalidMessage(timeout time.Duration) error {
 	fcrMsg, _ := fcrmessages.EncodeInvalidMessageResponse()
 	return sendTCPMessage(w.conn, fcrMsg, timeout)
 }
-
-// WriteInsufficientFunds sends a insufficient payment message.
-func (w *FCRServerWriter) WriteInsufficientFunds(timeout time.Duration, paymentChannelID int64) error {
-	fcrMsg, _ := fcrmessages.EncodeInsufficientFundsResponse(paymentChannelID)
-	return sendTCPMessage(w.conn, fcrMsg, timeout)
-}

@@ -22,8 +22,8 @@ func TestEncodeClientStandardDiscoverResponseV2(t *testing.T) {
 		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"found":true,"sub_cid_offer_digests":[[1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"funded_payment_channel":[true],"payment_required":true,"payment_channel":42}`),
 		signature:         "",
 	}
-	var fakePaymentRequired = true
-	var fakePaymentChannel = int64(42)
+	fakePaymentRequired := true
+	fakePaymentChannel := int64(42)
 
 	msg, err := EncodeClientStandardDiscoverResponseV2(
 		mockContentID,
@@ -52,8 +52,8 @@ func TestDecodeClientStandardDiscoverResponseV2(t *testing.T) {
 		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"found":true,"sub_cid_offer_digests":[[1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"funded_payment_channel":[true],"payment_required":true,"payment_channel":42}`),
 		signature:         "",
 	}
-	var fakePaymentRequired = true
-	var fakePaymentChannel = int64(42)
+	fakePaymentRequired := true
+	fakePaymentChannel := int64(42)
 
 	contentID, nonce, found, subCIDOfferDigests, FPCs, paymentRequired, paymentChannel, err := DecodeClientStandardDiscoverResponseV2(validMsg)
 	assert.Empty(t, err)

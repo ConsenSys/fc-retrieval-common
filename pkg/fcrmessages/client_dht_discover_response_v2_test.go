@@ -3,8 +3,9 @@ package fcrmessages
 import (
 	"testing"
 
-	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 )
 
 // TestEncodeClientDHTDiscoverResponse success test
@@ -24,12 +25,14 @@ func TestEncodeClientDHTDiscoverResponseV2(t *testing.T) {
 	mockNodeIDs = append(mockNodeIDs, *mockNodeID)
 
 	mockNonce := int64(42)
+	fakePaymentRequired := true
+	fakePaymentChannel := int64(43)
 
 	validMsg := &FCRMessage{
 		messageType:       113,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"contacted_gateways":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI="],"response":[{"message_type":113,"protocol_version":1,"protocol_supported":[1,1],"message_body":"","message_signature":""}],"uncontactable_gateways":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI="],"nonce":42}`),
+		messageBody:       []byte(`{"contacted_gateways":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI="],"response":[{"message_type":113,"protocol_version":1,"protocol_supported":[1,1],"message_body":"","message_signature":""}],"uncontactable_gateways":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI="],"nonce":42,"payment_required":true,"payment_channel":43}`),
 		signature:         "",
 	}
 
@@ -38,6 +41,8 @@ func TestEncodeClientDHTDiscoverResponseV2(t *testing.T) {
 		mockContactedMsgs,
 		mockNodeIDs,
 		mockNonce,
+		fakePaymentRequired,
+		fakePaymentChannel,
 	)
 	assert.Empty(t, err)
 	assert.Equal(t, msg, validMsg)
@@ -61,19 +66,23 @@ func TestDecodeClientDHTDiscoverResponseV2(t *testing.T) {
 	mockNodeIDs = append(mockNodeIDs, *mockNodeID)
 
 	mockNonce := int64(42)
+	fakePaymentRequired := true
+	fakePaymentChannel := int64(43)
 
 	validMsg := &FCRMessage{
 		messageType:       113,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"contacted_gateways":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI="],"response":[{"message_type":113,"protocol_version":1,"protocol_supported":[1,1],"message_body":"","message_signature":""}],"uncontactable_gateways":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI="],"nonce":42}`),
+		messageBody:       []byte(`{"contacted_gateways":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI="],"response":[{"message_type":113,"protocol_version":1,"protocol_supported":[1,1],"message_body":"","message_signature":""}],"uncontactable_gateways":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI="],"nonce":42,"payment_required":true,"payment_channel":43}`),
 		signature:         "",
 	}
 
-	contacted, contactedMsg, nodeIDs, nonce, err := DecodeClientDHTDiscoverResponseV2(validMsg)
+	contacted, contactedMsg, nodeIDs, nonce, paymentRequired, paymentChannel, err := DecodeClientDHTDiscoverResponseV2(validMsg)
 	assert.Empty(t, err)
 	assert.Equal(t, contacted, mockNodeIDs)
 	assert.Equal(t, contactedMsg, mockContactedMsgs)
 	assert.Equal(t, nodeIDs, mockNodeIDs)
 	assert.Equal(t, nonce, mockNonce)
+	assert.Equal(t, fakePaymentRequired, paymentRequired)
+	assert.Equal(t, fakePaymentChannel, paymentChannel)
 }

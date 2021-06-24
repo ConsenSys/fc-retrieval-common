@@ -3,9 +3,10 @@ package fcrmessages
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/cidoffer"
-	"github.com/stretchr/testify/assert"
 )
 
 // TestEncodeGatewayDHTDiscoverResponseV2 success test
@@ -17,16 +18,18 @@ func TestEncodeGatewayDHTDiscoverResponseV2(t *testing.T) {
 
 	mockSubCIDOfferDigest := [cidoffer.CIDOfferDigestSize]byte{1, 2, 4}
 	mockSubCIDOfferDigests := [][cidoffer.CIDOfferDigestSize]byte{mockSubCIDOfferDigest}
+	fakePaymentRequired := true
+	fakePaymentChannel := int64(43)
 
 	validMsg := &FCRMessage{
 		messageType:       208,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"found":true,"sub_cid_offer_digest":[[1,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"funded_payment_channel":[true]}`),
+		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"found":true,"sub_cid_offer_digest":[[1,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"funded_payment_channel":[true],"payment_required":true,"payment_channel":43}`),
 		signature:         "",
 	}
 
-	msg, err := EncodeGatewayDHTDiscoverResponseV2(mockContentID, mockNonce, mockFound, mockSubCIDOfferDigests, mockFPCs)
+	msg, err := EncodeGatewayDHTDiscoverResponseV2(mockContentID, mockNonce, mockFound, mockSubCIDOfferDigests, mockFPCs, fakePaymentRequired, fakePaymentChannel)
 	assert.Empty(t, err)
 	assert.Equal(t, msg, validMsg)
 }
@@ -47,15 +50,19 @@ func TestDecodeGatewayDHTDiscoverResponseV2(t *testing.T) {
 		messageType:       208,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"found":true,"sub_cid_offer_digest":[[1,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"funded_payment_channel":[true]}`),
+		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"found":true,"sub_cid_offer_digest":[[1,2,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"funded_payment_channel":[true],"payment_required":true,"payment_channel":43}`),
 		signature:         "",
 	}
+	fakePaymentRequired := true
+	fakePaymentChannel := int64(43)
 
-	contentID, nonce, found, subCIDOfferDigest, FPCs, err := DecodeGatewayDHTDiscoverResponseV2(validMsg)
+	contentID, nonce, found, subCIDOfferDigest, FPCs, paymentRequired, paymentChannel, err := DecodeGatewayDHTDiscoverResponseV2(validMsg)
 	assert.Empty(t, err)
 	assert.Equal(t, contentID, mockContentID)
 	assert.Equal(t, nonce, mockNonce)
 	assert.Equal(t, found, mockFound)
 	assert.Equal(t, subCIDOfferDigest, mockSubCIDOfferDigests)
 	assert.Equal(t, FPCs, mockFPCs)
+	assert.Equal(t, fakePaymentRequired, paymentRequired)
+	assert.Equal(t, fakePaymentChannel, paymentChannel)
 }

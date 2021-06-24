@@ -22,14 +22,14 @@ import (
 	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 )
 
-type encodeClientDHTDiscoverResponseV2 struct {
-	Contacted            []nodeid.NodeID `json:"contacted"`
-	Response             []FCRMessage    `json:"response"`
-	UnContactable        []nodeid.NodeID `json:"un_contactable"`
-	Nonce                int64           `json:"nonce"`
-	FundedPaymentChannel []bool          `json:"funded_payment_channel"`
-	PaymentRequired      bool            `json:"payment_required"` // when true means caller have to pay first, using the PaymentChannel field
-	PaymentChannel       int64           `json:"payment_channel"`  // payment channel address used in conjunction with PaymentRequired field
+// clientDHTDiscoverResponse is the response to clientDHTDiscoverRequest
+type clientDHTDiscoverResponseV2 struct {
+	Contacted       []nodeid.NodeID `json:"contacted_gateways"`
+	Response        []FCRMessage    `json:"response"`
+	UnContactable   []nodeid.NodeID `json:"uncontactable_gateways"`
+	Nonce           int64           `json:"nonce"`
+	PaymentRequired bool            `json:"payment_required"` // when true means caller have to pay first, using the PaymentChannel field
+	PaymentChannel  int64           `json:"payment_channel"`  // payment channel address used in conjunction with PaymentRequired field
 }
 
 // EncodeClientDHTDiscoverResponseV2 is used to get the FCRMessage of ClientDHTDiscoverResponse
@@ -41,7 +41,7 @@ func EncodeClientDHTDiscoverResponseV2(
 	paymentRequired bool,
 	paymentChannel int64,
 ) (*FCRMessage, error) {
-	body, err := json.Marshal(encodeClientDHTDiscoverResponseV2{
+	body, err := json.Marshal(clientDHTDiscoverResponseV2{
 		Contacted:       contacted,
 		Response:        response,
 		UnContactable:   unContactable,
@@ -68,7 +68,7 @@ func DecodeClientDHTDiscoverResponseV2(fcrMsg *FCRMessage) (
 	if fcrMsg.GetMessageType() != ClientDHTDiscoverResponseV2Type {
 		return nil, nil, nil, 0, false, 0, errors.New("message type mismatch")
 	}
-	msg := encodeClientDHTDiscoverResponseV2{}
+	msg := clientDHTDiscoverResponseV2{}
 	err := json.Unmarshal(fcrMsg.GetMessageBody(), &msg)
 	if err != nil {
 		return nil, nil, nil, 0, false, 0, err

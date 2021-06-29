@@ -17,7 +17,7 @@ func TestEncodeGatewayPingRequest(t *testing.T) {
 		messageType:       205,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"gateway_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","nonce":42,"ttl":43}`),
+		messageBody:       []byte(`{"gateway_id":"0000000000000000000000000000000000000000000000000000000000000042","nonce":42,"ttl":43}`),
 		signature:         "",
 	}
 
@@ -36,7 +36,7 @@ func TestDecodeGatewayPingRequest(t *testing.T) {
 		messageType:       205,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"gateway_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","nonce":42,"ttl":43}`),
+		messageBody:       []byte(`{"gateway_id":"0000000000000000000000000000000000000000000000000000000000000042","nonce":42,"ttl":43}`),
 		signature:         "",
 	}
 

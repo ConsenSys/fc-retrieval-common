@@ -25,9 +25,9 @@ import (
 
 // providerAdminInitialiseKeyRequest is the request from a provider admin to a provider to initialise with a key pair.
 type providerAdminInitialiseKeyRequest struct {
-	ProviderID        nodeid.NodeID `json:"provider_id"`
-	PrivateKey        string        `json:"private_key"`
-	PrivateKeyVersion uint32        `json:"private_key_version"`
+	ProviderID        string `json:"provider_id"`
+	PrivateKey        string `json:"private_key"`
+	PrivateKeyVersion uint32 `json:"private_key_version"`
 }
 
 // EncodeProviderAdminInitialiseKeyRequest is used to get the FCRMessage of providerAdminInitialiseKeyRequest
@@ -37,7 +37,7 @@ func EncodeProviderAdminInitialiseKeyRequest(
 	keyVersion *fcrcrypto.KeyVersion,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(providerAdminInitialiseKeyRequest{
-		*nodeID,
+		nodeID.ToString(),
 		privateKey.EncodePrivateKey(),
 		keyVersion.EncodeKeyVersion(),
 	})
@@ -67,5 +67,6 @@ func DecodeProviderAdminInitialiseKeyRequest(fcrMsg *FCRMessage) (
 		return nil, nil, nil, errors.New("fail to decode private key")
 	}
 	privKeyVer := fcrcrypto.DecodeKeyVersion(msg.PrivateKeyVersion)
-	return &msg.ProviderID, privKey, privKeyVer, nil
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.ProviderID)
+	return nodeID, privKey, privKeyVer, nil
 }

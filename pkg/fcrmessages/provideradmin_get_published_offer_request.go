@@ -24,7 +24,7 @@ import (
 
 // providerAdminGetPublishedOfferRequest is the requset from provideradmin to provider to ask for published  offers for given gateway ids
 type providerAdminGetPublishedOfferRequest struct {
-	GatewayIDs []nodeid.NodeID `json:"gateway_id"`
+	GatewayIDs []string `json:"gateway_id"`
 }
 
 // EncodeProviderAdminGetPublishedOfferRequest is used to get the FCRMessage of providerAdminGetPublishedOfferRequest
@@ -32,7 +32,7 @@ func EncodeProviderAdminGetPublishedOfferRequest(
 	gatewayIDs []nodeid.NodeID,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(providerAdminGetPublishedOfferRequest{
-		GatewayIDs: gatewayIDs,
+		GatewayIDs: nodeid.MapNodeIDToString(gatewayIDs),
 	})
 	if err != nil {
 		return nil, err
@@ -53,5 +53,5 @@ func DecodeProviderAdminGetPublishedOfferRequest(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, err
 	}
-	return msg.GatewayIDs, nil
+	return nodeid.MapStringToNodeID(msg.GatewayIDs), nil
 }

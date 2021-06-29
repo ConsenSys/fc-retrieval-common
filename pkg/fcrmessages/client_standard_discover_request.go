@@ -24,11 +24,11 @@ import (
 
 // clientStandardDiscoverRequest is the requset from client to gateway to ask for cid offer
 type clientStandardDiscoverRequest struct {
-	PieceCID  cid.ContentID `json:"piece_cid"`
-	Nonce     int64         `json:"nonce"`
-	TTL       int64         `json:"ttl"`
-	PaychAddr string        `json:"payment_channel_address"`
-	Voucher   string        `json:"voucher"`
+	PieceCID  string `json:"piece_cid"`
+	Nonce     int64  `json:"nonce"`
+	TTL       int64  `json:"ttl"`
+	PaychAddr string `json:"payment_channel_address"`
+	Voucher   string `json:"voucher"`
 }
 
 // EncodeClientStandardDiscoverRequest is used to get the FCRMessage of clientStandardDiscoverRequest
@@ -40,7 +40,7 @@ func EncodeClientStandardDiscoverRequest(
 	voucher string,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(clientStandardDiscoverRequest{
-		PieceCID:  *pieceCID,
+		PieceCID:  pieceCID.ToString(),
 		Nonce:     nonce,
 		TTL:       ttl,
 		PaychAddr: paychAddr,
@@ -69,5 +69,6 @@ func DecodeClientStandardDiscoverRequest(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, 0, 0, "", "", err
 	}
-	return &msg.PieceCID, msg.Nonce, msg.TTL, msg.PaychAddr, msg.Voucher, nil
+	contentID, _ := cid.NewContentIDFromHexString(msg.PieceCID)
+	return contentID, msg.Nonce, msg.TTL, msg.PaychAddr, msg.Voucher, nil
 }

@@ -13,7 +13,7 @@ func TestEncodeGatewayNotifyProviderGroupCIDOfferSupportRequest(t *testing.T) {
 		messageType:       205,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"gateway_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","group_cid_offer_supported":true}`),
+		messageBody:       []byte(`{"gateway_id":"0000000000000000000000000000000000000000000000000000000000000042","group_cid_offer_supported":true}`),
 		signature:         "",
 	}
 	fakeGatewayNodeID, _ := nodeid.NewNodeIDFromHexString("42")
@@ -27,7 +27,7 @@ func TestDecodeGatewayNotifyProviderGroupCIDOfferSupportRequest(t *testing.T) {
 		messageType:       205,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"gateway_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","group_cid_offer_supported":true}`),
+		messageBody:       []byte(`{"gateway_id":"0000000000000000000000000000000000000000000000000000000000000042","group_cid_offer_supported":true}`),
 		signature:         "",
 	}
 	fakeGatewayNodeID, _ := nodeid.NewNodeIDFromHexString("42")

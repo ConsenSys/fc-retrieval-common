@@ -20,7 +20,7 @@ func TestEncodeClientDHTDiscoverRequestV2(t *testing.T) {
 		messageType:       112,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"ttl":100,"num_dht":42,"incremental_results":true,"payment_channel_address":"0x42","voucher":"1"}`),
+		messageBody:       []byte(`{"piece_cid":"0000000000000000000000000000000000000000000000000000000000000001","nonce":42,"ttl":100,"num_dht":42,"incremental_results":true,"payment_channel_address":"0x42","voucher":"1"}`),
 		signature:         "",
 	}
 	msg, err := EncodeClientDHTDiscoverRequestV2(
@@ -50,7 +50,7 @@ func TestDecodeClientDHTDiscoverRequestV2(t *testing.T) {
 		messageType:       112,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"ttl":100,"num_dht":42,"incremental_results":true,"payment_channel_address":"0x42","voucher":"1"}`),
+		messageBody:       []byte(`{"piece_cid":"0000000000000000000000000000000000000000000000000000000000000001","nonce":42,"ttl":100,"num_dht":42,"incremental_results":true,"payment_channel_address":"0x42","voucher":"1"}`),
 		signature:         "",
 	}
 	PieceCID, Nonce, TTL, NumDHT, IncrementalResults, PaychAddr, Voucher, err := DecodeClientDHTDiscoverRequestV2(validMsg)

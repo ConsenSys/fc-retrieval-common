@@ -25,8 +25,8 @@ import (
 
 // clientDHTOfferAckRequest is the request from client to provider to request the signed ack of a dht offer publish
 type clientDHTOfferAckRequest struct {
-	PieceCID  cid.ContentID `json:"piece_cid"`
-	GatewayID nodeid.NodeID `json:"gateway_id"`
+	PieceCID  string `json:"piece_cid"`
+	GatewayID string `json:"gateway_id"`
 }
 
 // EncodeClientDHTOfferAckRequest is used to get the FCRMessage of clientDHTOfferAckRequest
@@ -35,8 +35,8 @@ func EncodeClientDHTOfferAckRequest(
 	gatewayID *nodeid.NodeID,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(clientDHTOfferAckRequest{
-		PieceCID:  *pieceCID,
-		GatewayID: *gatewayID,
+		PieceCID:  pieceCID.ToString(),
+		GatewayID: gatewayID.ToString(),
 	})
 	if err != nil {
 		return nil, err
@@ -58,5 +58,7 @@ func DecodeClientDHTOfferAckRequest(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, nil, err
 	}
-	return &msg.PieceCID, &msg.GatewayID, nil
+	contentID, _ := cid.NewContentIDFromHexString(msg.PieceCID)
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.GatewayID)
+	return contentID, nodeID, nil
 }

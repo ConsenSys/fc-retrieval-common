@@ -21,7 +21,7 @@ func TestEncodeGatewayDHTDiscoverRequestV2(t *testing.T) {
 		messageType:       207,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"gateway_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"ttl":43,"payment_channel_address":"t2twbvr2oaxqzyktxqqjrv37bh7gzfhuqonfioayq","voucher":"i1UCnYNY6cC8M4VO8IJjXfwn-"}`),
+		messageBody:       []byte(`{"gateway_id":"0000000000000000000000000000000000000000000000000000000000000042","piece_cid":"0000000000000000000000000000000000000000000000000000000000000001","nonce":42,"ttl":43,"payment_channel_address":"t2twbvr2oaxqzyktxqqjrv37bh7gzfhuqonfioayq","voucher":"i1UCnYNY6cC8M4VO8IJjXfwn-"}`),
 		signature:         "",
 	}
 
@@ -43,7 +43,7 @@ func TestDecodeGatewayDHTDiscoverRequestV2(t *testing.T) {
 		messageType:       207,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"gateway_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"ttl":43,"payment_channel_address":"t2twbvr2oaxqzyktxqqjrv37bh7gzfhuqonfioayq","voucher":"i1UCnYNY6cC8M4VO8IJjXfwn-"}`),
+		messageBody:       []byte(`{"gateway_id":"0000000000000000000000000000000000000000000000000000000000000042","piece_cid":"0000000000000000000000000000000000000000000000000000000000000001","nonce":42,"ttl":43,"payment_channel_address":"t2twbvr2oaxqzyktxqqjrv37bh7gzfhuqonfioayq","voucher":"i1UCnYNY6cC8M4VO8IJjXfwn-"}`),
 		signature:         "",
 	}
 

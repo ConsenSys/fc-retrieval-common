@@ -24,9 +24,9 @@ import (
 
 // gatewayAdminGetReputationResponse is the response to gatewayAdminGetReputationRequest
 type gatewayAdminGetReputationResponse struct {
-	ClientID   nodeid.NodeID `json:"client_id"`
-	Reputation int64         `json:"reputation"`
-	Exists     bool          `json:"exists"`
+	ClientID   string `json:"client_id"`
+	Reputation int64  `json:"reputation"`
+	Exists     bool   `json:"exists"`
 }
 
 // EncodeGatewayAdminGetReputationResponse is used to get the FCRMessage of gatewayAdminGetReputationResponse
@@ -36,7 +36,7 @@ func EncodeGatewayAdminGetReputationResponse(
 	exists bool,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(gatewayAdminGetReputationResponse{
-		ClientID:   *clientID,
+		ClientID:   clientID.ToString(),
 		Reputation: reputation,
 		Exists:     exists,
 	})
@@ -61,5 +61,6 @@ func DecodeGatewayAdminGetReputationResponse(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, 0, false, err
 	}
-	return &msg.ClientID, msg.Reputation, msg.Exists, nil
+	contentID, _ := nodeid.NewNodeIDFromHexString(msg.ClientID)
+	return contentID, msg.Reputation, msg.Exists, nil
 }

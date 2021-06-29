@@ -26,9 +26,9 @@ import (
 
 // gatewayListDHTOfferRequest is the request from gateway to provider during start-up asking for dht offers
 type gatewayListDHTOfferRequest struct {
-	GatewayID          nodeid.NodeID                `json:"gateway_id"`
-	CIDMin             cid.ContentID                `json:"cid_min"`
-	CIDMax             cid.ContentID                `json:"cid_max"`
+	GatewayID          string                       `json:"gateway_id"`
+	CIDMin             string                       `json:"cid_min"`
+	CIDMax             string                       `json:"cid_max"`
 	BlockHash          string                       `json:"block_hash"`
 	TransactionReceipt string                       `json:"transaction_receipt"`
 	MerkleRoot         string                       `json:"merkle_root"`
@@ -46,9 +46,9 @@ func EncodeGatewayListDHTOfferRequest(
 	merkleProof *fcrmerkletree.FCRMerkleProof,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(gatewayListDHTOfferRequest{
-		GatewayID:          *gatewayID,
-		CIDMin:             *cidMin,
-		CIDMax:             *cidMax,
+		GatewayID:          gatewayID.ToString(),
+		CIDMin:             cidMin.ToString(),
+		CIDMax:             cidMax.ToString(),
 		BlockHash:          blockHash,
 		TransactionReceipt: transactionReceipt,
 		MerkleRoot:         merkleRoot,
@@ -79,5 +79,8 @@ func DecodeGatewayListDHTOfferRequest(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, nil, nil, "", "", "", nil, err
 	}
-	return &msg.GatewayID, &msg.CIDMin, &msg.CIDMax, msg.BlockHash, msg.TransactionReceipt, msg.MerkleRoot, &msg.MerkleProof, nil
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.GatewayID)
+	contentIDMin, _ := cid.NewContentIDFromHexString(msg.CIDMin)
+	contentIDMax, _ := cid.NewContentIDFromHexString(msg.CIDMax)
+	return nodeID, contentIDMin, contentIDMax, msg.BlockHash, msg.TransactionReceipt, msg.MerkleRoot, &msg.MerkleProof, nil
 }

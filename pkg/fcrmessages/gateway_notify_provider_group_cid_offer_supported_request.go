@@ -23,8 +23,8 @@ import (
 )
 
 type gatewayNotifyProviderGroupCIDOfferSupportRequest struct {
-	GatewayID              nodeid.NodeID `json:"gateway_id"`
-	GroupCIDOfferSupported bool          `json:"group_cid_offer_supported"`
+	GatewayID              string `json:"gateway_id"`
+	GroupCIDOfferSupported bool   `json:"group_cid_offer_supported"`
 }
 
 func EncodeGatewayNotifyProviderGroupCIDOfferSupportRequest(
@@ -32,7 +32,7 @@ func EncodeGatewayNotifyProviderGroupCIDOfferSupportRequest(
 	groupCIDOfferSupported bool,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(gatewayNotifyProviderGroupCIDOfferSupportRequest{
-		GatewayID:              *gatewayID,
+		GatewayID:              gatewayID.ToString(),
 		GroupCIDOfferSupported: groupCIDOfferSupported,
 	})
 	if err != nil {
@@ -54,5 +54,6 @@ func DecodeGatewayNotifyProviderGroupCIDOfferSupportRequest(fcrMsg *FCRMessage) 
 	if err != nil {
 		return nil, false, err
 	}
-	return &msg.GatewayID, msg.GroupCIDOfferSupported, nil
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.GatewayID)
+	return nodeID, msg.GroupCIDOfferSupported, nil
 }

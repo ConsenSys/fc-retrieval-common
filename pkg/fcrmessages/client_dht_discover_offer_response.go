@@ -25,12 +25,12 @@ import (
 
 // clientDHTDiscoverOfferResponse is the response to clientDHTDiscoverOfferRequest
 type clientDHTDiscoverOfferResponse struct {
-	PieceCID        cid.ContentID   `json:"piece_cid"`
-	Nonce           int64           `json:"nonce"`
-	GatewayIDs      []nodeid.NodeID `json:"gateway_ids"`
-	Response        []FCRMessage    `json:"response"`
-	PaymentRequired bool            `json:"payment_required"` // when true means caller have to pay first, using the PaymentChannel field
-	PaymentChannel  int64           `json:"payment_channel"`  // payment channel address used in conjunction with PaymentRequired field
+	PieceCID        string       `json:"piece_cid"`
+	Nonce           int64        `json:"nonce"`
+	GatewayIDs      []string     `json:"gateway_ids"`
+	Response        []FCRMessage `json:"response"`
+	PaymentRequired bool         `json:"payment_required"` // when true means caller have to pay first, using the PaymentChannel field
+	PaymentChannel  int64        `json:"payment_channel"`  // payment channel address used in conjunction with PaymentRequired field
 }
 
 // EncodeClientDHTDiscoverOfferResponse is used to get the FCRMessage of clientDHTDiscoverOfferResponse
@@ -43,9 +43,9 @@ func EncodeClientDHTDiscoverOfferResponse(
 	paymentChannel int64,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(clientDHTDiscoverOfferResponse{
-		PieceCID:        *pieceCID,
+		PieceCID:        pieceCID.ToString(),
 		Nonce:           nonce,
-		GatewayIDs:      gatewayIDs,
+		GatewayIDs:      nodeid.MapNodeIDToString(gatewayIDs),
 		Response:        response,
 		PaymentRequired: paymentRequired,
 		PaymentChannel:  paymentChannel,
@@ -74,5 +74,6 @@ func DecodeClientDHTDiscoverOfferResponse(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, 0, nil, nil, false, 0, err
 	}
-	return &msg.PieceCID, msg.Nonce, msg.GatewayIDs, msg.Response, msg.PaymentRequired, msg.PaymentChannel, nil
+	contentID, _ := cid.NewContentIDFromHexString(msg.PieceCID)
+	return contentID, msg.Nonce, nodeid.MapStringToNodeID(msg.GatewayIDs), msg.Response, msg.PaymentRequired, msg.PaymentChannel, nil
 }

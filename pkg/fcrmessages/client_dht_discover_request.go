@@ -24,13 +24,13 @@ import (
 
 // clientDHTDiscoverRequest is the request from client to gateway to ask for cid offer using DHT
 type clientDHTDiscoverRequest struct {
-	PieceCID           cid.ContentID `json:"piece_cid"`
-	Nonce              int64         `json:"nonce"`
-	TTL                int64         `json:"ttl"`
-	NumDHT             int64         `json:"num_dht"`
-	IncrementalResults bool          `json:"incremental_results"`
-	PaychAddr          string        `json:"payment_channel_address"`
-	Voucher            string        `json:"voucher"`
+	PieceCID           string `json:"piece_cid"`
+	Nonce              int64  `json:"nonce"`
+	TTL                int64  `json:"ttl"`
+	NumDHT             int64  `json:"num_dht"`
+	IncrementalResults bool   `json:"incremental_results"`
+	PaychAddr          string `json:"payment_channel_address"`
+	Voucher            string `json:"voucher"`
 }
 
 // EncodeClientDHTDiscoverRequest is used to get the FCRMessage of clientDHTDiscoverRequest
@@ -44,7 +44,7 @@ func EncodeClientDHTDiscoverRequest(
 	voucher string,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(clientDHTDiscoverRequest{
-		PieceCID:           *pieceCID,
+		PieceCID:           pieceCID.ToString(),
 		Nonce:              nonce,
 		TTL:                ttl,
 		NumDHT:             numDHT,
@@ -77,5 +77,6 @@ func DecodeClientDHTDiscoverRequest(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, 0, 0, 0, false, "", "", err
 	}
-	return &msg.PieceCID, msg.Nonce, msg.TTL, msg.NumDHT, msg.IncrementalResults, msg.PaychAddr, msg.Voucher, nil
+	contentID, _ := cid.NewContentIDFromHexString(msg.PieceCID)
+	return contentID, msg.Nonce, msg.TTL, msg.NumDHT, msg.IncrementalResults, msg.PaychAddr, msg.Voucher, nil
 }

@@ -2,6 +2,7 @@ package fcrmessages
 
 import (
 	"testing"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,11 +16,11 @@ func TestEncodeProviderAdminPublishGroupOfferRequest(t *testing.T) {
 	var mockQos uint64 = 43
 
 	validMsg := &FCRMessage{
-		messageType:502,
-		protocolVersion:1, 
-		protocolSupported:[]int32{1, 1}, 
-		messageBody:[]byte(`{"cids":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE="],"price":41,"expiry":42,"qos":43}`), 
-		signature:"",
+		messageType:       502,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"cids":["0000000000000000000000000000000000000000000000000000000000000001"],"price":41,"expiry":42,"qos":43}`),
+		signature:         "",
 	}
 
 	msg, err := EncodeProviderAdminPublishGroupOfferRequest(mockCids, mockPrice, mockExpiry, mockQos)
@@ -32,11 +33,11 @@ func TestDecodeProviderAdminPublishGroupOfferRequest(t *testing.T) {
 	contentID, _ := cid.NewContentIDFromBytes([]byte{1})
 	mockCids := []cid.ContentID{*contentID}
 	validMsg := &FCRMessage{
-		messageType:502,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"cids":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE="],"price":41,"expiry":42,"qos":43}`), 
-		signature:"",
+		messageType:       502,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"cids":["0000000000000000000000000000000000000000000000000000000000000001"],"price":41,"expiry":42,"qos":43}`),
+		signature:         "",
 	}
 	cids, price, expiry, qos, err := DecodeProviderAdminPublishGroupOfferRequest(validMsg)
 	assert.Empty(t, err)

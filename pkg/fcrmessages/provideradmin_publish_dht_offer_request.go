@@ -24,10 +24,10 @@ import (
 
 // providerAdminPublishDHTOfferRequest is the request to publish dht CID
 type providerAdminPublishDHTOfferRequest struct {
-	CIDs   []cid.ContentID `json:"cids"`
-	Price  []uint64        `json:"price"`
-	Expiry []int64         `json:"expiry"`
-	QoS    []uint64        `json:"qos"`
+	CIDs   []string `json:"cids"`
+	Price  []uint64 `json:"price"`
+	Expiry []int64  `json:"expiry"`
+	QoS    []uint64 `json:"qos"`
 }
 
 // EncodeProviderAdminPublishDHTOfferRequest is used to get the FCRMessage of providerAdminPublishDHTOfferRequest
@@ -38,7 +38,7 @@ func EncodeProviderAdminPublishDHTOfferRequest(
 	qos []uint64,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(providerAdminPublishDHTOfferRequest{
-		CIDs:   cids,
+		CIDs:   cid.MapCIDToString(cids),
 		Price:  price,
 		Expiry: expiry,
 		QoS:    qos,
@@ -65,5 +65,5 @@ func DecodeProviderAdminPublishDHTOfferRequest(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, nil, nil, nil, err
 	}
-	return msg.CIDs, msg.Price, msg.Expiry, msg.QoS, nil
+	return cid.MapStringToCID(msg.CIDs), msg.Price, msg.Expiry, msg.QoS, nil
 }

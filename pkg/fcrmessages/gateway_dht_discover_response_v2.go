@@ -25,7 +25,7 @@ import (
 
 // gatewayDHTDiscoverResponseV2 is the response to gatewayDHTDiscoverRequest
 type gatewayDHTDiscoverResponseV2 struct {
-	PieceCID             cid.ContentID                       `json:"piece_cid"`
+	PieceCID             string                              `json:"piece_cid"`
 	Nonce                int64                               `json:"nonce"`
 	Found                bool                                `json:"found"`
 	SubCIDOfferDigests   [][cidoffer.CIDOfferDigestSize]byte `json:"sub_cid_offer_digest"`
@@ -45,7 +45,7 @@ func EncodeGatewayDHTDiscoverResponseV2(
 	paymentChannel int64,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(gatewayDHTDiscoverResponseV2{
-		PieceCID:             *pieceCID,
+		PieceCID:             pieceCID.ToString(),
 		Nonce:                nonce,
 		Found:                found,
 		SubCIDOfferDigests:   offers,
@@ -78,5 +78,6 @@ func DecodeGatewayDHTDiscoverResponseV2(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, 0, false, nil, nil, false, 0, err
 	}
-	return &msg.PieceCID, msg.Nonce, msg.Found, msg.SubCIDOfferDigests, msg.FundedPaymentChannel, msg.PaymentRequired, msg.PaymentChannel, nil
+	contentID, _ := cid.NewContentIDFromHexString(msg.PieceCID)
+	return contentID, msg.Nonce, msg.Found, msg.SubCIDOfferDigests, msg.FundedPaymentChannel, msg.PaymentRequired, msg.PaymentChannel, nil
 }

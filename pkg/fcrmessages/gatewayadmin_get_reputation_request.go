@@ -24,7 +24,7 @@ import (
 
 // gatewayAdminGetReputationRequest is the request from an admin client to a gateway to discover a client's reputation
 type gatewayAdminGetReputationRequest struct {
-	ClientID nodeid.NodeID `json:"client_id"`
+	ClientID string `json:"client_id"`
 }
 
 // EncodeGatewayAdminGetReputationRequest is used to get the FCRMessage of gatewayAdminGetReputationRequest
@@ -32,7 +32,7 @@ func EncodeGatewayAdminGetReputationRequest(
 	clientID *nodeid.NodeID,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(gatewayAdminGetReputationRequest{
-		ClientID: *clientID,
+		ClientID: clientID.ToString(),
 	})
 	if err != nil {
 		return nil, err
@@ -53,5 +53,6 @@ func DecodeGatewayAdminGetReputationRequest(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, err
 	}
-	return &msg.ClientID, nil
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.ClientID)
+	return nodeID, nil
 }

@@ -25,12 +25,12 @@ import (
 
 // gatewayDHTDiscoverRequest is the request from gateway to gateway to discover cid offer
 type gatewayDHTDiscoverRequest struct {
-	GatewayID nodeid.NodeID `json:"gateway_id"`
-	PieceCID  cid.ContentID `json:"piece_cid"`
-	Nonce     int64         `json:"nonce"`
-	TTL       int64         `json:"ttl"`
-	PaychAddr string        `json:"payment_channel_address"`
-	Voucher   string        `json:"voucher"`
+	GatewayID string `json:"gateway_id"`
+	PieceCID  string `json:"piece_cid"`
+	Nonce     int64  `json:"nonce"`
+	TTL       int64  `json:"ttl"`
+	PaychAddr string `json:"payment_channel_address"`
+	Voucher   string `json:"voucher"`
 }
 
 // EncodeGatewayDHTDiscoverRequest is used to get the FCRMessage of gatewayDHTDiscoverRequest
@@ -43,8 +43,8 @@ func EncodeGatewayDHTDiscoverRequest(
 	voucher string,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(gatewayDHTDiscoverRequest{
-		GatewayID: *gatewayID,
-		PieceCID:  *pieceCID,
+		GatewayID: gatewayID.ToString(),
+		PieceCID:  pieceCID.ToString(),
 		Nonce:     nonce,
 		TTL:       ttl,
 		PaychAddr: paychAddr,
@@ -74,5 +74,7 @@ func DecodeGatewayDHTDiscoverRequest(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, nil, 0, 0, "", "", err
 	}
-	return &msg.GatewayID, &msg.PieceCID, msg.Nonce, msg.TTL, msg.PaychAddr, msg.Voucher, nil
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.GatewayID)
+	contentID, _ := cid.NewContentIDFromHexString(msg.PieceCID)
+	return nodeID, contentID, msg.Nonce, msg.TTL, msg.PaychAddr, msg.Voucher, nil
 }

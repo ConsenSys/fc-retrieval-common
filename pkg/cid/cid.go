@@ -124,3 +124,22 @@ func (n ContentID) CalculateHash() ([]byte, error) {
 func (n ContentID) Equals(other merkletree.Content) (bool, error) {
 	return n.ToString() == other.(*ContentID).ToString(), nil
 }
+
+// Map - used to returns a new slice containing CIDs as string values
+func MapCIDToString(cids []ContentID) []string {
+	results := make([]string, len(cids))
+	for i, v := range cids {
+		results[i] = v.ToString()
+	}
+	return results
+}
+
+// Map - used to returns a new slice containing CIDs as string values
+func MapStringToCID(cids []string) []ContentID {
+	results := make([]ContentID, len(cids))
+	for i, v := range cids {
+		contentID, _ := NewContentIDFromHexString(v)
+		results[i] = *contentID
+	}
+	return results
+}

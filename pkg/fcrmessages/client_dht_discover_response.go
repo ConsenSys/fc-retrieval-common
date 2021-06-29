@@ -24,12 +24,12 @@ import (
 
 // clientDHTDiscoverResponse is the response to clientDHTDiscoverRequest
 type clientDHTDiscoverResponse struct {
-	Contacted       []nodeid.NodeID `json:"contacted_gateways"`
-	Response        []FCRMessage    `json:"response"`
-	UnContactable   []nodeid.NodeID `json:"uncontactable_gateways"`
-	Nonce           int64           `json:"nonce"`
-	PaymentRequired bool            `json:"payment_required"` // when true means caller have to pay first, using the PaymentChannel field
-	PaymentChannel  int64           `json:"payment_channel"`  // payment channel address used in conjunction with PaymentRequired field
+	Contacted       []string     `json:"contacted_gateways"`
+	Response        []FCRMessage `json:"response"`
+	UnContactable   []string     `json:"uncontactable_gateways"`
+	Nonce           int64        `json:"nonce"`
+	PaymentRequired bool         `json:"payment_required"` // when true means caller have to pay first, using the PaymentChannel field
+	PaymentChannel  int64        `json:"payment_channel"`  // payment channel address used in conjunction with PaymentRequired field
 }
 
 // EncodeClientDHTDiscoverResponse is used to get the FCRMessage of ClientDHTDiscoverResponse
@@ -42,9 +42,9 @@ func EncodeClientDHTDiscoverResponse(
 	paymentChannel int64,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(clientDHTDiscoverResponse{
-		Contacted:       contacted,
+		Contacted:       nodeid.MapNodeIDToString(contacted),
 		Response:        response,
-		UnContactable:   unContactable,
+		UnContactable:   nodeid.MapNodeIDToString(unContactable),
 		Nonce:           nonce,
 		PaymentRequired: paymentRequired,
 		PaymentChannel:  paymentChannel,
@@ -73,5 +73,5 @@ func DecodeClientDHTDiscoverResponse(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, nil, nil, 0, false, 0, err
 	}
-	return msg.Contacted, msg.Response, msg.UnContactable, msg.Nonce, msg.PaymentRequired, msg.PaymentChannel, nil
+	return nodeid.MapStringToNodeID(msg.Contacted), msg.Response, nodeid.MapStringToNodeID(msg.UnContactable), msg.Nonce, msg.PaymentRequired, msg.PaymentChannel, nil
 }

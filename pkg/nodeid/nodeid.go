@@ -168,3 +168,22 @@ func SortClockwise(nodeID *NodeID, nodeIDs []*NodeID) []*NodeID {
 
 	return nodeIDs
 }
+
+// Map - used to returns a new slice containing CIDs as string values
+func MapNodeIDToString(cids []NodeID) []string {
+	results := make([]string, len(cids))
+	for i, v := range cids {
+		results[i] = v.ToString()
+	}
+	return results
+}
+
+// Map - used to returns a new slice containing CIDs as string values
+func MapStringToNodeID(cids []string) []NodeID {
+	results := make([]NodeID, len(cids))
+	for i, v := range cids {
+		nodeID, _ := NewNodeIDFromHexString(v)
+		results[i] = *nodeID
+	}
+	return results
+}

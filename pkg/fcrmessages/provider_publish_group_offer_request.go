@@ -25,7 +25,7 @@ import (
 
 // providerPublishGroupOfferRequest is the request from provider to gateway to publish group cid offer
 type providerPublishGroupOfferRequest struct {
-	ProviderID nodeid.NodeID     `json:"provider_id"`
+	ProviderID string            `json:"provider_id"`
 	Nonce      int64             `json:"nonce"`
 	Offer      cidoffer.CIDOffer `json:"offer"`
 }
@@ -37,7 +37,7 @@ func EncodeProviderPublishGroupOfferRequest(
 	offer *cidoffer.CIDOffer,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(providerPublishGroupOfferRequest{
-		ProviderID: *providerID,
+		ProviderID: providerID.ToString(),
 		Nonce:      nonce,
 		Offer:      *offer,
 	})
@@ -62,5 +62,6 @@ func DecodeProviderPublishGroupOfferRequest(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, 0, nil, err
 	}
-	return &msg.ProviderID, msg.Nonce, &msg.Offer, nil
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.ProviderID)
+	return nodeID, msg.Nonce, &msg.Offer, nil
 }

@@ -53,12 +53,12 @@ type CIDOffer struct {
 
 // cidOfferJson is used to parse to and from json.
 type cidOfferJson struct {
-	ProviderID nodeid.NodeID   `json:"provider_id"`
-	CIDs       []cid.ContentID `json:"cids"`
-	Price      uint64          `json:"price"`
-	Expiry     int64           `json:"expiry"`
-	QoS        uint64          `json:"qos"`
-	Signature  string          `json:"signature"`
+	ProviderID string   `json:"provider_id"`
+	CIDs       []string `json:"cids"`
+	Price      uint64   `json:"price"`
+	Expiry     int64    `json:"expiry"`
+	QoS        uint64   `json:"qos"`
+	Signature  string   `json:"signature"`
 }
 
 // cidOfferSigning is used to generate and verify signature.
@@ -203,8 +203,8 @@ func (c *CIDOffer) GetMessageDigest() (sum256 [CIDOfferDigestSize]byte) {
 // MarshalJSON is used to marshal offer into bytes.
 func (c CIDOffer) MarshalJSON() ([]byte, error) {
 	return json.Marshal(cidOfferJson{
-		ProviderID: *c.providerID,
-		CIDs:       c.cids,
+		ProviderID: c.providerID.ToString(),
+		CIDs:       cid.MapCIDToString(c.cids),
 		Price:      c.price,
 		Expiry:     c.expiry,
 		QoS:        c.qos,
@@ -230,8 +230,9 @@ func (c *CIDOffer) UnmarshalJSON(p []byte) error {
 	if err != nil {
 		return err
 	}
-	c.providerID = &cJson.ProviderID
-	c.cids = cJson.CIDs
+	nodeID, _ := nodeid.NewNodeIDFromHexString(cJson.ProviderID)
+	c.providerID = nodeID
+	c.cids = cid.MapStringToCID(cJson.CIDs)
 	c.price = cJson.Price
 	c.expiry = cJson.Expiry
 	c.qos = cJson.QoS

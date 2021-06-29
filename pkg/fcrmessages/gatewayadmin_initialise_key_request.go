@@ -25,9 +25,9 @@ import (
 
 // gatewayAdminInitialiseKeyRequest is the request from a gateway admin to a gateway to initialise with a key pair.
 type gatewayAdminInitialiseKeyRequest struct {
-	GatewayID         nodeid.NodeID `json:"gateway_id"`
-	PrivateKey        string        `json:"private_key"`
-	PrivateKeyVersion uint32        `json:"private_key_version"`
+	GatewayID         string `json:"gateway_id"`
+	PrivateKey        string `json:"private_key"`
+	PrivateKeyVersion uint32 `json:"private_key_version"`
 }
 
 // EncodeGatewayAdminInitialiseKeyRequest is used to get the FCRMessage of gatewayAdminInitialiseKeyRequest
@@ -37,7 +37,7 @@ func EncodeGatewayAdminInitialiseKeyRequest(
 	keyVersion *fcrcrypto.KeyVersion,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(gatewayAdminInitialiseKeyRequest{
-		*nodeID,
+		nodeID.ToString(),
 		privateKey.EncodePrivateKey(),
 		keyVersion.EncodeKeyVersion(),
 	})
@@ -67,5 +67,6 @@ func DecodeGatewayAdminInitialiseKeyRequest(fcrMsg *FCRMessage) (
 		return nil, nil, nil, errors.New("fail to decode private key")
 	}
 	privKeyVer := fcrcrypto.DecodeKeyVersion(msg.PrivateKeyVersion)
-	return &msg.GatewayID, privKey, privKeyVer, nil
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.GatewayID)
+	return nodeID, privKey, privKeyVer, nil
 }

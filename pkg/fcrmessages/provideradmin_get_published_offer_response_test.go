@@ -2,10 +2,11 @@ package fcrmessages
 
 import (
 	"testing"
-	"github.com/stretchr/testify/assert"
-	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/cidoffer"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
+	"github.com/stretchr/testify/assert"
 )
 
 // TestEncodeProviderAdminGetPublishedOfferResponse success test
@@ -21,11 +22,11 @@ func TestEncodeProviderAdminGetPublishedOfferResponse(t *testing.T) {
 	cidOffer, err := cidoffer.NewCIDOffer(mockProviderID, mockCids, mockPrice, mockExpiry, mockQos)
 	mockCidOffers = append(mockCidOffers, *cidOffer)
 	validMsg := &FCRMessage{
-		messageType:507,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"exists":true,"cid_offers":[{"provider_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","cids":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE="],"price":41,"expiry":42,"qos":43,"signature":""}]}`), 
-		signature:"",
+		messageType:       507,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"exists":true,"cid_offers":[{"provider_id":"0000000000000000000000000000000000000000000000000000000000000042","cids":["0000000000000000000000000000000000000000000000000000000000000001"],"price":41,"expiry":42,"qos":43,"signature":""}]}`),
+		signature:         "",
 	}
 	msg, err := EncodeProviderAdminGetPublishedOfferResponse(true, mockCidOffers)
 	assert.Empty(t, err)
@@ -35,11 +36,11 @@ func TestEncodeProviderAdminGetPublishedOfferResponse(t *testing.T) {
 // TestDecodeProviderAdminGetPublishedOfferResponse success test
 func TestDecodeProviderAdminGetPublishedOfferResponse(t *testing.T) {
 	validMsg := &FCRMessage{
-		messageType:507,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{}`), 
-		signature:"",
+		messageType:       507,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{}`),
+		signature:         "",
 	}
 	exists, cidoffers, err := DecodeProviderAdminGetPublishedOfferResponse(validMsg)
 	assert.Empty(t, err)

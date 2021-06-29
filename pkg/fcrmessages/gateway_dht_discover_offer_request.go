@@ -25,7 +25,7 @@ import (
 
 // gatewayDHTDiscoverOfferRequest is the request to implement the payment system
 type gatewayDHTDiscoverOfferRequest struct {
-	PieceCID     cid.ContentID                       `json:"piece_cid"`
+	PieceCID     string                              `json:"piece_cid"`
 	Nonce        int64                               `json:"nonce"`
 	OfferDigests [][cidoffer.CIDOfferDigestSize]byte `json:"offer_digests"`
 	PaychAddr    string                              `json:"payment_channel_address"`
@@ -41,7 +41,7 @@ func EncodeGatewayDHTDiscoverOfferRequest(
 	voucher string,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(gatewayDHTDiscoverOfferRequest{
-		PieceCID:     *pieceCID,
+		PieceCID:     pieceCID.ToString(),
 		Nonce:        nonce,
 		OfferDigests: offerDigests,
 		PaychAddr:    paychAddr,
@@ -70,5 +70,6 @@ func DecodeGatewayDHTDiscoverOfferRequest(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, 0, [][cidoffer.CIDOfferDigestSize]byte{}, "", "", err
 	}
-	return &msg.PieceCID, msg.Nonce, msg.OfferDigests, msg.PaychAddr, msg.Voucher, nil
+	contentID, _ := cid.NewContentIDFromHexString(msg.PieceCID)
+	return contentID, msg.Nonce, msg.OfferDigests, msg.PaychAddr, msg.Voucher, nil
 }

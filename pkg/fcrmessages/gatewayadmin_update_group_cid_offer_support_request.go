@@ -23,8 +23,8 @@ import (
 )
 
 type updateGatewayGroupCIDOfferSupportRequest struct {
-	GatewayID   nodeid.NodeID   `json:"gateway_id"`
-	ProviderIDs []nodeid.NodeID `json:"provider_ids"` // the Gateway supports Group CID Offers only from these Providers
+	GatewayID   string   `json:"gateway_id"`
+	ProviderIDs []string `json:"provider_ids"` // the Gateway supports Group CID Offers only from these Providers
 }
 
 func EncodeUpdateGatewayGroupCIDOfferSupportRequest(
@@ -32,8 +32,8 @@ func EncodeUpdateGatewayGroupCIDOfferSupportRequest(
 	providerIDs []nodeid.NodeID,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(updateGatewayGroupCIDOfferSupportRequest{
-		*nodeID,
-		providerIDs,
+		nodeID.ToString(),
+		nodeid.MapNodeIDToString(providerIDs),
 	})
 	if err != nil {
 		return nil, err
@@ -54,5 +54,6 @@ func DecodeUpdateGatewayGroupCIDOfferSupportRequest(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, nil, err
 	}
-	return &msg.GatewayID, msg.ProviderIDs, nil
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.GatewayID)
+	return nodeID, nodeid.MapStringToNodeID(msg.ProviderIDs), nil
 }

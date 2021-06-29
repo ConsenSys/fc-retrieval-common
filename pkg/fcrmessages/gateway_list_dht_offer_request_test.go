@@ -32,7 +32,7 @@ func TestEncodeGatewayListDHTOfferRequest(t *testing.T) {
 		messageType:       200,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"gateway_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","cid_min":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","cid_max":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=","block_hash":"bafy2bzaceabhr6taytcdntpr4poz43dhf3l5jml6z43e5sdv4gdlgsujsg2ze","transaction_receipt":"bafy2bzacecz3sy5ar4rg73ri5cq3tndmwn4vnxgzt4bw4cpig7q25af6y5cnc","merkle_root":"c3c3a46684c07d12a9c238787df3049a6f258e7af203e5ddb66a8bd66637e108","merkle_proof":"AAAAMFsiQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRT0iXQAAAANbMV0="}`),
+		messageBody:       []byte(`{"gateway_id":"0000000000000000000000000000000000000000000000000000000000000042","cid_min":"0000000000000000000000000000000000000000000000000000000000000001","cid_max":"0000000000000000000000000000000000000000000000000000000000000002","block_hash":"bafy2bzaceabhr6taytcdntpr4poz43dhf3l5jml6z43e5sdv4gdlgsujsg2ze","transaction_receipt":"bafy2bzacecz3sy5ar4rg73ri5cq3tndmwn4vnxgzt4bw4cpig7q25af6y5cnc","merkle_root":"c3c3a46684c07d12a9c238787df3049a6f258e7af203e5ddb66a8bd66637e108","merkle_proof":"AAAAMFsiQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRT0iXQAAAANbMV0="}`),
 		signature:         "",
 	}
 
@@ -62,7 +62,7 @@ func TestDecodeGatewayListDHTOfferRequest(t *testing.T) {
 		messageType:       200,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"gateway_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","cid_min":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","cid_max":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=","block_hash":"bafy2bzaceabhr6taytcdntpr4poz43dhf3l5jml6z43e5sdv4gdlgsujsg2ze","transaction_receipt":"bafy2bzacecz3sy5ar4rg73ri5cq3tndmwn4vnxgzt4bw4cpig7q25af6y5cnc","merkle_root":"c3c3a46684c07d12a9c238787df3049a6f258e7af203e5ddb66a8bd66637e108","merkle_proof":"AAAAMFsiQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRT0iXQAAAANbMV0="}`),
+		messageBody:       []byte(`{"gateway_id":"0000000000000000000000000000000000000000000000000000000000000042","cid_min":"0000000000000000000000000000000000000000000000000000000000000001","cid_max":"0000000000000000000000000000000000000000000000000000000000000002","block_hash":"bafy2bzaceabhr6taytcdntpr4poz43dhf3l5jml6z43e5sdv4gdlgsujsg2ze","transaction_receipt":"bafy2bzacecz3sy5ar4rg73ri5cq3tndmwn4vnxgzt4bw4cpig7q25af6y5cnc","merkle_root":"c3c3a46684c07d12a9c238787df3049a6f258e7af203e5ddb66a8bd66637e108","merkle_proof":"AAAAMFsiQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRT0iXQAAAANbMV0="}`),
 		signature:         "",
 	}
 

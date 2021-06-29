@@ -25,7 +25,7 @@ import (
 
 // providerPublishGroupOfferResponse is the response to providerPublishGroupOfferRequest
 type providerPublishGroupOfferResponse struct {
-	GatewaydID nodeid.NodeID                     `json:"gateway_id"`
+	GatewaydID string                            `json:"gateway_id"`
 	Digest     [cidoffer.CIDOfferDigestSize]byte `json:"digest"`
 }
 
@@ -35,7 +35,7 @@ func EncodeProviderPublishGroupOfferResponse(
 	digest [cidoffer.CIDOfferDigestSize]byte,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(providerPublishGroupOfferResponse{
-		GatewaydID: gatewayID,
+		GatewaydID: gatewayID.ToString(),
 		Digest:     digest,
 	})
 	if err != nil {
@@ -58,5 +58,6 @@ func DecodeProviderPublishGroupOfferResponse(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, [cidoffer.CIDOfferDigestSize]byte{}, err
 	}
-	return &msg.GatewaydID, msg.Digest, nil
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.GatewaydID)
+	return nodeID, msg.Digest, nil
 }

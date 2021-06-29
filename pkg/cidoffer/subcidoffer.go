@@ -42,8 +42,8 @@ type SubCIDOffer struct {
 
 // subCIDOfferJson is used to parse to and from json.
 type subCIDOfferJson struct {
-	ProviderID  nodeid.NodeID                `json:"provider_id"`
-	SubCID      cid.ContentID                `json:"sub_cid"`
+	ProviderID  string                       `json:"provider_id"`
+	SubCID      string                       `json:"sub_cid"`
 	MerkleRoot  string                       `json:"merkle_root"`
 	MerkleProof fcrmerkletree.FCRMerkleProof `json:"merkle_proof"`
 	Price       uint64                       `json:"price"`
@@ -151,8 +151,8 @@ func (c *SubCIDOffer) VerifyMerkleProof() error {
 // MarshalJSON is used to marshal offer into bytes.
 func (c SubCIDOffer) MarshalJSON() ([]byte, error) {
 	return json.Marshal(subCIDOfferJson{
-		ProviderID:  *c.providerID,
-		SubCID:      *c.subCID,
+		ProviderID:  c.providerID.ToString(),
+		SubCID:      c.subCID.ToString(),
 		MerkleRoot:  c.merkleRoot,
 		MerkleProof: *c.merkleProof,
 		Price:       c.price,
@@ -169,8 +169,10 @@ func (c *SubCIDOffer) UnmarshalJSON(p []byte) error {
 	if err != nil {
 		return err
 	}
-	c.providerID = &cJson.ProviderID
-	c.subCID = &cJson.SubCID
+	providerID, _ := nodeid.NewNodeIDFromHexString(cJson.ProviderID)
+	c.providerID = providerID
+	subCID, _ := cid.NewContentIDFromHexString(cJson.SubCID)
+	c.subCID = subCID
 	c.merkleRoot = cJson.MerkleRoot
 	c.merkleProof = &cJson.MerkleProof
 	c.price = cJson.Price

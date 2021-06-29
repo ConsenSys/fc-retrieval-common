@@ -25,11 +25,11 @@ import (
 
 // clientDHTOfferAckResponse is the response to clientDHTOfferAckRequest
 type clientDHTOfferAckResponse struct {
-	PieceCID                cid.ContentID `json:"piece_cid"`
-	GatewayID               nodeid.NodeID `json:"gateway_id"`
-	Found                   bool          `json:"found"`
-	PublishDHTOfferRequest  FCRMessage    `json:"publish_dht_offer_request"`
-	PublishDHTOfferResponse FCRMessage    `json:"publish_dht_offer_response"`
+	PieceCID                string     `json:"piece_cid"`
+	GatewayID               string     `json:"gateway_id"`
+	Found                   bool       `json:"found"`
+	PublishDHTOfferRequest  FCRMessage `json:"publish_dht_offer_request"`
+	PublishDHTOfferResponse FCRMessage `json:"publish_dht_offer_response"`
 }
 
 // EncodeClientDHTOfferAckResponse is used to get the FCRMessage of clientDHTOfferAckResponse
@@ -41,8 +41,8 @@ func EncodeClientDHTOfferAckResponse(
 	publishDHTOfferResponse *FCRMessage,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(clientDHTOfferAckResponse{
-		PieceCID:                *pieceCID,
-		GatewayID:               *gatewayID,
+		PieceCID:                pieceCID.ToString(),
+		GatewayID:               gatewayID.ToString(),
 		Found:                   found,
 		PublishDHTOfferRequest:  *publishDHTOfferRequest,
 		PublishDHTOfferResponse: *publishDHTOfferResponse,
@@ -70,5 +70,7 @@ func DecodeClientDHTOfferAckResponse(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, nil, false, nil, nil, err
 	}
-	return &msg.PieceCID, &msg.GatewayID, msg.Found, &msg.PublishDHTOfferRequest, &msg.PublishDHTOfferResponse, nil
+	contentID, _ := cid.NewContentIDFromHexString(msg.PieceCID)
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.GatewayID)
+	return contentID, nodeID, msg.Found, &msg.PublishDHTOfferRequest, &msg.PublishDHTOfferResponse, nil
 }

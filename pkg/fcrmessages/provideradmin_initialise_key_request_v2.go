@@ -26,12 +26,12 @@ import (
 // providerAdminInitialiseKeyRequestV2 is the request from a provider admin to a provider to initialise with a key pair,
 // and lotus access point and lotus auth token
 type providerAdminInitialiseKeyRequestV2 struct {
-	ProviderID        nodeid.NodeID `json:"provider_id"`
-	PrivateKey        string        `json:"private_key"`
-	PrivateKeyVersion uint32        `json:"private_key_version"`
-	WalletPrivateKey  string        `json:"wallet_private_key"`
-	LotusAP           string        `json:"lotus_ap"`
-	LotusAuthToken    string        `json:"lotus_auth_token"`
+	ProviderID        string `json:"provider_id"`
+	PrivateKey        string `json:"private_key"`
+	PrivateKeyVersion uint32 `json:"private_key_version"`
+	WalletPrivateKey  string `json:"wallet_private_key"`
+	LotusAP           string `json:"lotus_ap"`
+	LotusAuthToken    string `json:"lotus_auth_token"`
 }
 
 // EncodeProviderAdminInitialiseKeyRequestV2 is used to get the FCRMessage of providerAdminInitialiseKeyRequestV2
@@ -44,7 +44,7 @@ func EncodeProviderAdminInitialiseKeyRequestV2(
 	lotusAuthToken string,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(providerAdminInitialiseKeyRequestV2{
-		*nodeID,
+		nodeID.ToString(),
 		privateKey.EncodePrivateKey(),
 		keyVersion.EncodeKeyVersion(),
 		walletPrivateKey,
@@ -80,5 +80,6 @@ func DecodeProviderAdminInitialiseKeyRequestV2(fcrMsg *FCRMessage) (
 		return nil, nil, nil, "", "", "", errors.New("fail to decode private key")
 	}
 	privKeyVer := fcrcrypto.DecodeKeyVersion(msg.PrivateKeyVersion)
-	return &msg.ProviderID, privKey, privKeyVer, msg.WalletPrivateKey, msg.LotusAP, msg.LotusAuthToken, nil
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.ProviderID)
+	return nodeID, privKey, privKeyVer, msg.WalletPrivateKey, msg.LotusAP, msg.LotusAuthToken, nil
 }

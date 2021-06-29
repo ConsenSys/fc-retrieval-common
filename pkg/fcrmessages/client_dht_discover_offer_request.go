@@ -26,10 +26,10 @@ import (
 
 // clientDHTDiscoverOfferRequest is the requset from client to gateway to ask for cid offer via DHT
 type clientDHTDiscoverOfferRequest struct {
-	PieceCID        cid.ContentID                         `json:"piece_cid"`
+	PieceCID        string                                `json:"piece_cid"`
 	Nonce           int64                                 `json:"nonce"`
 	GatewaysDigests [][][cidoffer.CIDOfferDigestSize]byte `json:"gateways_digests"`
-	GatewayIDs      []nodeid.NodeID                       `json:"gateway_ids"`
+	GatewayIDs      []string                              `json:"gateway_ids"`
 	PaychAddr       string                                `json:"payment_channel_address"`
 	Voucher         string                                `json:"voucher"`
 }
@@ -44,10 +44,10 @@ func EncodeClientDHTDiscoverOfferRequest(
 	voucher string,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(clientDHTDiscoverOfferRequest{
-		PieceCID:        *pieceCID,
+		PieceCID:        pieceCID.ToString(),
 		Nonce:           nonce,
 		GatewaysDigests: gatewaysDigests,
-		GatewayIDs:      gatewayIDs,
+		GatewayIDs:      nodeid.MapNodeIDToString(gatewayIDs),
 		PaychAddr:       paychAddr,
 		Voucher:         voucher,
 	})
@@ -75,5 +75,6 @@ func DecodeClientDHTDiscoverOfferRequest(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, 0, nil, nil, "", "", err
 	}
-	return &msg.PieceCID, msg.Nonce, msg.GatewaysDigests, msg.GatewayIDs, msg.PaychAddr, msg.Voucher, nil
+	contentID, _ := cid.NewContentIDFromHexString(msg.PieceCID)
+	return contentID, msg.Nonce, msg.GatewaysDigests, nodeid.MapStringToNodeID(msg.GatewayIDs), msg.PaychAddr, msg.Voucher, nil
 }

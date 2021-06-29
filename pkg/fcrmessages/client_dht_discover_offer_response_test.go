@@ -28,7 +28,7 @@ func TestEncodeClientDHTDiscoverOfferResponse(t *testing.T) {
 		messageType:       115,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"gateway_ids":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI="],"response":[{"message_type":115,"protocol_version":1,"protocol_supported":[1,1],"message_body":"","message_signature":""}],"payment_required":true,"payment_channel":42}`),
+		messageBody:       []byte(`{"piece_cid":"0000000000000000000000000000000000000000000000000000000000000001","nonce":42,"gateway_ids":["0000000000000000000000000000000000000000000000000000000000000042"],"response":[{"message_type":115,"protocol_version":1,"protocol_supported":[1,1],"message_body":"","message_signature":""}],"payment_required":true,"payment_channel":42}`),
 		signature:         "",
 	}
 	fakePaymentRequired := true
@@ -65,7 +65,7 @@ func TestDecodeClientDHTDiscoverOfferResponse(t *testing.T) {
 		messageType:       115,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody:       []byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"gateway_ids":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI="],"response":[{"message_type":115,"protocol_version":1,"protocol_supported":[1,1],"message_body":"","message_signature":""}],"payment_required":true,"payment_channel":42}`),
+		messageBody:       []byte(`{"piece_cid":"0000000000000000000000000000000000000000000000000000000000000001","nonce":42,"gateway_ids":["0000000000000000000000000000000000000000000000000000000000000042"],"response":[{"message_type":115,"protocol_version":1,"protocol_supported":[1,1],"message_body":"","message_signature":""}],"payment_required":true,"payment_channel":42}`),
 		signature:         "",
 	}
 	fakePaymentRequired := true

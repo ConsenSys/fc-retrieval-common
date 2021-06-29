@@ -25,15 +25,15 @@ import (
 
 // gatewayPingRequest is the request from gateway to gateway to check if is alive
 type gatewayPingRequest struct {
-	GatewayID nodeid.NodeID `json:"gateway_id"`
-	Nonce     int64         `json:"nonce"`
-	TTL       int64         `json:"ttl"`
+	GatewayID string `json:"gateway_id"`
+	Nonce     int64  `json:"nonce"`
+	TTL       int64  `json:"ttl"`
 }
 
 // EncodeGatewayPingRequest is used to get the FCRMessage of gatewayPingRequest
 func EncodeGatewayPingRequest(gatewayID *nodeid.NodeID, nonce, ttl int64) (*FCRMessage, error) {
 	body, err := json.Marshal(gatewayPingRequest{
-		GatewayID: *gatewayID,
+		GatewayID: gatewayID.ToString(),
 		Nonce:     nonce,
 		TTL:       ttl,
 	})
@@ -62,5 +62,6 @@ func DecodeGatewayPingRequest(fcrMsg *FCRMessage) (
 		return nil, 0, 0, fmt.Errorf("invalid message: %s", err)
 	}
 
-	return &msg.GatewayID, msg.Nonce, msg.TTL, nil
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.GatewayID)
+	return nodeID, msg.Nonce, msg.TTL, nil
 }

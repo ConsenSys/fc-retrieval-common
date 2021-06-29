@@ -2,6 +2,7 @@ package fcrmessages
 
 import (
 	"testing"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 	"github.com/stretchr/testify/assert"
@@ -17,11 +18,11 @@ func TestEncodeGatewayDHTDiscoverRequest(t *testing.T) {
 	mockVoucher := "i1UCnYNY6cC8M4VO8IJjXfwn-"
 
 	validMsg := &FCRMessage{
-		messageType:203,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"gateway_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"ttl":43,"payment_channel_address":"t2twbvr2oaxqzyktxqqjrv37bh7gzfhuqonfioayq","voucher":"i1UCnYNY6cC8M4VO8IJjXfwn-"}`), 
-		signature:"",
+		messageType:       203,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"gateway_id":"0000000000000000000000000000000000000000000000000000000000000042","piece_cid":"0000000000000000000000000000000000000000000000000000000000000001","nonce":42,"ttl":43,"payment_channel_address":"t2twbvr2oaxqzyktxqqjrv37bh7gzfhuqonfioayq","voucher":"i1UCnYNY6cC8M4VO8IJjXfwn-"}`),
+		signature:         "",
 	}
 
 	msg, err := EncodeGatewayDHTDiscoverRequest(mockNodeID, mockContentID, mockNonce, mockTTL, mockPaychAddr, mockVoucher)
@@ -37,13 +38,13 @@ func TestDecodeGatewayDHTDiscoverRequest(t *testing.T) {
 	mockTTL := int64(43)
 	mockPaychAddr := "t2twbvr2oaxqzyktxqqjrv37bh7gzfhuqonfioayq"
 	mockVoucher := "i1UCnYNY6cC8M4VO8IJjXfwn-"
-	
+
 	validMsg := &FCRMessage{
-		messageType:203,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"gateway_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"ttl":43,"payment_channel_address":"t2twbvr2oaxqzyktxqqjrv37bh7gzfhuqonfioayq","voucher":"i1UCnYNY6cC8M4VO8IJjXfwn-"}`), 
-		signature:"",
+		messageType:       203,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"gateway_id":"0000000000000000000000000000000000000000000000000000000000000042","piece_cid":"0000000000000000000000000000000000000000000000000000000000000001","nonce":42,"ttl":43,"payment_channel_address":"t2twbvr2oaxqzyktxqqjrv37bh7gzfhuqonfioayq","voucher":"i1UCnYNY6cC8M4VO8IJjXfwn-"}`),
+		signature:         "",
 	}
 
 	nodeID, contentID, nonce, TTL, paychAddr, voucher, err := DecodeGatewayDHTDiscoverRequest(validMsg)

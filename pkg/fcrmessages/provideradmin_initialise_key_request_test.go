@@ -2,9 +2,10 @@ package fcrmessages
 
 import (
 	"testing"
-	"github.com/stretchr/testify/assert"
-	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
+	"github.com/stretchr/testify/assert"
 )
 
 // TestEncodeProviderAdminInitialiseKeyRequest success test
@@ -14,11 +15,11 @@ func TestEncodeProviderAdminInitialiseKeyRequest(t *testing.T) {
 	mockKeyVersion := fcrcrypto.InitialKeyVersion()
 
 	validMsg := &FCRMessage{
-		messageType:500,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"provider_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","private_key":"` + mockPrivateKey.EncodePrivateKey() + `","private_key_version":1}`), 
-		signature:"",
+		messageType:       500,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"provider_id":"0000000000000000000000000000000000000000000000000000000000000042","private_key":"` + mockPrivateKey.EncodePrivateKey() + `","private_key_version":1}`),
+		signature:         "",
 	}
 	msg, err := EncodeProviderAdminInitialiseKeyRequest(mockNodeId, mockPrivateKey, mockKeyVersion)
 	assert.Empty(t, err)
@@ -31,11 +32,11 @@ func TestDecodeProviderAdminInitialiseKeyRequest(t *testing.T) {
 	mockPrivateKey, _ := fcrcrypto.GenerateRetrievalV1KeyPair()
 	mockKeyVersion := fcrcrypto.InitialKeyVersion()
 	validMsg := &FCRMessage{
-		messageType:500,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"provider_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","private_key":"` + mockPrivateKey.EncodePrivateKey() + `","private_key_version":1}`), 
-		signature:"",
+		messageType:       500,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"provider_id":"0000000000000000000000000000000000000000000000000000000000000042","private_key":"` + mockPrivateKey.EncodePrivateKey() + `","private_key_version":1}`),
+		signature:         "",
 	}
 	nodeID, keyPair, keyVersion, err := DecodeProviderAdminInitialiseKeyRequest(validMsg)
 	assert.Empty(t, err)

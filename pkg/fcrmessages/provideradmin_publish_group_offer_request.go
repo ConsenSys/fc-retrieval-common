@@ -24,10 +24,10 @@ import (
 
 // providerAdminPublishGroupOfferRequest is the request to publish group CID
 type providerAdminPublishGroupOfferRequest struct {
-	CIDs   []cid.ContentID `json:"cids"`
-	Price  uint64          `json:"price"`
-	Expiry int64           `json:"expiry"`
-	QoS    uint64          `json:"qos"`
+	CIDs   []string `json:"cids"`
+	Price  uint64   `json:"price"`
+	Expiry int64    `json:"expiry"`
+	QoS    uint64   `json:"qos"`
 }
 
 // EncodeProviderAdminPublishGroupOfferRequest is used to get the FCRMessage of providerAdminPublishGroupOfferRequest
@@ -38,7 +38,7 @@ func EncodeProviderAdminPublishGroupOfferRequest(
 	qos uint64,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(providerAdminPublishGroupOfferRequest{
-		CIDs:   cids,
+		CIDs:   cid.MapCIDToString(cids),
 		Price:  price,
 		Expiry: expiry,
 		QoS:    qos,
@@ -65,5 +65,5 @@ func DecodeProviderAdminPublishGroupOfferRequest(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, 0, 0, 0, err
 	}
-	return msg.CIDs, msg.Price, msg.Expiry, msg.QoS, nil
+	return cid.MapStringToCID(msg.CIDs), msg.Price, msg.Expiry, msg.QoS, nil
 }

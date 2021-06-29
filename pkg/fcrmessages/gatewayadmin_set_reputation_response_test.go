@@ -2,8 +2,9 @@ package fcrmessages
 
 import (
 	"testing"
-	"github.com/stretchr/testify/assert"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
+	"github.com/stretchr/testify/assert"
 )
 
 // TestEncodeGatewayAdminSetReputationResponse success test
@@ -13,11 +14,11 @@ func TestEncodeGatewayAdminSetReputationResponse(t *testing.T) {
 	mockExists := true
 
 	validMsg := &FCRMessage{
-		messageType:405,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"client_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","reputation":42,"exists":true}`), 
-		signature:"",
+		messageType:       405,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"client_id":"0000000000000000000000000000000000000000000000000000000000000042","reputation":42,"exists":true}`),
+		signature:         "",
 	}
 
 	msg, err := EncodeGatewayAdminSetReputationResponse(mockNodeID, mockReputation, mockExists)
@@ -32,11 +33,11 @@ func TestDecodeGatewayAdminSetReputationResponse(t *testing.T) {
 	mockExists := true
 
 	validMsg := &FCRMessage{
-		messageType:405,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"client_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","reputation":42,"exists":true}`), 
-		signature:"",
+		messageType:       405,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"client_id":"0000000000000000000000000000000000000000000000000000000000000042","reputation":42,"exists":true}`),
+		signature:         "",
 	}
 
 	nodeID, reputation, exists, err := DecodeGatewayAdminSetReputationResponse(validMsg)

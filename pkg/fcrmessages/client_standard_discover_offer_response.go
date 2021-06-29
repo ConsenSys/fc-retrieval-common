@@ -25,7 +25,7 @@ import (
 
 // clientStandardDiscoverOfferResponse is the response to clientStandardDiscoverRequest
 type clientStandardDiscoverOfferResponse struct {
-	PieceCID             cid.ContentID          `json:"piece_cid"`
+	PieceCID             string                 `json:"piece_cid"`
 	Nonce                int64                  `json:"nonce"`
 	Found                bool                   `json:"found"`
 	SubCIDOffers         []cidoffer.SubCIDOffer `json:"sub_cid_offers"`
@@ -45,7 +45,7 @@ func EncodeClientStandardDiscoverOfferResponse(
 	paymentChannel int64,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(clientStandardDiscoverOfferResponse{
-		PieceCID:             *pieceCID,
+		PieceCID:             pieceCID.ToString(),
 		Nonce:                nonce,
 		Found:                found,
 		SubCIDOffers:         offers,
@@ -78,5 +78,6 @@ func DecodeClientStandardDiscoverOfferResponse(fcrMsg *FCRMessage) (
 	if err != nil {
 		return nil, 0, false, nil, nil, false, 0, err
 	}
-	return &msg.PieceCID, msg.Nonce, msg.Found, msg.SubCIDOffers, msg.FundedPaymentChannel, msg.PaymentRequired, msg.PaymentChannel, nil
+	contentID, _ := cid.NewContentIDFromHexString(msg.PieceCID)
+	return contentID, msg.Nonce, msg.Found, msg.SubCIDOffers, msg.FundedPaymentChannel, msg.PaymentRequired, msg.PaymentChannel, nil
 }

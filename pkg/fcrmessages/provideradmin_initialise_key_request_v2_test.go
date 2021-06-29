@@ -1,10 +1,11 @@
 package fcrmessages
 
 import (
+	"testing"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/fcrcrypto"
 	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 // TestEncodeProviderAdminInitialiseKeyRequestV2 success test
@@ -16,7 +17,7 @@ func TestEncodeProviderAdminInitialiseKeyRequestV2(t *testing.T) {
 		messageType:       510,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody: []byte(`{"provider_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","private_key":"` + mockPrivateKey.EncodePrivateKey() +
+		messageBody: []byte(`{"provider_id":"0000000000000000000000000000000000000000000000000000000000000042","private_key":"` + mockPrivateKey.EncodePrivateKey() +
 			`","private_key_version":1,"wallet_private_key":"wallet_private_key` +
 			`","lotus_ap":"lotus_ap","lotus_auth_token":"lotus_auth_token"}`),
 		signature: "",
@@ -36,7 +37,7 @@ func TestDecodeProviderAdminInitialiseKeyRequestV2(t *testing.T) {
 		messageType:       510,
 		protocolVersion:   1,
 		protocolSupported: []int32{1, 1},
-		messageBody: []byte(`{"provider_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","private_key":"` + mockPrivateKey.EncodePrivateKey() +
+		messageBody: []byte(`{"provider_id":"0000000000000000000000000000000000000000000000000000000000000042","private_key":"` + mockPrivateKey.EncodePrivateKey() +
 			`","private_key_version":1,"wallet_private_key":"wallet_private_key02` +
 			`","lotus_ap":"lotus_ap02","lotus_auth_token":"lotus_auth_token02"}`),
 		signature: "",

@@ -26,12 +26,12 @@ import (
 // gatewayAdminInitialiseKeyRequestV2 is the request from a gateway admin to a gateway to initialise with a key pair,
 // and lotus access point and lotus auth token
 type gatewayAdminInitialiseKeyRequestV2 struct {
-	GatewayID         nodeid.NodeID `json:"gateway_id"`
-	PrivateKey        string        `json:"private_key"`
-	PrivateKeyVersion uint32        `json:"private_key_version"`
-	WalletPrivateKey  string        `json:"wallet_private_key"`
-	LotusAP           string        `json:"lotus_ap"`
-	LotusAuthToken    string        `json:"lotus_auth_token"`
+	GatewayID         string `json:"gateway_id"`
+	PrivateKey        string `json:"private_key"`
+	PrivateKeyVersion uint32 `json:"private_key_version"`
+	WalletPrivateKey  string `json:"wallet_private_key"`
+	LotusAP           string `json:"lotus_ap"`
+	LotusAuthToken    string `json:"lotus_auth_token"`
 }
 
 // EncodeGatewayAdminInitialiseKeyRequestV2 is used to get the FCRMessage of gatewayAdminInitialiseKeyRequestV2
@@ -44,7 +44,7 @@ func EncodeGatewayAdminInitialiseKeyRequestV2(
 	lotusAuthToken string,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(gatewayAdminInitialiseKeyRequestV2{
-		*nodeID,
+		nodeID.ToString(),
 		privateKey.EncodePrivateKey(),
 		keyVersion.EncodeKeyVersion(),
 		walletPrivateKey,
@@ -80,5 +80,6 @@ func DecodeGatewayAdminInitialiseKeyRequestV2(fcrMsg *FCRMessage) (
 		return nil, nil, nil, "", "", "", errors.New("fail to decode private key")
 	}
 	privKeyVer := fcrcrypto.DecodeKeyVersion(msg.PrivateKeyVersion)
-	return &msg.GatewayID, privKey, privKeyVer, msg.WalletPrivateKey, msg.LotusAP, msg.LotusAuthToken, nil
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.GatewayID)
+	return nodeID, privKey, privKeyVer, msg.WalletPrivateKey, msg.LotusAP, msg.LotusAuthToken, nil
 }

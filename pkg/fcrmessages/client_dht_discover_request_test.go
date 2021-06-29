@@ -2,8 +2,9 @@ package fcrmessages
 
 import (
 	"testing"
-	"github.com/stretchr/testify/assert"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
+	"github.com/stretchr/testify/assert"
 )
 
 // TestEncodeClientDHTDiscoverRequest success test
@@ -16,11 +17,11 @@ func TestEncodeClientDHTDiscoverRequest(t *testing.T) {
 	mockPaychAddr := "0x42"
 	mockVoucher := "1"
 	validMsg := &FCRMessage{
-		messageType:104,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"ttl":100,"num_dht":42,"incremental_results":true,"payment_channel_address":"0x42","voucher":"1"}`), 
-		signature:"",
+		messageType:       104,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"piece_cid":"0000000000000000000000000000000000000000000000000000000000000001","nonce":42,"ttl":100,"num_dht":42,"incremental_results":true,"payment_channel_address":"0x42","voucher":"1"}`),
+		signature:         "",
 	}
 	msg, err := EncodeClientDHTDiscoverRequest(
 		mockContentID,
@@ -44,13 +45,13 @@ func TestDecodeClientDHTDiscoverRequest(t *testing.T) {
 	mockIncrementalResults := true
 	mockPaychAddr := "0x42"
 	mockVoucher := "1"
-	
+
 	validMsg := &FCRMessage{
-		messageType:104,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"piece_cid":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=","nonce":42,"ttl":100,"num_dht":42,"incremental_results":true,"payment_channel_address":"0x42","voucher":"1"}`), 
-		signature:"",
+		messageType:       104,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"piece_cid":"0000000000000000000000000000000000000000000000000000000000000001","nonce":42,"ttl":100,"num_dht":42,"incremental_results":true,"payment_channel_address":"0x42","voucher":"1"}`),
+		signature:         "",
 	}
 	PieceCID, Nonce, TTL, NumDHT, IncrementalResults, PaychAddr, Voucher, err := DecodeClientDHTDiscoverRequest(validMsg)
 

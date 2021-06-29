@@ -25,7 +25,7 @@ import (
 
 // providerPublishDHTOfferRequest is the request from provider to gateway to publish dht offer
 type providerPublishDHTOfferRequest struct {
-	ProviderID nodeid.NodeID       `json:"provider_id"`
+	ProviderID string              `json:"provider_id"`
 	Nonce      int64               `json:"nonce"`
 	NumOffers  int64               `json:"num_of_offers"`
 	Offers     []cidoffer.CIDOffer `json:"single_offers"`
@@ -38,7 +38,7 @@ func EncodeProviderPublishDHTOfferRequest(
 	offers []cidoffer.CIDOffer,
 ) (*FCRMessage, error) {
 	body, err := json.Marshal(providerPublishDHTOfferRequest{
-		ProviderID: *providerID,
+		ProviderID: providerID.ToString(),
 		Nonce:      nonce,
 		NumOffers:  int64(len(offers)),
 		Offers:     offers,
@@ -70,5 +70,6 @@ func DecodeProviderPublishDHTOfferRequest(fcrMsg *FCRMessage) (
 			return nil, 0, nil, errors.New("offers contain group offer")
 		}
 	}
-	return &msg.ProviderID, msg.Nonce, msg.Offers, nil
+	nodeID, _ := nodeid.NewNodeIDFromHexString(msg.ProviderID)
+	return nodeID, msg.Nonce, msg.Offers, nil
 }

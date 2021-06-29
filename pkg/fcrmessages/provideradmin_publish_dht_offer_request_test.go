@@ -2,8 +2,9 @@ package fcrmessages
 
 import (
 	"testing"
-	"github.com/stretchr/testify/assert"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
+	"github.com/stretchr/testify/assert"
 )
 
 // TestEncodeProviderAdminPublishDHTOfferRequest success test
@@ -18,11 +19,11 @@ func TestEncodeProviderAdminPublishDHTOfferRequest(t *testing.T) {
 	mockQoss := []uint64{mockQos}
 
 	validMsg := &FCRMessage{
-		messageType:504,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"cids":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE="],"price":[41],"expiry":[42],"qos":[43]}`), 
-		signature:"",
+		messageType:       504,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"cids":["0000000000000000000000000000000000000000000000000000000000000001"],"price":[41],"expiry":[42],"qos":[43]}`),
+		signature:         "",
 	}
 	msg, err := EncodeProviderAdminPublishDHTOfferRequest(mockCids, mockPrices, mockExpiries, mockQoss)
 	assert.Empty(t, err)
@@ -33,13 +34,13 @@ func TestEncodeProviderAdminPublishDHTOfferRequest(t *testing.T) {
 func TestDecodeProviderAdminPublishDHTOfferRequest(t *testing.T) {
 	contentID, _ := cid.NewContentIDFromBytes([]byte{1})
 	mockCids := []cid.ContentID{*contentID}
-	
+
 	validMsg := &FCRMessage{
-		messageType:504,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"cids":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE="],"price":[41],"expiry":[42],"qos":[43]}`), 
-		signature:"",
+		messageType:       504,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"cids":["0000000000000000000000000000000000000000000000000000000000000001"],"price":[41],"expiry":[42],"qos":[43]}`),
+		signature:         "",
 	}
 	cids, price, expiry, qos, err := DecodeProviderAdminPublishDHTOfferRequest(validMsg)
 	assert.Empty(t, err)

@@ -2,10 +2,11 @@ package fcrmessages
 
 import (
 	"testing"
-	"github.com/stretchr/testify/assert"
-	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
-	"github.com/ConsenSys/fc-retrieval-common/pkg/cidoffer"
+
 	"github.com/ConsenSys/fc-retrieval-common/pkg/cid"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/cidoffer"
+	"github.com/ConsenSys/fc-retrieval-common/pkg/nodeid"
+	"github.com/stretchr/testify/assert"
 )
 
 // TestEncodeProviderPublishDHTOfferRequest success test
@@ -23,11 +24,11 @@ func TestEncodeProviderPublishDHTOfferRequest(t *testing.T) {
 	mockCidOffers = append(mockCidOffers, *mockOffer)
 
 	validMsg := &FCRMessage{
-		messageType:302,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"provider_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","nonce":42,"num_of_offers":1,"single_offers":[{"provider_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","cids":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE="],"price":41,"expiry":42,"qos":43,"signature":""}]}`), 
-		signature:"",
+		messageType:       302,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"provider_id":"0000000000000000000000000000000000000000000000000000000000000042","nonce":42,"num_of_offers":1,"single_offers":[{"provider_id":"0000000000000000000000000000000000000000000000000000000000000042","cids":["0000000000000000000000000000000000000000000000000000000000000001"],"price":41,"expiry":42,"qos":43,"signature":""}]}`),
+		signature:         "",
 	}
 
 	msg, err := EncodeProviderPublishDHTOfferRequest(mockNodeID, mockNonce, mockCidOffers)
@@ -50,11 +51,11 @@ func TestDecodeProviderPublishDHTOfferRequest(t *testing.T) {
 	mockCidOffers = append(mockCidOffers, *mockOffer)
 
 	validMsg := &FCRMessage{
-		messageType:302,
-		protocolVersion:1,
-		protocolSupported:[]int32{1, 1},
-		messageBody:[]byte(`{"provider_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","nonce":42,"num_of_offers":1,"single_offers":[{"provider_id":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEI=","cids":["AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE="],"price":41,"expiry":42,"qos":43,"signature":""}]}`), 
-		signature:"",
+		messageType:       302,
+		protocolVersion:   1,
+		protocolSupported: []int32{1, 1},
+		messageBody:       []byte(`{"provider_id":"0000000000000000000000000000000000000000000000000000000000000042","nonce":42,"num_of_offers":1,"single_offers":[{"provider_id":"0000000000000000000000000000000000000000000000000000000000000042","cids":["0000000000000000000000000000000000000000000000000000000000000001"],"price":41,"expiry":42,"qos":43,"signature":""}]}`),
+		signature:         "",
 	}
 
 	nodeID, nonce, CIDOffers, err := DecodeProviderPublishDHTOfferRequest(validMsg)
@@ -64,5 +65,5 @@ func TestDecodeProviderPublishDHTOfferRequest(t *testing.T) {
 	for i, CIDoffer := range CIDOffers {
 		assert.Equal(t, CIDoffer.GetMessageDigest(), mockCidOffers[i].GetMessageDigest())
 	}
-	
+
 }
